@@ -10,6 +10,7 @@ ______________________________________________
 #ifndef DRIVERS_H
 #define DRIVERS_H
 
+#include "include/gpio.h"
 #include "include/irq.h"
 #include "include/timer.h"
 #include "include/uart.h"
