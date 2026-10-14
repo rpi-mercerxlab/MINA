@@ -5,8 +5,22 @@ fields:
   OPCODE: "51 downto 44"
   DMA_OP_CODE: "43 downto 40"
 
+  PE_SOURCE_FIELD: "43 downto 42"
+  PE_DATA_START_ADDR: "41 downto 30"
+  PE_WEIGHT_START_ADDR: "29 downto 18"
+
+  PE_DRAIN_START_ADDR: "43 downto 32"
+
 control_signals:
-  PE_RESET: { width: 1, default: "0" }
+  pe_reset: { width: 1, default: "'0'" }
+  pe_run: { width: 1, default: "'0'" }
+  pe_data_source: { width: 2, default: '"00"' }
+  pe_data_addr: { width: 12, default: '"000000000000"' }
+  pe_weight_addr: { width: 12, default: '"000000000000"' }
+  pe_drain_addr: { width: 12, default: '"000000000000"' }
+
+status_inputs:
+  pe_drive_done: 1
 
 decode_tree:
   field: OPCODE
@@ -14,11 +28,18 @@ decode_tree:
     "0x00": #drive pe, param1: pe source field, param2: data start addr, param 3: weight start addr
       set:
         #control signals and address routing
+        pe_run: "'1'"
+        pe_data_source: "@PE_SOURCE_FIELD"
+        pe_data_addr: "@PE_DATA_START_ADDR"
+        pe_weight_addr: "@PE_WEIGHT_START_ADDR"
+
+      wait_for: pe_drive_done
     "0x01": #reset
       set:
-        #toggle the reset
+        pe_reset: "'0'"
     "0x02": #drain pe, to target addr
       set:
+        pe_drain_addr: "@PE_DRAIN_START_ADDR"
     "0x03": #top level interrupt, triggers the top level interrupt
       set:
         #to interrupt module

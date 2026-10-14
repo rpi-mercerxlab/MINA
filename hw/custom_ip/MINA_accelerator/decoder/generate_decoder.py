@@ -24,7 +24,7 @@ def resolve_value(val, fields):
     return val
 
 
-def generate_case_tree(node, fields, indent_level=2):
+def generate_case_tree(node, fields, status_inputs, indent_level=3):
     """Recursively walks the YAML decode_tree and builds VHDL case statements."""
     indent = "    " * indent_level
     lines = []
@@ -33,15 +33,26 @@ def generate_case_tree(node, fields, indent_level=2):
         lines.append(f"{indent}null;")
         return lines
 
-    # 1. Emit control signal assignments at this level
     has_assignments = False
+
+    # 1. Handle 'wait_for' -> routes a hardware status input to instr_done
+    if "wait_for" in node and node["wait_for"]:
+        wait_sig = node["wait_for"]
+        if wait_sig not in status_inputs and wait_sig not in ("'0'", "'1'"):
+            raise KeyError(
+                f"wait_for signal '{wait_sig}' is not defined in 'status_inputs'."
+            )
+        lines.append(f"{indent}instr_done <= {wait_sig};")
+        has_assignments = True
+
+    # 2. Emit control signal assignments at this level
     if "set" in node and node["set"]:
         for sig, val in node["set"].items():
             vhdl_val = resolve_value(val, fields)
             lines.append(f"{indent}{sig} <= {vhdl_val};")
             has_assignments = True
 
-    # 2. Check if this node is a switch ('field') or contains a nested switch ('match')
+    # 3. Check if this node is a switch ('field') or contains a nested switch ('match')
     match_node = node.get("match", node if "field" in node else None)
 
     if match_node:
@@ -55,20 +66,23 @@ def generate_case_tree(node, fields, indent_level=2):
         for pattern, branch in match_node.get("cases", {}).items():
             vhdl_pattern = format_vhdl_pattern(pattern)
             lines.append(f"{indent}    when {vhdl_pattern} =>")
-            lines.extend(generate_case_tree(branch, fields, indent_level + 2))
+            lines.extend(
+                generate_case_tree(branch, fields, status_inputs, indent_level + 2)
+            )
 
         # Always generate a 'when others' branch to prevent latches
         lines.append(f"{indent}    when others =>")
         if "default" in match_node and match_node["default"]:
             lines.extend(
-                generate_case_tree(match_node["default"], fields, indent_level + 2)
+                generate_case_tree(
+                    match_node["default"], fields, status_inputs, indent_level + 2
+                )
             )
         else:
             lines.append(f"{indent}        null;")
 
         lines.append(f"{indent}end case;")
     elif not has_assignments:
-        # Leaf node with no assignments yet -> emit 'null;' so VHDL compiles
         lines.append(f"{indent}null;")
 
     return lines
@@ -84,17 +98,22 @@ def build_vhdl(yaml_path):
     signals = spec.get("control_signals", {})
     status_inputs = spec.get("status_inputs", {})
 
-    # 1. Build Port List
-    ports = [f"        instr : in std_logic_vector({width - 1} downto 0)"]
+    # Remove instr_done from user dict if present so we can manage its safe/active defaults cleanly
+    signals.pop("instr_done", None)
 
-    # Optional status inputs (if you add wait/handshake signals later)
+    # 1. Build Port List
+    ports = [
+        f"        instr       : in  std_logic_vector({width - 1} downto 0)",
+        f"        instr_valid : in  std_logic",
+    ]
+
     for name, w in status_inputs.items():
         if w == 1:
-            ports.append(f"        {name} : in std_logic")
+            ports.append(f"        {name} : in  std_logic")
         else:
-            ports.append(f"        {name} : in std_logic_vector({w - 1} downto 0)")
+            ports.append(f"        {name} : in  std_logic_vector({w - 1} downto 0)")
 
-    # Control & datapath outputs
+    ports.append(f"        instr_done  : out std_logic")
     for name, props in signals.items():
         w = props["width"]
         if w == 1:
@@ -103,17 +122,19 @@ def build_vhdl(yaml_path):
             ports.append(f"        {name} : out std_logic_vector({w - 1} downto 0)")
     port_str = ";\n".join(ports)
 
-    # 2. Build Default Assignments
-    defaults = [
-        f"        {name} <= {props['default']};" for name, props in signals.items()
-    ]
+    # 2. Build Safe Inactive Defaults (when instr_valid = '0')
+    defaults = ["        instr_done <= '0';"]
+    defaults.extend(
+        [f"        {name} <= {props['default']};" for name, props in signals.items()]
+    )
     default_str = "\n".join(defaults)
 
-    # 3. Build Recursive Switch Tree
-    tree_lines = generate_case_tree(spec["decode_tree"], fields, indent_level=2)
+    # 3. Build Recursive Switch Tree (indented inside 'if instr_valid = '1' then')
+    tree_lines = generate_case_tree(
+        spec["decode_tree"], fields, status_inputs, indent_level=3
+    )
     tree_str = "\n".join(tree_lines)
 
-    # 4. Assemble Final VHDL-2008 File
     return f"""library ieee;
 use ieee.std_logic_1164.all;
 
@@ -127,11 +148,16 @@ architecture rtl of {entity} is
 begin
     process(all)
     begin
-        -- Default Control & Datapath Assignments (Prevents Latches)
+        -- Safe Inactive Defaults (when instr_valid = '0', nothing triggers and PC waits)
 {default_str}
 
-        -- Instruction Decode Switch Tree
+        if instr_valid = '1' then
+            -- Active Default: Single-cycle instructions complete immediately unless overridden
+            instr_done <= '1';
+
+            -- Instruction Decode Switch Tree
 {tree_str}
+        end if;
     end process;
 end architecture rtl;
 """
@@ -142,8 +168,6 @@ if __name__ == "__main__":
     output_vhdl = sys.argv[2] if len(sys.argv) > 2 else "decoder.vhd"
 
     vhdl_code = build_vhdl(input_yaml)
-
     with open(output_vhdl, "w") as f:
         f.write(vhdl_code)
-
     print(f"Generated {output_vhdl} from {input_yaml}")
