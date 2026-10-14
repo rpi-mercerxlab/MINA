@@ -1,0 +1,29 @@
+entity_name: npu_decoder
+instruction_width: 52
+
+fields:
+  OPCODE: "51 downto 44"
+  DMA_OP_CODE: "43 downto 40"
+
+control_signals:
+  PE_RESET: { width: 1, default: "0" }
+
+decode_tree:
+  field: OPCODE
+  cases:
+    "0x00": #drive pe, param1: pe source field, param2: data start addr, param 3: weight start addr
+      set:
+        #control signals and address routing
+    "0x01": #reset
+      set:
+        #toggle the reset
+    "0x02": #drain pe, to target addr
+      set:
+    "0x03": #top level interrupt, triggers the top level interrupt
+      set:
+        #to interrupt module
+    "0x04": #top_level_output_addr
+      set:
+    "0x05": #DMA decode tree
+      match:
+        field: DMA_OP_CODE
