@@ -1,15 +1,19 @@
 entity_name: npu_decoder
-instruction_width: 52
+instruction_width: 36
 
 fields:
-  OPCODE: "51 downto 44"
-  DMA_OP_CODE: "43 downto 40"
+  OPCODE: "35 downto 28"
+  DMA_OP_CODE: "27 downto 24"
 
-  PE_SOURCE_FIELD: "43 downto 42"
-  PE_DATA_START_ADDR: "41 downto 30"
-  PE_WEIGHT_START_ADDR: "29 downto 18"
+  PE_SOURCE_FIELD: "27 downto 26"
+  PE_DATA_START_ADDR: "25 downto 14"
+  PE_WEIGHT_START_ADDR: "13 downto 2"
 
-  PE_DRAIN_START_ADDR: "43 downto 32"
+  PE_DRAIN_START_ADDR: "27 downto 16"
+
+  INT_TARG_ADDR: "27 downto 16"
+
+  JUMP_ADDR: "27 downto 18"
 
 control_signals:
   pe_reset: { width: 1, default: "'0'" }
@@ -19,8 +23,16 @@ control_signals:
   pe_weight_addr: { width: 12, default: '"000000000000"' }
   pe_drain_addr: { width: 12, default: '"000000000000"' }
 
+  trigger_interrupt: { width: 1, default: "'0'" }
+  vo_int_addr: { width: 1, default: "'0'" }
+  int_targ_addr: { width: 12, default: '"000000000000"' }
+
+  jump_addr_vo: { width: 1, default: "'0'" }
+  jump_addr: { width: 10, default: '"0000000000"' }
+
 status_inputs:
   pe_drive_done: 1
+  pe_drain_done: 1
 
 decode_tree:
   field: OPCODE
@@ -40,11 +52,19 @@ decode_tree:
     "0x02": #drain pe, to target addr
       set:
         pe_drain_addr: "@PE_DRAIN_START_ADDR"
+      wait_for: pe_drain_done
     "0x03": #top level interrupt, triggers the top level interrupt
       set:
         #to interrupt module
+        trigger_interrupt: "'1'"
     "0x04": #top_level_output_addr
       set:
-    "0x05": #DMA decode tree
+        vo_int_addr: "'1'"
+        int_targ_addr: "@INT_TARG_ADDR"
+    "0x05": #jump instruction
+      set:
+        jump_addr_vo: "'1'"
+        jump_addr: "@JUMP_ADDR"
+    "0x06": #DMA decode tree
       match:
         field: DMA_OP_CODE
