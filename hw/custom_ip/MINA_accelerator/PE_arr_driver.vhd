@@ -10,11 +10,11 @@ entity PE_arr_driver is
 
         pe_reset : in std_logic;
         pe_run : in std_logic;
+        pe_drain : in std_logic;
     
         pe_data_source : in std_logic_vector(1 downto 0);
         pe_data_addr : in std_logic_vector(11 downto 0);
         pe_weight_addr : in std_logic_vector(11 downto 0);
-        pe_drain_addr : in std_logic_vector(11 downto 0);
         
         pe_data_output : out std_logic_vector(127 downto 0);
         data_addr_out : out std_logic_vector(11 downto 0);
@@ -31,14 +31,20 @@ entity PE_arr_driver is
        
         skew_enable_out : out std_logic;
         
-        pe_drive_done : out std_logic
+        pe_drive_done : out std_logic;
+
+        drain_addr_start : in std_logic_vector(11 downto 0);
+        drain_addr_out : out std_logic_vector(11 downto 0);
+
+        pe_drain_en : out std_logic;
+        pe_drain_done : out std_logic
     );
 end entity;
 
 architecture rtl of PE_arr_driver is
     -- Assumes one-cycle synchronous reads from BOTH operand memories,
     -- two-cycle PE forwarding and the corrected two-cycle-per-lane skew.
-    type t_state is (IDLE, PRIME, RUNNING, FLUSHING, COMPLETE);
+    type t_state is (IDLE, PRIME, RUNNING, FLUSHING, COMPLETE, DRAIN, DRAIN_DONE);
     signal state : t_state := IDLE;
 
     signal source_sel : std_logic_vector(1 downto 0) := "00";
@@ -46,10 +52,12 @@ architecture rtl of PE_arr_driver is
     signal data_addr_reg : unsigned(11 downto 0) := (others => '0');
     signal weight_addr_reg : unsigned(11 downto 0) := (others => '0');
     
-    signal vector_index : natural range 0 to 15 := 0;
+    signal vector_index : natural range 0 to 31 := 0;
     
     constant FLUSH_CYCLES : positive := 2*(NUM_ROWS-1) + 2*(NUM_COLS-1) + 4;
     signal flush_count : natural range 0 to FLUSH_CYCLES-1 := 0;
+
+    signal drain_addr_reg : unsigned(11 downto 0) := (others => '0');
 begin
     data_addr_out <= std_logic_vector(data_addr_reg);
     weight_addr_out <= std_logic_vector(weight_addr_reg);
@@ -67,6 +75,10 @@ begin
     -- Only clear between operations. Existing Pengine.clear_acc loads the
     -- pending product, so this relies on the pipeline having settled to zero.
     pe_clear_acc_out <= '1' when state = IDLE and pe_reset = '1' else '0';
+
+    drain_addr_out <= std_logic_vector(drain_addr_reg);
+    pe_drain_done <= '1' when state = DRAIN_DONE else '0';
+    pe_drain_en <= '1' when (state = DRAIN and (vector_index mod 2 = 0)) else '0';
 
     process(clk)
     begin
@@ -87,6 +99,8 @@ begin
                             weight_addr_reg <= unsigned(pe_weight_addr);
                             vector_index <= 0;
                             state <= PRIME;
+                        elsif pe_drain = '1' then
+                            
                         end if;
                     when PRIME =>
                         -- RAM samples base addresses at this edge. Its first
@@ -117,6 +131,19 @@ begin
                         -- Decoder holds pe_run until it sees completion.
                         -- Wait for deassertion before accepting another command.
                         if pe_run = '0' then
+                            state <= IDLE;
+                        end if;
+                    when DRAIN =>
+                        if vector_index = 31 then
+                            state <= DRAIN_DONE;
+                        else
+                            vector_index <= vector_index + 1;
+                            if (vector_index mod 2) = 1 then
+                                drain_addr_reg <= drain_addr_reg - 1;
+                            end if;
+                        end if;
+                    when DRAIN_DONE =>
+                        if pe_drain = '0' then
                             state <= IDLE;
                         end if;
                 end case;

@@ -18,6 +18,7 @@ fields:
 control_signals:
   pe_reset: { width: 1, default: "'0'" }
   pe_run: { width: 1, default: "'0'" }
+  pe_drain: { width: 1, default: "'0'" }
   pe_data_source: { width: 2, default: '"00"' }
   pe_data_addr: { width: 12, default: '"000000000000"' }
   pe_weight_addr: { width: 12, default: '"000000000000"' }
@@ -51,6 +52,7 @@ decode_tree:
         pe_reset: "'0'"
     "0x02": #drain pe, to target addr
       set:
+        pe_drain: "'1'"
         pe_drain_addr: "@PE_DRAIN_START_ADDR"
       wait_for: pe_drain_done
     "0x03": #top level interrupt, triggers the top level interrupt

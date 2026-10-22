@@ -10,6 +10,7 @@ entity npu_decoder is
         instr_done  : out std_logic;
         pe_reset : out std_logic;
         pe_run : out std_logic;
+        pe_drain : out std_logic;
         pe_data_source : out std_logic_vector(1 downto 0);
         pe_data_addr : out std_logic_vector(11 downto 0);
         pe_weight_addr : out std_logic_vector(11 downto 0);
@@ -30,6 +31,7 @@ begin
         instr_done <= '0';
         pe_reset <= '0';
         pe_run <= '0';
+        pe_drain <= '0';
         pe_data_source <= "00";
         pe_data_addr <= "000000000000";
         pe_weight_addr <= "000000000000";
@@ -56,6 +58,7 @@ begin
                     pe_reset <= '0';
                 when x"02" =>
                     instr_done <= pe_drain_done;
+                    pe_drain <= '1';
                     pe_drain_addr <= instr(27 downto 16);
                 when x"03" =>
                     trigger_interrupt <= '1';

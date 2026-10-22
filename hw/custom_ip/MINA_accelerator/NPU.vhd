@@ -50,13 +50,28 @@ architecture Structural of NPU is
     -- BUFFERS FOR WEIGHT RAM
     signal weight_addr : std_logic_vector(11 downto 0);
     signal weight_ram_din : std_logic_vector(127 downto 0);
-    signal weight_arr_din : weight_row_t;
     -- BUFFERS FOR WEIGHT RAM
-begin
 
-    UNPACK_WEIGHTS: for i in 0 to NUM_COLS-1 generate
-        weight_arr_din(i) <= weight_ram_din(((i+1)*WEIGHT_WIDTH) - 1 downto i*WEIGHT_WIDTH);
-    end generate;
+    -- BUFFERS FOR DECODER
+    signal pe_drive_done_buf : std_logic;
+    signal pe_drain_done_buf : std_logic;
+    signal pe_reset_buf : std_logic;
+    signal pe_run_buf : std_logic;
+    signal pe_drain_buf : std_logic;
+    signal pe_data_source_buf : std_logic_vector(1 downto 0);
+    signal pe_data_addr_buf : std_logic_vector(11 downto 0);
+    signal pe_weight_addr_buf : std_logic_vector(11 downto 0);
+    signal pe_drain_addr_buf : std_logic_vector(11 downto 0);
+    signal trigger_interrupt_buf : std_logic;
+    signal vo_int_addr_buf : std_logic;
+    signal int_targ_addr_buf : std_logic_vector(11 downto 0);
+    -- BUFFERS FOR DECODER
+
+    -- BUFFERS FOR DRIVER
+    signal weight_vector_drv : std_logic_vector(127 downto 0);
+    -- BUFFERS FOR DRIVER
+
+begin
 
     PE_WEIGHT_RAM: entity work.PE_weight_ram
         port map (
@@ -108,7 +123,7 @@ begin
             rst_n => rst_n,
             enable => open,
 
-            raw_weights => open,
+            raw_weights => weight_vector_drv,
             raw_data => open,
 
             skewed_weights => pe_top_weights_buf,
@@ -127,5 +142,64 @@ begin
             left_data => pe_left_data_buf,
             bottom_out => pe_bottom_out_buf
         );
+
+    PE_arr_dr: entity work.PE_arr_driver
+        port map (
+            clk => clk,
+            rst_n => rst_n,
+
+            pe_reset => pe_reset_buf,
+            pe_run => pe_run_buf,
+            pe_drain => pe_drain_buf,
+
+            pe_data_source => pe_data_source_buf,
+            pe_data_addr => pe_data_addr_buf,
+            pe_weight_addr => pe_weight_addr_buf,
+
+            pe_data_output => ,
+            data_addr_out => ,
+
+            scratchpad_in => ,
+            sensor_ram_in => ,
+
+            weight_data_in => weight_ram_din,
+            weight_data_out => weight_vector_drv,
+            weight_addr_out => weight_addr,
+
+            pe_clear_acc_out => pe_clear_acc_buf,
+            pe_valid_out => pe_valid_in,
+
+            skew_enable_out => ,
+            pe_drive_done => pe_drive_done_buf,
+
+            drain_addr_start => ,
+            drain_addr_out => ,
+
+            pe_drain_en => pe_drain,
+            pe_drain_done => pe_drain_done_buf
+                 );
+
+    NPU_decoder: entity work.NPU_decoder
+        port map (
+            instr => instr_o_buf,
+            instr_valid => instr_valid_o_buf,
+            pe_drive_done => pe_drive_done_buf,
+            pe_drain_done => pe_drain_done_buf,
+            instr_done => instr_done_buf,
+            pe_reset => pe_reset_buf,
+            pe_run => pe_run_buf,
+            pe_drain => pe_drain_buf,
+            pe_data_source => pe_data_source_buf,
+            pe_data_addr => pe_data_addr_buf,
+            pe_weight_addr => pe_weight_addr_buf,
+            pe_drain_addr => pe_drain_addr_buf,
+            trigger_interrupt => trigger_interrupt_buf,
+            vo_int_addr => vo_int_addr_buf,
+            int_targ_addr => int_targ_addr_buf,
+            jump_addr_vo => jump_addr_vo_buf,
+            jump_addr => jump_addr_buf
+                 );
+
+    
 
 end architecture Structural;
