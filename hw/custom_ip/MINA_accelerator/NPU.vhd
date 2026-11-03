@@ -49,7 +49,7 @@ architecture Structural of NPU is
 
     -- BUFFERS FOR WEIGHT RAM
     signal weight_addr : std_logic_vector(11 downto 0);
-    signal weight_ram_din : std_logic_vector(127 downto 0);
+    signal weight_ram_din : std_logic_vector(63 downto 0);
     -- BUFFERS FOR WEIGHT RAM
 
     -- BUFFERS FOR DECODER
@@ -68,7 +68,8 @@ architecture Structural of NPU is
     -- BUFFERS FOR DECODER
 
     -- BUFFERS FOR DRIVER
-    signal weight_vector_drv : std_logic_vector(127 downto 0);
+    signal weight_vector_drv : std_logic_vector(63 downto 0);
+    signal skew_en_out_buf : std_logic;
     -- BUFFERS FOR DRIVER
 
 begin
@@ -121,7 +122,7 @@ begin
         port map (
             clk => clk,
             rst_n => rst_n,
-            enable => open,
+            enable => skew_en_out_buf,
 
             raw_weights => weight_vector_drv,
             raw_data => open,
@@ -160,7 +161,7 @@ begin
             data_addr_out => ,
 
             scratchpad_in => ,
-            sensor_ram_in => ,
+            sensor_ram_in => open,
 
             weight_data_in => weight_ram_din,
             weight_data_out => weight_vector_drv,
@@ -169,10 +170,10 @@ begin
             pe_clear_acc_out => pe_clear_acc_buf,
             pe_valid_out => pe_valid_in,
 
-            skew_enable_out => ,
+            skew_enable_out => skew_en_out_buf,
             pe_drive_done => pe_drive_done_buf,
 
-            drain_addr_start => ,
+            drain_addr_start => pe_drain_addr_buf,
             drain_addr_out => ,
 
             pe_drain_en => pe_drain,

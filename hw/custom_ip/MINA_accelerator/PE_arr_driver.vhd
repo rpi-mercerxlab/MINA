@@ -16,14 +16,14 @@ entity PE_arr_driver is
         pe_data_addr : in std_logic_vector(11 downto 0);
         pe_weight_addr : in std_logic_vector(11 downto 0);
         
-        pe_data_output : out std_logic_vector(127 downto 0);
+        pe_data_output : out std_logic_vector(63 downto 0);
         data_addr_out : out std_logic_vector(11 downto 0);
         
-        scratchpad_in : in std_logic_vector(127 downto 0);
-        sensor_ram_in : in std_logic_vector(127 downto 0);
+        scratchpad_in : in std_logic_vector(63 downto 0);
+        sensor_ram_in : in std_logic_vector(63 downto 0);
         
-        weight_data_in : in std_logic_vector(127 downto 0);
-        weight_data_out : out std_logic_vector(127 downto 0);
+        weight_data_in : in std_logic_vector(63 downto 0);
+        weight_data_out : out std_logic_vector(63 downto 0);
         weight_addr_out : out std_logic_vector(11 downto 0);
         
         pe_clear_acc_out : out std_logic;
@@ -52,7 +52,7 @@ architecture rtl of PE_arr_driver is
     signal data_addr_reg : unsigned(11 downto 0) := (others => '0');
     signal weight_addr_reg : unsigned(11 downto 0) := (others => '0');
     
-    signal vector_index : natural range 0 to 31 := 0;
+    signal vector_index : natural range 0 to 15 := 0;
     
     constant FLUSH_CYCLES : positive := 2*(NUM_ROWS-1) + 2*(NUM_COLS-1) + 4;
     signal flush_count : natural range 0 to FLUSH_CYCLES-1 := 0;
@@ -110,13 +110,13 @@ begin
                         state <= RUNNING;
                     when RUNNING =>
                         -- Skew accepts one returned vector on every edge.
-                        if vector_index = 15 then
+                        if vector_index = 7 then
                             flush_count <= 0;
                             state <= FLUSHING;
                         else
                             vector_index <= vector_index + 1;
                             -- Hold final address once its read has been issued.
-                            if vector_index < 14 then
+                            if vector_index < 6 then
                                 data_addr_reg <= data_addr_reg + 1;
                                 weight_addr_reg <= weight_addr_reg + 1;
                             end if;
@@ -134,7 +134,7 @@ begin
                             state <= IDLE;
                         end if;
                     when DRAIN =>
-                        if vector_index = 31 then
+                        if vector_index = 15 then
                             state <= DRAIN_DONE;
                         else
                             vector_index <= vector_index + 1;

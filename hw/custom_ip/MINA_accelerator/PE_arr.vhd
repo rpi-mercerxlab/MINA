@@ -4,8 +4,8 @@ use ieee.numeric_std.all;
 
 -- Define types for the array boundaries (can also be put in a separate package)
 package pe_pkg is
-    constant NUM_ROWS : integer := 16;
-    constant NUM_COLS : integer := 16;
+    constant NUM_ROWS : integer := 8;
+    constant NUM_COLS : integer := 8;
     constant DATA_WIDTH : integer := 8;
     constant WEIGHT_WIDTH : integer := 8;
     constant ACC_WIDTH : integer := 32;
