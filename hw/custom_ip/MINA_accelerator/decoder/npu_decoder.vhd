@@ -19,7 +19,10 @@ entity npu_decoder is
         vo_int_addr : out std_logic;
         int_targ_addr : out std_logic_vector(11 downto 0);
         jump_addr_vo : out std_logic;
-        jump_addr : out std_logic_vector(9 downto 0)
+        jump_addr : out std_logic_vector(9 downto 0);
+        activation_function : out std_logic_vector(1 downto 0);
+        quant_mult : out std_logic_vector(9 downto 0);
+        shift_amt : out std_logic_vector(3 downto 0)
     );
 end entity npu_decoder;
 
@@ -41,6 +44,9 @@ begin
         int_targ_addr <= "000000000000";
         jump_addr_vo <= '0';
         jump_addr <= "0000000000";
+        activation_function <= "00";
+        quant_mult <= "0000000000";
+        shift_amt <= "0000";
 
         if instr_valid = '1' then
             -- Active Default: Single-cycle instructions complete immediately unless overridden
@@ -55,11 +61,14 @@ begin
                     pe_data_addr <= instr(25 downto 14);
                     pe_weight_addr <= instr(13 downto 2);
                 when x"01" =>
-                    pe_reset <= '0';
+                    pe_reset <= '1';
                 when x"02" =>
                     instr_done <= pe_drain_done;
                     pe_drain <= '1';
                     pe_drain_addr <= instr(27 downto 16);
+                    activation_function <= instr(15 downto 14);
+                    quant_mult <= instr(9 downto 0);
+                    shift_amt <= instr(13 downto 10);
                 when x"03" =>
                     trigger_interrupt <= '1';
                 when x"04" =>

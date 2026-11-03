@@ -6,7 +6,7 @@ entity PE_weight_ram is
     port (
         clk : in std_logic;
         
-        addr_a : in std_logic_vector(13 downto 0);
+        addr_a : in std_logic_vector(12 downto 0);
         we_a   : in std_logic;
         din_a  : in std_logic_vector(31 downto 0);
         dout_a : out std_logic_vector(31 downto 0);
@@ -58,16 +58,16 @@ begin
 
     -- 5. Generate 2 BRAM instances
     GEN_BRAM: for i in 0 to 1 generate
-        BRAM_INST: entity work.basic_bram
+        BRAM_INST: entity work.basic_dual_port
             generic map (
                 DATA_WIDTH => 32,
-                ADDR_WIDTH => 13
+                ADDR_WIDTH => 12
             )
             port map (
                 -- Port A (32-bit interleaved access)
                 clk_a  => clk,
                 we_a   => we_a_arr(i),
-                addr_a => addr_a(13 downto 1), -- Drop lowest 1 bit (select bit)
+                addr_a => addr_a(12 downto 1), -- Drop lowest 1 bit (select bit)
                 din_a  => din_a,
                 dout_a => dout_a_arr(i),
                 
@@ -75,7 +75,7 @@ begin
                 clk_b  => clk,
                 we_b   => '0',
                 -- Port B is Read-Only, padded to 13 bits to match ADDR_WIDTH
-                addr_b => '0' & addr_b,  
+                addr_b => addr_b,  
                 din_b  => (others => '0'),
                 dout_b => dout_b_arr(i)
             );

@@ -19,7 +19,13 @@ entity NPU is
         weight_we : in std_logic;
         weight_din : in std_logic_vector(31 downto 0);
         weight_dout : out std_logic_vector(31 downto 0);
-        weight_addr_a : in std_logic_vector(13 downto 0)
+        weight_addr_a : in std_logic_vector(12 downto 0);
+
+        -- connections to port A of scratchpad RAM
+        scratchpad_we     : in std_logic;
+        scratchpad_din    : in std_logic_vector(31 downto 0);
+        scratchpad_dout   : out std_logic_vector(31 downto 0);
+        scratchpad_addr_a : in std_logic_vector(12 downto 0)
     );
 end entity NPU;
 
@@ -70,9 +76,27 @@ architecture Structural of NPU is
     -- BUFFERS FOR DRIVER
     signal weight_vector_drv : std_logic_vector(63 downto 0);
     signal skew_en_out_buf : std_logic;
+    signal data_vector_drv : std_logic_vector(63 downto 0);
     -- BUFFERS FOR DRIVER
 
+    signal pe_activation_function_buf : std_logic_vector(1 downto 0);
+    signal pe_quant_mult_buf          : std_logic_vector(9 downto 0);
+    signal pe_shift_amt_buf           : std_logic_vector(3 downto 0);
+    signal pe_quantized_row_buf       : std_logic_vector(63 downto 0);
+
+    signal scratchpad_we_drv   : std_logic;
+    signal scratchpad_addr_drv : std_logic_vector(11 downto 0);
+    signal scratchpad_dout_b : std_logic_vector(63 downto 0);
+
+    signal raw_weights_unpacked : weight_row_t;
+    signal raw_data_unpacked    : data_col_t;
+
 begin
+
+    UNPACK_VECS: for i in 0 to NUM_COLS-1 generate
+        raw_weights_unpacked(i) <= weight_vector_drv((i*8)+7 downto i*8);
+        raw_data_unpacked(i)    <= data_vector_drv((i*8)+7 downto i*8);
+    end generate;
 
     PE_WEIGHT_RAM: entity work.PE_weight_ram
         port map (
@@ -84,13 +108,13 @@ begin
             dout_a => weight_dout,
 
             addr_b => weight_addr,
-            dout_b => weight_arr_din
+            dout_b => weight_ram_din
                  );
 
     INSTR_fetch: entity work.instr_fetcher
         port map (
             clk => clk,
-            rst_n => rst_n,
+            reset_n => rst_n,
 
             instr_done => instr_done_buf,
             jump_addr_vo => jump_addr_vo_buf,
@@ -106,9 +130,9 @@ begin
     INSTR_bram: entity work.instr_bram
         port map (
             clk_a => clk,
-            we_a => open,
+            we_a => '0',
             addr_a => instr_addr_o_buf,
-            din_a => open,
+            din_a => (others => '0'),
             dout_a => instr_d_in_buf,
 
             clk_b => clk,
@@ -124,14 +148,14 @@ begin
             rst_n => rst_n,
             enable => skew_en_out_buf,
 
-            raw_weights => weight_vector_drv,
-            raw_data => open,
+            raw_weights => raw_weights_unpacked,
+            raw_data => raw_data_unpacked,
 
             skewed_weights => pe_top_weights_buf,
             skewed_data => pe_left_data_buf
                  );
 
-    PE_arr: entity work.PE_arr
+    PE_arr: entity work.PEarray
         port map (
             clk => clk,
             rst_n => rst_n,
@@ -157,11 +181,11 @@ begin
             pe_data_addr => pe_data_addr_buf,
             pe_weight_addr => pe_weight_addr_buf,
 
-            pe_data_output => ,
-            data_addr_out => ,
+            pe_data_output => data_vector_drv,
+            data_addr_out => open,
 
-            scratchpad_in => ,
-            sensor_ram_in => open,
+            scratchpad_in => scratchpad_dout_b,
+            sensor_ram_in => (others => '0'),
 
             weight_data_in => weight_ram_din,
             weight_data_out => weight_vector_drv,
@@ -174,7 +198,8 @@ begin
             pe_drive_done => pe_drive_done_buf,
 
             drain_addr_start => pe_drain_addr_buf,
-            drain_addr_out => ,
+            scratchpad_addr_out => scratchpad_addr_drv,
+            scratchpad_we_out   => scratchpad_we_drv,
 
             pe_drain_en => pe_drain,
             pe_drain_done => pe_drain_done_buf
@@ -198,9 +223,37 @@ begin
             vo_int_addr => vo_int_addr_buf,
             int_targ_addr => int_targ_addr_buf,
             jump_addr_vo => jump_addr_vo_buf,
-            jump_addr => jump_addr_buf
+            jump_addr => jump_addr_buf,
+            activation_function => pe_activation_function_buf,
+            quant_mult          => pe_quant_mult_buf,
+            shift_amt           => pe_shift_amt_buf
                  );
 
-    
+    PE_POST_PROC: entity work.processing_row
+        port map (
+            clk                 => clk,
+            rst_n               => rst_n,
+            activation_function => pe_activation_function_buf,
+            quant_mult          => pe_quant_mult_buf,
+            shift_amt           => pe_shift_amt_buf,
+            row_in              => pe_bottom_out_buf,
+            row_out             => pe_quantized_row_buf
+        );    
+
+    PE_SCRATCHPAD_RAM: entity work.PE_scratchpad_ram
+        port map (
+            clk    => clk,
+            -- Port A (Top Level - RISC-V)
+            addr_a => scratchpad_addr_a,
+            we_a   => scratchpad_we,
+            din_a  => scratchpad_din,
+            dout_a => scratchpad_dout,
+            -- Port B (Internal Datapath)
+            addr_b => scratchpad_addr_drv,           -- Direct from driver
+            we_b   => scratchpad_we_drv,             -- Direct from driver
+            din_b  => pe_quantized_row_buf,          -- Direct from post-proc row
+            dout_b => scratchpad_dout_b              -- Direct back to driver read port
+        );
+
 
 end architecture Structural;
