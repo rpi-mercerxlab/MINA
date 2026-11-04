@@ -19,93 +19,61 @@ entity SkewBuffer is
 end entity SkewBuffer;
 
 architecture RTL of SkewBuffer is
+    type weight_delay_grid_t is array (
+        0 to NUM_COLS-1,
+        0 to 2*(NUM_COLS-1)-1
+    ) of std_logic_vector(WEIGHT_WIDTH-1 downto 0);
 
-    -- 2D array for Weight delay lines: (column_index, delay_stage)
-    -- Each column j uses 2*j stages to match the two-register PE forwarding path.
-    type weight_delay_grid_t is array (0 to NUM_COLS-1, 0 to 2*(NUM_COLS-1)-1) 
-        of std_logic_vector(WEIGHT_WIDTH-1 downto 0);
-        
-    -- 2D array for Data delay lines: (row_index, delay_stage)
-    type data_delay_grid_t is array (0 to NUM_ROWS-1, 0 to 2*(NUM_ROWS-1)-1) 
-        of std_logic_vector(DATA_WIDTH-1 downto 0);
+    type data_delay_grid_t is array (
+        0 to NUM_ROWS-1,
+        0 to 2*(NUM_ROWS-1)-1
+    ) of std_logic_vector(DATA_WIDTH-1 downto 0);
 
-    signal weight_sr : weight_delay_grid_t := (others => (others => (others => '0')));
-    signal data_sr   : data_delay_grid_t   := (others => (others => (others => '0')));
+    signal weight_sr : weight_delay_grid_t :=
+        (others => (others => (others => '0')));
+
+    signal data_sr : data_delay_grid_t :=
+        (others => (others => (others => '0')));
 
 begin
+    -- One process owns both arrays: no overlapping drivers.
+    process(clk, rst_n)
+    begin
+        if rst_n = '0' then
+            weight_sr <= (others => (others => (others => '0')));
+            data_sr   <= (others => (others => (others => '0')));
 
-    ----------------------------------------------------------------------------
-    -- 1. Weight Skew Generation (Top Edge)
-    -- Column j receives 2*j clock cycles of delay
-    ----------------------------------------------------------------------------
-    gen_weight_skew: for j in 0 to NUM_COLS - 1 generate
-        
-        -- Column 0: 0 cycles delay (direct pass-through)
-        gen_w_col0: if j = 0 generate
-            skewed_weights(0) <= raw_weights(0);
-        end generate gen_w_col0;
+        elsif rising_edge(clk) then
+            if enable = '1' then
+                for j in 1 to NUM_COLS-1 loop
+                    weight_sr(j, 0) <= raw_weights(j);
 
-        -- Columns 1 to NUM_COLS-1: j cycles of shift register delay
-        gen_w_col_n: if j > 0 generate
-            process(clk, rst_n)
-            begin
-                if rst_n = '0' then
-                    for d in 0 to 2*j - 1 loop
-                        weight_sr(j, d) <= (others => '0');
+                    for d in 1 to 2*j-1 loop
+                        weight_sr(j, d) <= weight_sr(j, d-1);
                     end loop;
-                elsif rising_edge(clk) then
-                    if enable = '1' then
-                        -- Stage 0 takes the fresh input
-                        weight_sr(j, 0) <= raw_weights(j);
-                        -- Subsequent stages shift down the line
-                        for d in 1 to 2*j - 1 loop
-                            weight_sr(j, d) <= weight_sr(j, d - 1);
-                        end loop;
-                    end if;
-                end if;
-            end process;
+                end loop;
 
-            -- Tap the last of the 2*j delay stages.
-            skewed_weights(j) <= weight_sr(j, 2*j - 1);
-        end generate gen_w_col_n;
+                for i in 1 to NUM_ROWS-1 loop
+                    data_sr(i, 0) <= raw_data(i);
 
-    end generate gen_weight_skew;
-
-    ----------------------------------------------------------------------------
-    -- 2. Data Skew Generation (Left Edge)
-    -- Row i receives 2*i clock cycles of delay
-    ----------------------------------------------------------------------------
-    gen_data_skew: for i in 0 to NUM_ROWS - 1 generate
-
-        -- Row 0: 0 cycles delay (direct pass-through)
-        gen_d_row0: if i = 0 generate
-            skewed_data(0) <= raw_data(0);
-        end generate gen_d_row0;
-
-        -- Rows 1 to NUM_ROWS-1: i cycles of shift register delay
-        gen_d_row_n: if i > 0 generate
-            process(clk, rst_n)
-            begin
-                if rst_n = '0' then
-                    for d in 0 to 2*i - 1 loop
-                        data_sr(i, d) <= (others => '0');
+                    for d in 1 to 2*i-1 loop
+                        data_sr(i, d) <= data_sr(i, d-1);
                     end loop;
-                elsif rising_edge(clk) then
-                    if enable = '1' then
-                        -- Stage 0 takes the fresh input
-                        data_sr(i, 0) <= raw_data(i);
-                        -- Subsequent stages shift down the line
-                        for d in 1 to 2*i - 1 loop
-                            data_sr(i, d) <= data_sr(i, d - 1);
-                        end loop;
-                    end if;
-                end if;
-            end process;
+                end loop;
+            end if;
+        end if;
+    end process;
 
-            -- Tap the last of the 2*i delay stages.
-            skewed_data(i) <= data_sr(i, 2*i - 1);
-        end generate gen_d_row_n;
+    -- Lane zero has no skew delay.
+    skewed_weights(0) <= raw_weights(0);
+    skewed_data(0)    <= raw_data(0);
 
-    end generate gen_data_skew;
+    gen_weight_outputs : for j in 1 to NUM_COLS-1 generate
+        skewed_weights(j) <= weight_sr(j, 2*j-1);
+    end generate;
+
+    gen_data_outputs : for i in 1 to NUM_ROWS-1 generate
+        skewed_data(i) <= data_sr(i, 2*i-1);
+    end generate;
 
 end architecture RTL;

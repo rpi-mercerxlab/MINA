@@ -1,0 +1,4 @@
+v 4
+file "/home/ryanb/Documents/MINA/hw/custom_ip/MINA_accelerator/test_files/" "tb_npu.vhd" "dc48c4ebee468bcda834ea6f1fa4a75eaad0e671" "20261103170936.162":
+  entity tb_npu at 1( 0) + 0 on 4;
+  architecture sim of tb_npu at 9( 117) + 0 on 4;
