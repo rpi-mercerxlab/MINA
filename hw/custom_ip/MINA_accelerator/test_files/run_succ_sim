@@ -1,0 +1,21 @@
+ghdl -a --std=08 -frelaxed-rules \
+  ../basic_bram.vhd \
+  ../instr_bram.vhd \
+  ../instr_fetcher.vhd \
+  ../PE.vhd \
+  ../PE_arr.vhd \
+  ../PE_scratchpad_ram.vhd \
+  ../PE_weight_ram.vhd \
+  ../PE_skew_buffer.vhd \
+  ../PE_arr_driver.vhd \
+  ../sigmoidLUT.vhd \
+  ../output_pe.vhd \
+  ../PPU.vhd \
+  ../decoder/npu_decoder.vhd \
+  ../NPU.vhd \
+  tb_npu_successive.vhd
+
+ghdl -e --std=08 -frelaxed-rules tb_npu_jump
+
+ghdl -r --std=08 -frelaxed-rules tb_npu_jump \
+  --assert-level=error --wave=npu.ghw
