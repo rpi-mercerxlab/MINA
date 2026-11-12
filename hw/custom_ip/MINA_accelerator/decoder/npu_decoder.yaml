@@ -18,6 +18,10 @@ fields:
 
   JUMP_ADDR: "27 downto 18"
 
+  REGISTER_RT: "27 downto 25"
+  REGISTER_RS: "24 downto 22"
+  ADD_I_IMM: "21 downto 6"
+
 control_signals:
   pe_reset: { width: 1, default: "'0'" }
   pe_run: { width: 1, default: "'0'" }
@@ -38,9 +42,20 @@ control_signals:
   quant_mult: { width: 10, default: '"0000000000"' }
   shift_amt: { width: 4, default: '"0000"' }
 
+  add_i_rt: { width: 4, default: '"0000"' }
+  add_i_rs: { width: 4, default: '"0000"' }
+  add_i_imm: { width: 16, default: '"0000000000000000"' }
+  add_i_en: { width: 1, default: "'0'" }
+
+  beq_rt: { width: 4, default: '"0000"' }
+  beq_rs: { width: 4, default: '"0000"' }
+  beq_en: { width: 1, default: "'0'" }
+
 status_inputs:
   pe_drive_done: 1
   pe_drain_done: 1
+  add_i_done: 1
+  beq_done: 1
 
 decode_tree:
   field: OPCODE
@@ -52,7 +67,6 @@ decode_tree:
         pe_data_source: "@PE_SOURCE_FIELD"
         pe_data_addr: "@PE_DATA_START_ADDR"
         pe_weight_addr: "@PE_WEIGHT_START_ADDR"
-
       wait_for: pe_drive_done
     "0x01": #reset
       set:
@@ -77,6 +91,21 @@ decode_tree:
       set:
         jump_addr_vo: "'1'"
         jump_addr: "@JUMP_ADDR"
-    "0x06": #DMA decode tree
+    "0x06": #addi
+      set:
+        add_i_rt: "@REGISTER_RT"
+        add_i_rs: "@REGISTER_RS"
+        add_i_imm: "@ADD_I_IMM"
+        add_i_en: "'1'"
+      wait_for: add_i_done
+    "0x07": #beq
+      set:
+        beq_rt: "@REGISTER_RT"
+        beq_rs: "@REGISTER_RS"
+        beq_en: "'1'"
+      wait_for: beq_done
+    "0x08": #drive, register source
+    "0x09": #drain, register source
+    "0x0A": #DMA decode tree
       match:
         field: DMA_OP_CODE

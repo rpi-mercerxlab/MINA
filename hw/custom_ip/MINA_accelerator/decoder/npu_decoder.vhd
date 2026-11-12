@@ -7,6 +7,8 @@ entity npu_decoder is
         instr_valid : in  std_logic;
         pe_drive_done : in  std_logic;
         pe_drain_done : in  std_logic;
+        add_i_done : in  std_logic;
+        beq_done : in  std_logic;
         instr_done  : out std_logic;
         pe_reset : out std_logic;
         pe_run : out std_logic;
@@ -22,7 +24,14 @@ entity npu_decoder is
         jump_addr : out std_logic_vector(9 downto 0);
         activation_function : out std_logic_vector(1 downto 0);
         quant_mult : out std_logic_vector(9 downto 0);
-        shift_amt : out std_logic_vector(3 downto 0)
+        shift_amt : out std_logic_vector(3 downto 0);
+        add_i_rt : out std_logic_vector(3 downto 0);
+        add_i_rs : out std_logic_vector(3 downto 0);
+        add_i_imm : out std_logic_vector(15 downto 0);
+        add_i_en : out std_logic;
+        beq_rt : out std_logic_vector(3 downto 0);
+        beq_rs : out std_logic_vector(3 downto 0);
+        beq_en : out std_logic
     );
 end entity npu_decoder;
 
@@ -47,6 +56,13 @@ begin
         activation_function <= "00";
         quant_mult <= "0000000000";
         shift_amt <= "0000";
+        add_i_rt <= "0000";
+        add_i_rs <= "0000";
+        add_i_imm <= "0000000000000000";
+        add_i_en <= '0';
+        beq_rt <= "0000";
+        beq_rs <= "0000";
+        beq_en <= '0';
 
         if instr_valid = '1' then
             -- Active Default: Single-cycle instructions complete immediately unless overridden
@@ -78,6 +94,21 @@ begin
                     jump_addr_vo <= '1';
                     jump_addr <= instr(27 downto 18);
                 when x"06" =>
+                    instr_done <= add_i_done;
+                    add_i_rt <= instr(27 downto 25);
+                    add_i_rs <= instr(24 downto 22);
+                    add_i_imm <= instr(21 downto 6);
+                    add_i_en <= '1';
+                when x"07" =>
+                    instr_done <= beq_done;
+                    beq_rt <= instr(27 downto 25);
+                    beq_rs <= instr(24 downto 22);
+                    beq_en <= '1';
+                when x"08" =>
+                    null;
+                when x"09" =>
+                    null;
+                when x"0A" =>
                     case instr(27 downto 24) is
                         when others =>
                             null;
