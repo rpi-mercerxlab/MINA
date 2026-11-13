@@ -9,6 +9,8 @@ entity npu_decoder is
         pe_drain_done : in  std_logic;
         add_i_done : in  std_logic;
         beq_done : in  std_logic;
+        jr_done : in  std_logic;
+        beq_reg_done : in  std_logic;
         instr_done  : out std_logic;
         pe_reset : out std_logic;
         pe_run : out std_logic;
@@ -31,7 +33,19 @@ entity npu_decoder is
         add_i_en : out std_logic;
         beq_rt : out std_logic_vector(3 downto 0);
         beq_rs : out std_logic_vector(3 downto 0);
-        beq_en : out std_logic
+        beq_en : out std_logic;
+        beq_addr : out std_logic_vector(9 downto 0);
+        jr_en : out std_logic;
+        jr_rs : out std_logic_vector(3 downto 0);
+        beq_reg_en : out std_logic;
+        beq_reg_rt : out std_logic_vector(3 downto 0);
+        beq_reg_rs : out std_logic_vector(3 downto 0);
+        beq_reg_addr : out std_logic_vector(3 downto 0);
+        drv_use_reg : out std_logic;
+        drn_use_reg : out std_logic;
+        drv_data_rs : out std_logic_vector(3 downto 0);
+        drv_weight_rs : out std_logic_vector(3 downto 0);
+        drn_addr_rs : out std_logic_vector(3 downto 0)
     );
 end entity npu_decoder;
 
@@ -63,6 +77,18 @@ begin
         beq_rt <= "0000";
         beq_rs <= "0000";
         beq_en <= '0';
+        beq_addr <= "0000000000";
+        jr_en <= '0';
+        jr_rs <= "0000";
+        beq_reg_en <= '0';
+        beq_reg_rt <= "0000";
+        beq_reg_rs <= "0000";
+        beq_reg_addr <= "0000";
+        drv_use_reg <= '0';
+        drn_use_reg <= '0';
+        drv_data_rs <= "0000";
+        drv_weight_rs <= "0000";
+        drn_addr_rs <= "0000";
 
         if instr_valid = '1' then
             -- Active Default: Single-cycle instructions complete immediately unless overridden
@@ -104,11 +130,33 @@ begin
                     beq_rt <= instr(27 downto 25);
                     beq_rs <= instr(24 downto 22);
                     beq_en <= '1';
+                    beq_addr <= instr(21 downto 12);
                 when x"08" =>
-                    null;
+                    instr_done <= beq_reg_done;
+                    beq_reg_rt <= instr(27 downto 25);
+                    beq_reg_rs <= instr(24 downto 22);
+                    beq_reg_addr <= instr(21 downto 18);
+                    beq_reg_en <= '1';
                 when x"09" =>
-                    null;
+                    instr_done <= jr_done;
+                    jr_rs <= instr(24 downto 22);
+                    jr_en <= '1';
                 when x"0A" =>
+                    instr_done <= pe_drive_done;
+                    pe_run <= '1';
+                    pe_data_source <= instr(27 downto 26);
+                    drv_use_reg <= '1';
+                    drv_data_rs <= instr(25 downto 22);
+                    drv_weight_rs <= instr(21 downto 18);
+                when x"0B" =>
+                    instr_done <= pe_drain_done;
+                    pe_drain <= '1';
+                    activation_function <= instr(15 downto 14);
+                    quant_mult <= instr(9 downto 0);
+                    shift_amt <= instr(13 downto 10);
+                    drn_use_reg <= '1';
+                    drn_addr_rs <= instr(27 downto 24);
+                when x"0C" =>
                     case instr(27 downto 24) is
                         when others =>
                             null;

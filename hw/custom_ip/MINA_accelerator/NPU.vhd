@@ -91,12 +91,65 @@ architecture Structural of NPU is
     signal raw_weights_unpacked : weight_row_t;
     signal raw_data_unpacked    : data_col_t;
 
+    -- BUFFERS FOR JUMP MULTIPLEXING
+    signal dec_jump_vo      : std_logic;
+    signal dec_jump_addr    : std_logic_vector(9 downto 0);
+    signal exec_jump_vo     : std_logic;
+    signal exec_jump_addr   : std_logic_vector(9 downto 0);
+
+    -- BUFFERS FOR REGISTER FILE & EXECUTOR
+    signal add_i_rt_buf     : std_logic_vector(3 downto 0);
+    signal add_i_rs_buf     : std_logic_vector(3 downto 0);
+    signal add_i_imm_buf    : std_logic_vector(15 downto 0);
+    signal add_i_en_buf     : std_logic;
+    signal add_i_done_buf   : std_logic;
+
+    signal beq_rt_buf       : std_logic_vector(3 downto 0);
+    signal beq_rs_buf       : std_logic_vector(3 downto 0);
+    signal beq_addr_buf     : std_logic_vector(9 downto 0);
+    signal beq_en_buf       : std_logic;
+    signal beq_done_buf     : std_logic;
+
+    signal jr_rs_buf        : std_logic_vector(3 downto 0);
+    signal jr_en_buf        : std_logic;
+    signal jr_done_buf      : std_logic;
+
+    signal beq_reg_rt_buf   : std_logic_vector(3 downto 0);
+    signal beq_reg_rs_buf   : std_logic_vector(3 downto 0);
+    signal beq_reg_addr_buf : std_logic_vector(3 downto 0);
+    signal beq_reg_en_buf   : std_logic;
+    signal beq_reg_done_buf : std_logic;
+
+    -- Decoder outputs for immediate addresses
+    signal dec_pe_data_addr   : std_logic_vector(11 downto 0);
+    signal dec_pe_weight_addr : std_logic_vector(11 downto 0);
+    signal dec_pe_drain_addr  : std_logic_vector(11 downto 0);
+
+    -- Executor outputs for register addresses
+    signal exec_pe_data_addr   : std_logic_vector(11 downto 0);
+    signal exec_pe_weight_addr : std_logic_vector(11 downto 0);
+    signal exec_pe_drain_addr  : std_logic_vector(11 downto 0);
+
+    -- Control flags & Register targets
+    signal drv_use_reg_buf   : std_logic;
+    signal drn_use_reg_buf   : std_logic;
+    signal drv_data_rs_buf   : std_logic_vector(3 downto 0);
+    signal drv_weight_rs_buf : std_logic_vector(3 downto 0);
+    signal drn_addr_rs_buf   : std_logic_vector(3 downto 0);
+
 begin
 
     UNPACK_VECS: for i in 0 to NUM_COLS-1 generate
         raw_weights_unpacked(i) <= weight_vector_drv((i*8)+7 downto i*8);
         raw_data_unpacked(i)    <= data_vector_drv((i*8)+7 downto i*8);
     end generate;
+
+    jump_addr_vo_buf <= dec_jump_vo or exec_jump_vo;
+    jump_addr_buf    <= exec_jump_addr when exec_jump_vo = '1' else dec_jump_addr;
+
+    pe_data_addr_buf <= exec_pe_data_addr when drv_use_reg_buf = '1' else dec_pe_data_addr;
+    pe_weight_addr_buf <= exec_pe_weight_addr when drv_use_reg_buf = '1' else dec_pe_weight_addr;
+    pe_drain_addr_buf <= exec_pe_drain_addr when drn_use_reg_buf = '1' else dec_pe_drain_addr;
 
     PE_WEIGHT_RAM: entity work.PE_weight_ram
         port map (
@@ -205,29 +258,67 @@ begin
             pe_drain_done => pe_drain_done_buf
                  );
 
-    NPU_decoder: entity work.NPU_decoder
+    NPU_decoder: entity work.npu_decoder
         port map (
-            instr => instr_o_buf,
-            instr_valid => instr_valid_o_buf,
-            pe_drive_done => pe_drive_done_buf,
-            pe_drain_done => pe_drain_done_buf,
-            instr_done => instr_done_buf,
-            pe_reset => pe_reset_buf,
-            pe_run => pe_run_buf,
-            pe_drain => pe_drain_buf,
-            pe_data_source => pe_data_source_buf,
-            pe_data_addr => pe_data_addr_buf,
-            pe_weight_addr => pe_weight_addr_buf,
-            pe_drain_addr => pe_drain_addr_buf,
-            trigger_interrupt => trigger_interrupt_buf,
-            vo_int_addr => vo_int_addr_buf,
-            int_targ_addr => int_targ_addr_buf,
-            jump_addr_vo => jump_addr_vo_buf,
-            jump_addr => jump_addr_buf,
+            instr               => instr_o_buf,
+            instr_valid         => instr_valid_o_buf,
+            
+            -- Handshake inputs
+            pe_drive_done       => pe_drive_done_buf,
+            pe_drain_done       => pe_drain_done_buf,
+            add_i_done          => add_i_done_buf,
+            beq_done            => beq_done_buf,
+            jr_done             => jr_done_buf,
+            beq_reg_done        => beq_reg_done_buf,
+            
+            instr_done          => instr_done_buf,
+            
+            -- PE Controls
+            pe_reset            => pe_reset_buf,
+            pe_run              => pe_run_buf,
+            pe_drain            => pe_drain_buf,
+            pe_data_source      => pe_data_source_buf,
+            pe_data_addr        => dec_pe_data_addr,
+            pe_weight_addr      => dec_pe_weight_addr,
+            pe_drain_addr       => dec_pe_drain_addr,
             activation_function => pe_activation_function_buf,
             quant_mult          => pe_quant_mult_buf,
-            shift_amt           => pe_shift_amt_buf
-                 );
+            shift_amt           => pe_shift_amt_buf,
+            
+            -- Interrupts
+            trigger_interrupt   => trigger_interrupt_buf,
+            vo_int_addr         => vo_int_addr_buf,
+            int_targ_addr       => int_targ_addr_buf,
+            
+            -- Immediate Jump (Routed to Mux)
+            jump_addr_vo        => dec_jump_vo,
+            jump_addr           => dec_jump_addr,
+            
+            -- Executor fields
+            add_i_rt            => add_i_rt_buf,
+            add_i_rs            => add_i_rs_buf,
+            add_i_imm           => add_i_imm_buf,
+            add_i_en            => add_i_en_buf,
+            
+            beq_rt              => beq_rt_buf,
+            beq_rs              => beq_rs_buf,
+            beq_addr            => beq_addr_buf,
+            beq_en              => beq_en_buf,
+            
+            jr_rs               => jr_rs_buf,
+            jr_en               => jr_en_buf,
+            
+            beq_reg_rt          => beq_reg_rt_buf,
+            beq_reg_rs          => beq_reg_rs_buf,
+            beq_reg_addr        => beq_reg_addr_buf,
+            beq_reg_en          => beq_reg_en_buf,
+
+            drv_use_reg    => drv_use_reg_buf,
+            drn_use_reg    => drn_use_reg_buf,
+            drv_data_rs    => drv_data_rs_buf,
+            drv_weight_rs  => drv_weight_rs_buf,
+            drn_addr_rs    => drn_addr_rs_buf
+        );
 
     PE_POST_PROC: entity work.processing_row
         port map (
@@ -255,5 +346,50 @@ begin
             dout_b => scratchpad_dout_b              -- Direct back to driver read port
         );
 
+    REG_FILE_EXEC: entity work.r_file_n_exec
+        port map (
+            clk                 => clk,
+            rst_n               => rst_n,
+
+            -- add_i ports
+            add_i_rt            => add_i_rt_buf,
+            add_i_rs            => add_i_rs_buf,
+            add_i_imm           => add_i_imm_buf,
+            add_i_en            => add_i_en_buf,
+            add_i_done          => add_i_done_buf,
+
+            -- beq immediate ports
+            beq_rt              => beq_rt_buf,
+            beq_rs              => beq_rs_buf,
+            beq_addr            => beq_addr_buf,
+            beq_en              => beq_en_buf,
+            beq_done            => beq_done_buf,
+
+            -- jr ports
+            jr_rs               => jr_rs_buf,
+            jr_en               => jr_en_buf,
+            jr_done             => jr_done_buf,
+
+            -- beq register ports
+            beq_reg_rt          => beq_reg_rt_buf,
+            beq_reg_rs          => beq_reg_rs_buf,
+            beq_reg_addr        => beq_reg_addr_buf,
+            beq_reg_en          => beq_reg_en_buf,
+            beq_reg_done        => beq_reg_done_buf,
+
+            -- Register-based Jump Outputs (Routed to Mux)
+            jump_addr           => exec_jump_addr,
+            jump_vo             => exec_jump_vo,
+
+            -- Inputs from decoder
+            drv_data_rs         => drv_data_rs_buf,
+            drv_weight_rs       => drv_weight_rs_buf,
+            drn_addr_rs         => drn_addr_rs_buf,
+
+            -- Outputs to the PE multiplexer
+            exec_pe_data_addr   => exec_pe_data_addr,
+            exec_pe_weight_addr => exec_pe_weight_addr,
+            exec_pe_drain_addr  => exec_pe_drain_addr
+        );
 
 end architecture Structural;

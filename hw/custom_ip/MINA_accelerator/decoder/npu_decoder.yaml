@@ -22,6 +22,13 @@ fields:
   REGISTER_RS: "24 downto 22"
   ADD_I_IMM: "21 downto 6"
 
+  BEQ_J_ADDR: "21 downto 12"
+  REGISTER_RD: "21 downto 18"
+
+  DRV_DATA_RS: "25 downto 22"
+  DRV_WEIGHT_RS: "21 downto 18"
+  DRN_ADDR_RS: "27 downto 24"
+
 control_signals:
   pe_reset: { width: 1, default: "'0'" }
   pe_run: { width: 1, default: "'0'" }
@@ -50,12 +57,28 @@ control_signals:
   beq_rt: { width: 4, default: '"0000"' }
   beq_rs: { width: 4, default: '"0000"' }
   beq_en: { width: 1, default: "'0'" }
+  beq_addr: { width: 10, default: '"0000000000"' }
+
+  jr_en: { width: 1, default: "'0'" }
+  jr_rs: { width: 4, default: '"0000"' }
+  beq_reg_en: { width: 1, default: "'0'" }
+  beq_reg_rt: { width: 4, default: '"0000"' }
+  beq_reg_rs: { width: 4, default: '"0000"' }
+  beq_reg_addr: { width: 4, default: '"0000"' }
+
+  drv_use_reg: { width: 1, default: "'0'" }
+  drn_use_reg: { width: 1, default: "'0'" }
+  drv_data_rs: { width: 4, default: '"0000"' }
+  drv_weight_rs: { width: 4, default: '"0000"' }
+  drn_addr_rs: { width: 4, default: '"0000"' }
 
 status_inputs:
   pe_drive_done: 1
   pe_drain_done: 1
   add_i_done: 1
   beq_done: 1
+  jr_done: 1
+  beq_reg_done: 1
 
 decode_tree:
   field: OPCODE
@@ -103,9 +126,39 @@ decode_tree:
         beq_rt: "@REGISTER_RT"
         beq_rs: "@REGISTER_RS"
         beq_en: "'1'"
+        beq_addr: "@BEQ_J_ADDR"
       wait_for: beq_done
-    "0x08": #drive, register source
-    "0x09": #drain, register source
-    "0x0A": #DMA decode tree
+    "0x08": # beq, register source
+      set:
+        beq_reg_rt: "@REGISTER_RT"
+        beq_reg_rs: "@REGISTER_RS"
+        beq_reg_addr: "@REGISTER_RD"
+        beq_reg_en: "'1'"
+      wait_for: beq_reg_done
+
+    "0x09": # j, register source
+      set:
+        jr_rs: "@REGISTER_RS"
+        jr_en: "'1'"
+      wait_for: jr_done
+    "0x0A": # drive, register source
+      set:
+        pe_run: "'1'"
+        pe_data_source: "@PE_SOURCE_FIELD"
+        drv_use_reg: "'1'"
+        drv_data_rs: "@DRV_DATA_RS"
+        drv_weight_rs: "@DRV_WEIGHT_RS"
+      wait_for: pe_drive_done
+
+    "0x0B": # drain, register source
+      set:
+        pe_drain: "'1'"
+        activation_function: "@PE_ACT_SEL"
+        quant_mult: "@PE_ACT_QUANT_MULT"
+        shift_amt: "@PE_ACT_SHIFT_AMT"
+        drn_use_reg: "'1'"
+        drn_addr_rs: "@DRN_ADDR_RS"
+      wait_for: pe_drain_done
+    "0x0C": #DMA decode tree
       match:
         field: DMA_OP_CODE
