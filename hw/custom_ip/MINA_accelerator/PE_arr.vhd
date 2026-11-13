@@ -2,19 +2,6 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 
--- Define types for the array boundaries (can also be put in a separate package)
-package pe_pkg is
-    constant NUM_ROWS : integer := 8;
-    constant NUM_COLS : integer := 8;
-    constant DATA_WIDTH : integer := 8;
-    constant WEIGHT_WIDTH : integer := 8;
-    constant ACC_WIDTH : integer := 32;
-
-    type weight_row_t is array (0 to NUM_COLS-1) of std_logic_vector(WEIGHT_WIDTH-1 downto 0);
-    type data_col_t   is array (0 to NUM_ROWS-1) of std_logic_vector(DATA_WIDTH-1 downto 0);
-    type accum_row_t  is array (0 to NUM_COLS-1) of std_logic_vector(ACC_WIDTH-1 downto 0);
-end package;
-
 library ieee;
 use ieee.std_logic_1164.all;
 use work.pe_pkg.all;

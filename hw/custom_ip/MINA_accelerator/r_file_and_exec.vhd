@@ -66,6 +66,11 @@ begin
     exec_pe_weight_addr <= registers(to_integer(unsigned(drv_weight_rs)))(11 downto 0);
     exec_pe_drain_addr  <= registers(to_integer(unsigned(drn_addr_rs)))(11 downto 0);
 
+    jr_rs_val        <= registers(to_integer(unsigned(jr_rs)));
+    beq_reg_rt_val   <= registers(to_integer(unsigned(beq_reg_rt)));
+    beq_reg_rs_val   <= registers(to_integer(unsigned(beq_reg_rs)));
+    beq_reg_addr_val <= registers(to_integer(unsigned(beq_reg_addr)));
+
     process(clk)
     begin
         if rising_edge(clk) then

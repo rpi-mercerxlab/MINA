@@ -15,14 +15,14 @@ entity PE_arr_driver is
         pe_data_addr : in std_logic_vector(11 downto 0);
         pe_weight_addr : in std_logic_vector(11 downto 0);
                  
-        pe_data_output : out std_logic_vector(63 downto 0);
+        pe_data_output : out std_logic_vector(VECTOR_WIDTH-1 downto 0);
         data_addr_out : out std_logic_vector(11 downto 0);
                  
-        scratchpad_in : in std_logic_vector(63 downto 0);
-        sensor_ram_in : in std_logic_vector(63 downto 0);
+        scratchpad_in : in std_logic_vector(VECTOR_WIDTH-1 downto 0);
+        sensor_ram_in : in std_logic_vector(VECTOR_WIDTH-1 downto 0);
                  
-        weight_data_in : in std_logic_vector(63 downto 0);
-        weight_data_out : out std_logic_vector(63 downto 0);
+        weight_data_in : in std_logic_vector(VECTOR_WIDTH-1 downto 0);
+        weight_data_out : out std_logic_vector(VECTOR_WIDTH-1 downto 0);
         weight_addr_out : out std_logic_vector(11 downto 0);
                  
         pe_clear_acc_out : out std_logic;
@@ -45,20 +45,28 @@ architecture rtl of PE_arr_driver is
          
     signal data_addr_reg : unsigned(11 downto 0) := (others => '0');
     signal weight_addr_reg : unsigned(11 downto 0) := (others => '0');
-         
-    signal vector_index : natural range 0 to 31 := 0;
+        
+    constant DRAIN_ACTIVE_CYCLES : positive := 2 * ARRAY_SIZE;
+
+    constant DRAIN_LAST_INDEX : natural :=
+        DRAIN_ACTIVE_CYCLES + WRITEBACK_LATENCY - 1;
+
+    -- Sufficient for driving and draining with DRIVE_LENGTH = ARRAY_SIZE.
+    signal vector_index : natural range 0 to DRAIN_LAST_INDEX := 0;
          
     constant FLUSH_CYCLES : positive := 2*(NUM_ROWS-1) + 2*(NUM_COLS-1) + 4;
     signal flush_count : natural range 0 to FLUSH_CYCLES-1 := 0;
     signal drain_addr_reg : unsigned(11 downto 0) := (others => '0');
     
     -- Delay pipeline for post-processing write-back sync (5 cycles)
-    type delay_pipe_we_t is array (0 to 4) of std_logic;
+    type delay_pipe_we_t is array (0 to WRITEBACK_LATENCY-1) of std_logic;
     signal we_pipe : delay_pipe_we_t := (others => '0');
-    type delay_pipe_addr_t is array (0 to 4) of std_logic_vector(11 downto 0);
+    type delay_pipe_addr_t is array (0 to WRITEBACK_LATENCY-1) of std_logic_vector(11 downto 0);
     signal drain_addr_pipe : delay_pipe_addr_t := (others => (others => '0'));
          
     signal internal_drain_en : std_logic;
+
+
 begin
     data_addr_out <= std_logic_vector(data_addr_reg);
     weight_addr_out <= std_logic_vector(weight_addr_reg);
@@ -101,7 +109,7 @@ begin
                             vector_index <= 0;
                             state <= PRIME;
                         elsif pe_drain = '1' then
-                            drain_addr_reg <= unsigned(drain_addr_start) + 7;
+                            drain_addr_reg <= unsigned(drain_addr_start) + (ARRAY_SIZE-1);
                             vector_index <= 0;
                             state <= DRAIN;
                         end if;
@@ -112,12 +120,12 @@ begin
                         state <= RUNNING;
                         
                     when RUNNING =>
-                        if vector_index = 7 then
+                        if vector_index = DRIVE_LENGTH-1 then
                             flush_count <= 0;
                             state <= FLUSHING;
                         else
                             vector_index <= vector_index + 1;
-                            if vector_index < 6 then
+                            if vector_index < DRIVE_LENGTH-2 then
                                 data_addr_reg <= data_addr_reg + 1;
                                 weight_addr_reg <= weight_addr_reg + 1;
                             end if;
@@ -137,11 +145,11 @@ begin
                         
                     when DRAIN =>
                         -- Extend to 20 cycles to allow the 5-stage we_pipe to fully complete writing
-                        if vector_index = 20 then
+                        if vector_index = DRAIN_LAST_INDEX then
                             state <= DRAIN_DONE;
                         else
                             vector_index <= vector_index + 1;
-                            if vector_index < 15 and (vector_index mod 2) = 1 then
+                            if vector_index < DRAIN_ACTIVE_CYCLES-1 and (vector_index mod 2) = 1 then
                                 drain_addr_reg <= drain_addr_reg - 1;
                             end if;
                         end if;
@@ -156,7 +164,7 @@ begin
     end process;
 
     -- Generate base drain pulse only during the 8 active row shifts
-    internal_drain_en <= '1' when (state = DRAIN and vector_index < 16 and (vector_index mod 2 = 0)) else '0';
+    internal_drain_en <= '1' when (state = DRAIN and vector_index < DRAIN_ACTIVE_CYCLES and (vector_index mod 2 = 0)) else '0';
     pe_drain_en <= internal_drain_en;
 
     -- 5-Cycle Delay Pipeline Process for Post-Processing / Writeback Synchronization
@@ -168,18 +176,19 @@ begin
                 drain_addr_pipe <= (others => (others => '0'));
             else
                 we_pipe(0) <= internal_drain_en;
-                we_pipe(1 to 4) <= we_pipe(0 to 3);
+                we_pipe(1 to WRITEBACK_LATENCY-1) <= we_pipe(0 to WRITEBACK_LATENCY-2);
                  
                 drain_addr_pipe(0) <= std_logic_vector(drain_addr_reg);
-                drain_addr_pipe(1 to 4) <= drain_addr_pipe(0 to 3);
+                drain_addr_pipe(1 to WRITEBACK_LATENCY-1) <= drain_addr_pipe(0 to WRITEBACK_LATENCY-2);
             end if;
         end if;
     end process;
 
-    -- Dedicated Scratchpad Memory Controller Output
-    scratchpad_we_out <= we_pipe(4);
-         
-    -- Mux: If writing back (delayed), use delayed drain addr. Otherwise use active read addr.
-    scratchpad_addr_out <= drain_addr_pipe(4) when we_pipe(4) = '1' else std_logic_vector(data_addr_reg);
+    scratchpad_we_out <= we_pipe(WRITEBACK_LATENCY-1);
+
+    scratchpad_addr_out <=
+        drain_addr_pipe(WRITEBACK_LATENCY-1)
+        when we_pipe(WRITEBACK_LATENCY-1) = '1'
+        else std_logic_vector(data_addr_reg);
 
 end architecture;

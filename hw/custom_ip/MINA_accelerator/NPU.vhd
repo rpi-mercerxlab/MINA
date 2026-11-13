@@ -19,13 +19,13 @@ entity NPU is
         weight_we : in std_logic;
         weight_din : in std_logic_vector(31 downto 0);
         weight_dout : out std_logic_vector(31 downto 0);
-        weight_addr_a : in std_logic_vector(12 downto 0);
+        weight_addr_a : in std_logic_vector(HOST_ADDR_WIDTH-1 downto 0);
 
         -- connections to port A of scratchpad RAM
         scratchpad_we     : in std_logic;
         scratchpad_din    : in std_logic_vector(31 downto 0);
         scratchpad_dout   : out std_logic_vector(31 downto 0);
-        scratchpad_addr_a : in std_logic_vector(12 downto 0)
+        scratchpad_addr_a : in std_logic_vector(HOST_ADDR_WIDTH-1 downto 0)
     );
 end entity NPU;
 
@@ -55,7 +55,7 @@ architecture Structural of NPU is
 
     -- BUFFERS FOR WEIGHT RAM
     signal weight_addr : std_logic_vector(11 downto 0);
-    signal weight_ram_din : std_logic_vector(63 downto 0);
+    signal weight_ram_din : std_logic_vector(VECTOR_WIDTH-1 downto 0);
     -- BUFFERS FOR WEIGHT RAM
 
     -- BUFFERS FOR DECODER
@@ -74,19 +74,19 @@ architecture Structural of NPU is
     -- BUFFERS FOR DECODER
 
     -- BUFFERS FOR DRIVER
-    signal weight_vector_drv : std_logic_vector(63 downto 0);
+    signal weight_vector_drv : std_logic_vector(VECTOR_WIDTH-1 downto 0);
     signal skew_en_out_buf : std_logic;
-    signal data_vector_drv : std_logic_vector(63 downto 0);
+    signal data_vector_drv : std_logic_vector(VECTOR_WIDTH-1 downto 0);
     -- BUFFERS FOR DRIVER
 
     signal pe_activation_function_buf : std_logic_vector(1 downto 0);
     signal pe_quant_mult_buf          : std_logic_vector(9 downto 0);
     signal pe_shift_amt_buf           : std_logic_vector(3 downto 0);
-    signal pe_quantized_row_buf       : std_logic_vector(63 downto 0);
+    signal pe_quantized_row_buf       : std_logic_vector(VECTOR_WIDTH-1 downto 0);
 
     signal scratchpad_we_drv   : std_logic;
     signal scratchpad_addr_drv : std_logic_vector(11 downto 0);
-    signal scratchpad_dout_b : std_logic_vector(63 downto 0);
+    signal scratchpad_dout_b : std_logic_vector(VECTOR_WIDTH-1 downto 0);
 
     signal raw_weights_unpacked : weight_row_t;
     signal raw_data_unpacked    : data_col_t;
@@ -139,9 +139,20 @@ architecture Structural of NPU is
 
 begin
 
-    UNPACK_VECS: for i in 0 to NUM_COLS-1 generate
-        raw_weights_unpacked(i) <= weight_vector_drv((i*8)+7 downto i*8);
-        raw_data_unpacked(i)    <= data_vector_drv((i*8)+7 downto i*8);
+    assert ARRAY_SIZE >= 4 and ARRAY_SIZE = 2**clog2(ARRAY_SIZE)
+        report "ARRAY_SIZE must be a power of two and at least 4"
+        severity failure;
+
+    UNPACK_VECS: for i in 0 to ARRAY_SIZE-1 generate
+        raw_weights_unpacked(i) <=
+            weight_vector_drv(
+                (i+1)*WEIGHT_WIDTH-1 downto i*WEIGHT_WIDTH
+            );
+
+        raw_data_unpacked(i) <=
+            data_vector_drv(
+                (i+1)*DATA_WIDTH-1 downto i*DATA_WIDTH
+            );
     end generate;
 
     jump_addr_vo_buf <= dec_jump_vo or exec_jump_vo;

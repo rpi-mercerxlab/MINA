@@ -1,4 +1,5 @@
 ghdl -a --std=08 -frelaxed-rules \
+  ../pe_pkg.vhd \
   ../basic_bram.vhd \
   ../instr_bram.vhd \
   ../instr_fetcher.vhd \

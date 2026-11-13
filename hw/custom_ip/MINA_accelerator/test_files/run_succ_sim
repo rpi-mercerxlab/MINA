@@ -1,4 +1,5 @@
 ghdl -a --std=08 -frelaxed-rules \
+  ../pe_pkg.vhd \
   ../basic_bram.vhd \
   ../instr_bram.vhd \
   ../instr_fetcher.vhd \
@@ -11,6 +12,7 @@ ghdl -a --std=08 -frelaxed-rules \
   ../sigmoidLUT.vhd \
   ../output_pe.vhd \
   ../PPU.vhd \
+  ../r_file_and_exec.vhd \
   ../decoder/npu_decoder.vhd \
   ../NPU.vhd \
   tb_npu_successive.vhd

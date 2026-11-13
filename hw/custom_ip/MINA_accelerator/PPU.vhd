@@ -16,13 +16,13 @@ entity processing_row is
         row_in              : in  accum_row_t;
         
         -- Packed 64-bit output to PE_arr_driver scratchpad_in
-        row_out             : out std_logic_vector(63 downto 0)
+        row_out             : out std_logic_vector(VECTOR_WIDTH-1 downto 0)
     );
 end entity processing_row;
 
 architecture rtl of processing_row is
     -- Intermediate array to catch the 8-bit outputs before concatenation
-    type quant_out_array_t is array (0 to NUM_COLS-1) of std_logic_vector(7 downto 0);
+    type quant_out_array_t is array (0 to NUM_COLS-1) of std_logic_vector(DATA_WIDTH-1 downto 0);
     signal quant_out_arr : quant_out_array_t;
 begin
 
@@ -30,7 +30,7 @@ begin
         PE_OUT_INST: entity work.output_pe
             generic map (
                 INPUT_WIDTH  => ACC_WIDTH, -- 32
-                OUTPUT_WIDTH => 8
+                OUTPUT_WIDTH => DATA_WIDTH
             )
             port map (
                 clk                 => clk,
@@ -44,7 +44,7 @@ begin
             
         -- Map the 8-bit output directly to the correct slice of the 64-bit vector.
         -- Column 0 goes to bits 7:0, Column 1 to 15:8, up to Column 7 (bits 63:56)
-        row_out((i*8) + 7 downto i*8) <= quant_out_arr(i);
+        row_out((i+1)*DATA_WIDTH-1 downto i*DATA_WIDTH) <= quant_out_arr(i);
     end generate GEN_POST_PROC;
 
 end architecture rtl;
