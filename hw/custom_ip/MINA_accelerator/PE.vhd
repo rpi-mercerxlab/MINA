@@ -56,44 +56,36 @@ process (clk)
 begin
     if rising_edge(clk) then
         if rst_n = '0' then
-            accum <= (others => '0'); 
-            weight_buf <= (others => '0'); 
-            value_buf <= (others => '0'); 
+            accum        <= (others => '0'); 
+            weight_buf   <= (others => '0'); 
+            value_buf    <= (others => '0'); 
             weight_delay <= (others => '0');
-            value_delay <= (others => '0');
-            mult_output <= (others => '0');
+            value_delay  <= (others => '0');
+            mult_output  <= (others => '0');
             output_shift <= (others => '0');
         else
-            if valid_in = '1' then
-                --if valid input, take in data
-                weight_buf <= weight_in;
-                value_buf <= value_in;
-            else
-                --otherwise, set to zero
-                weight_buf <= (others => '0');
-                value_buf <= (others => '0');
-            end if;
-            
-            --go to mult buffer
-            mult_output <= signed(weight_buf) * signed(value_buf);
-
-            --delay buffers to create latency equal to that of multiplcation for passthrough
-            weight_delay <= weight_buf;
-            value_delay <= value_buf;
-
-            -- accumulator and drain logic
             if drain = '1' then
                 -- Shift mode: pass the accumulator from the PE above us down the chain
                 accum <= signed(drain_in);
             elsif clear_acc = '1' then
-                accum <= resize(mult_output, ACC_WIDTH);
-            else
-                accum <= accum + resize(mult_output, ACC_WIDTH);
+                accum        <= (others => '0');
+                weight_buf   <= (others => '0');
+                value_buf    <= (others => '0');
+                weight_delay <= (others => '0');
+                value_delay  <= (others => '0');
+                mult_output  <= (others => '0');
+            elsif valid_in = '1' then
+                -- Advance systolic wavefront and MAC pipeline ONLY when valid_in = '1'
+                weight_buf   <= weight_in;
+                value_buf    <= value_in;
+                mult_output  <= signed(weight_buf) * signed(value_buf);
+                weight_delay <= weight_buf;
+                value_delay  <= value_buf;
+                accum        <= accum + resize(mult_output, ACC_WIDTH);
             end if;
 
             -- Always output the current accumulator value to the PE below us
             output_shift <= std_logic_vector(accum);
-
         end if;
     end if;
 end process;

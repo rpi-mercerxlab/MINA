@@ -77,11 +77,9 @@ begin
                       
     weight_data_out <= weight_data_in when state = RUNNING else (others => '0');
     
-    -- Global PE valid must remain high while operands propagate internally.
-    pe_valid_out <= '1' when state = RUNNING or state = FLUSHING else '0';
-    
-    -- Shift zeros through skew even while idle, preventing stale operands.
-    skew_enable_out <= rst_n;
+    pe_valid_out    <= '1' when state = RUNNING or state = FLUSHING else '0';
+    skew_enable_out <= '1' when state = RUNNING or state = FLUSHING else '0';
+
     pe_drive_done <= '1' when state = COMPLETE else '0';
     
     -- Only clear between operations.
@@ -103,44 +101,47 @@ begin
                 case state is
                     when IDLE =>
                         if pe_run = '1' and pe_reset = '0' then
-                            source_sel <= pe_data_source;
-                            data_addr_reg <= unsigned(pe_data_addr);
+                            source_sel      <= pe_data_source;
+                            data_addr_reg   <= unsigned(pe_data_addr);
                             weight_addr_reg <= unsigned(pe_weight_addr);
-                            vector_index <= 0;
-                            state <= PRIME;
+                            vector_index    <= 0;
+                            state           <= PRIME;
                         elsif pe_drain = '1' then
-                            drain_addr_reg <= unsigned(drain_addr_start) + (ARRAY_SIZE-1);
-                            vector_index <= 0;
-                            state <= DRAIN;
+                            -- Always flush the in-flight wavefront before draining!
+                            flush_count     <= 0;
+                            state           <= FLUSHING;
                         end if;
-                        
+
                     when PRIME =>
-                        data_addr_reg <= data_addr_reg + 1;
+                        data_addr_reg   <= data_addr_reg + 1;
                         weight_addr_reg <= weight_addr_reg + 1;
-                        state <= RUNNING;
-                        
+                        state           <= RUNNING;
+
                     when RUNNING =>
-                        if vector_index = DRIVE_LENGTH-1 then
-                            flush_count <= 0;
-                            state <= FLUSHING;
+                        if vector_index = 7 then
+                            -- Done feeding 8 vectors! Immediately finish RUN without flushing.
+                            state <= COMPLETE;
                         else
                             vector_index <= vector_index + 1;
-                            if vector_index < DRIVE_LENGTH-2 then
-                                data_addr_reg <= data_addr_reg + 1;
+                            if vector_index < 6 then
+                                data_addr_reg   <= data_addr_reg + 1;
                                 weight_addr_reg <= weight_addr_reg + 1;
                             end if;
                         end if;
-                        
-                    when FLUSHING =>
-                        if flush_count = FLUSH_CYCLES-1 then
-                            state <= COMPLETE;
-                        else
-                            flush_count <= flush_count + 1;
-                        end if;
-                        
+
                     when COMPLETE =>
                         if pe_run = '0' then
                             state <= IDLE;
+                        end if;
+
+                    when FLUSHING =>
+                        -- Shift 32 cycles of zeros through SkewBuffer and PEarray
+                        if flush_count = FLUSH_CYCLES - 1 then
+                            drain_addr_reg <= unsigned(drain_addr_start) + 7;
+                            vector_index   <= 0;
+                            state          <= DRAIN;
+                        else
+                            flush_count <= flush_count + 1;
                         end if;
                         
                     when DRAIN =>
