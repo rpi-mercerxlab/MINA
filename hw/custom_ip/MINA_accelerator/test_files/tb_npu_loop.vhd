@@ -1,9 +1,9 @@
 -- MINA successive matrix multiplication / JUMP test, VHDL-2008.
 -- Uses your corrected single-process SkewBuffer, drain base+7 driver, and
 -- 13-bit external memory addresses. Compile RTL in the previous dependency order.
--- ghdl -a --std=08 -frelaxed-rules tb_npu_jump.vhd
--- ghdl -e --std=08 -frelaxed-rules tb_npu_jump
--- ghdl -r --std=08 -frelaxed-rules tb_npu_jump --assert-level=error --wave=jump.ghw
+-- ghdl -a --std=08 -frelaxed-rules tb_npu_loop.vhd
+-- ghdl -e --std=08 -frelaxed-rules tb_npu_loop
+-- ghdl -r --std=08 -frelaxed-rules tb_npu_loop --assert-level=error --wave=jump.ghw
 -- Fixed instruction loop: PC 0 -> 8 -> 9 -> 10 -> 11 -> 8 -> ...
 -- No resets/reloads between iterations. Four distinct results are checked.
 -- Stored matrix recurrence: M(next) = transpose(M(previous))/2.
@@ -20,10 +20,10 @@ use ieee.numeric_std.all;
 use std.env.all;
 use std.textio.all;
 
-entity tb_npu_jump is
+entity tb_npu_loop is
 end entity;
 
-architecture sim of tb_npu_jump is
+architecture sim of tb_npu_loop is
     constant PERIOD : time := 10 ns;
     constant OUTPUT_BASE : natural := 16; -- 64-bit word address
     constant SENTINEL : std_logic_vector(31 downto 0) := x"5A5A5A5A";

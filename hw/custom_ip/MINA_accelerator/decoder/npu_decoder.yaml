@@ -18,12 +18,12 @@ fields:
 
   JUMP_ADDR: "27 downto 18"
 
-  REGISTER_RT: "27 downto 25"
-  REGISTER_RS: "24 downto 22"
-  ADD_I_IMM: "21 downto 6"
+  REGISTER_RT: "27 downto 24"
+  REGISTER_RS: "23 downto 20"
+  ADD_I_IMM: "19 downto 4"
 
-  BEQ_J_ADDR: "21 downto 12"
-  REGISTER_RD: "21 downto 18"
+  BEQ_J_ADDR: "20 downto 11"
+  REGISTER_RD: "20 downto 17"
 
   DRV_DATA_RS: "25 downto 22"
   DRV_WEIGHT_RS: "21 downto 18"
