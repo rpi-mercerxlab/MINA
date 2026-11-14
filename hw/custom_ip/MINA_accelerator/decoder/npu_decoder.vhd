@@ -45,7 +45,9 @@ entity npu_decoder is
         drn_use_reg : out std_logic;
         drv_data_rs : out std_logic_vector(3 downto 0);
         drv_weight_rs : out std_logic_vector(3 downto 0);
-        drn_addr_rs : out std_logic_vector(3 downto 0)
+        drn_addr_rs : out std_logic_vector(3 downto 0);
+        int_use_reg : out std_logic;
+        int_addr_rs : out std_logic_vector(3 downto 0)
     );
 end entity npu_decoder;
 
@@ -89,6 +91,8 @@ begin
         drv_data_rs <= "0000";
         drv_weight_rs <= "0000";
         drn_addr_rs <= "0000";
+        int_use_reg <= '0';
+        int_addr_rs <= "0000";
 
         if instr_valid = '1' then
             -- Active Default: Single-cycle instructions complete immediately unless overridden
@@ -157,6 +161,10 @@ begin
                     drn_use_reg <= '1';
                     drn_addr_rs <= instr(27 downto 24);
                 when x"0C" =>
+                    vo_int_addr <= '1';
+                    int_use_reg <= '1';
+                    int_addr_rs <= instr(27 downto 24);
+                when x"0D" =>
                     case instr(27 downto 24) is
                         when others =>
                             null;

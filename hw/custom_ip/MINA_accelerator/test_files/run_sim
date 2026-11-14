@@ -14,6 +14,7 @@ ghdl -a --std=08 -frelaxed-rules \
   ../PPU.vhd \
   ../r_file_and_exec.vhd \
   ../decoder/npu_decoder.vhd \
+  ../interrupt_controller.vhd \
   ../NPU.vhd \
   tb_npu.vhd
 

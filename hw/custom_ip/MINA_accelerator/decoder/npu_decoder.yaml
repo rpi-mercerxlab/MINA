@@ -1,33 +1,26 @@
 entity_name: npu_decoder
 instruction_width: 36
-
 fields:
   OPCODE: "35 downto 28"
   DMA_OP_CODE: "27 downto 24"
-
   PE_SOURCE_FIELD: "27 downto 26"
   PE_DATA_START_ADDR: "25 downto 14"
   PE_WEIGHT_START_ADDR: "13 downto 2"
-
   PE_DRAIN_START_ADDR: "27 downto 16"
   PE_ACT_SEL: "15 downto 14"
   PE_ACT_SHIFT_AMT: "13 downto 10"
   PE_ACT_QUANT_MULT: "9 downto 0"
-
   INT_TARG_ADDR: "27 downto 16"
-
   JUMP_ADDR: "27 downto 18"
-
   REGISTER_RT: "27 downto 24"
   REGISTER_RS: "23 downto 20"
   ADD_I_IMM: "19 downto 4"
-
-  BEQ_J_ADDR: "20 downto 11"
+  BEQ_J_ADDR: "19 downto 10"
   REGISTER_RD: "20 downto 17"
-
   DRV_DATA_RS: "25 downto 22"
   DRV_WEIGHT_RS: "21 downto 18"
   DRN_ADDR_RS: "27 downto 24"
+  INT_ADDR_RS: "27 downto 24"
 
 control_signals:
   pe_reset: { width: 1, default: "'0'" }
@@ -37,40 +30,35 @@ control_signals:
   pe_data_addr: { width: 12, default: '"000000000000"' }
   pe_weight_addr: { width: 12, default: '"000000000000"' }
   pe_drain_addr: { width: 12, default: '"000000000000"' }
-
   trigger_interrupt: { width: 1, default: "'0'" }
   vo_int_addr: { width: 1, default: "'0'" }
   int_targ_addr: { width: 12, default: '"000000000000"' }
-
   jump_addr_vo: { width: 1, default: "'0'" }
   jump_addr: { width: 10, default: '"0000000000"' }
-
   activation_function: { width: 2, default: '"00"' }
   quant_mult: { width: 10, default: '"0000000000"' }
   shift_amt: { width: 4, default: '"0000"' }
-
   add_i_rt: { width: 4, default: '"0000"' }
   add_i_rs: { width: 4, default: '"0000"' }
   add_i_imm: { width: 16, default: '"0000000000000000"' }
   add_i_en: { width: 1, default: "'0'" }
-
   beq_rt: { width: 4, default: '"0000"' }
   beq_rs: { width: 4, default: '"0000"' }
   beq_en: { width: 1, default: "'0'" }
   beq_addr: { width: 10, default: '"0000000000"' }
-
   jr_en: { width: 1, default: "'0'" }
   jr_rs: { width: 4, default: '"0000"' }
   beq_reg_en: { width: 1, default: "'0'" }
   beq_reg_rt: { width: 4, default: '"0000"' }
   beq_reg_rs: { width: 4, default: '"0000"' }
   beq_reg_addr: { width: 4, default: '"0000"' }
-
   drv_use_reg: { width: 1, default: "'0'" }
   drn_use_reg: { width: 1, default: "'0'" }
   drv_data_rs: { width: 4, default: '"0000"' }
   drv_weight_rs: { width: 4, default: '"0000"' }
   drn_addr_rs: { width: 4, default: '"0000"' }
+  int_use_reg: { width: 1, default: "'0'" }
+  int_addr_rs: { width: 4, default: '"0000"' }
 
 status_inputs:
   pe_drive_done: 1
@@ -83,18 +71,19 @@ status_inputs:
 decode_tree:
   field: OPCODE
   cases:
-    "0x00": #drive pe, param1: pe source field, param2: data start addr, param 3: weight start addr
+    "0x00": # drive pe, param1: pe source field, param2: data start addr, param3: weight start addr
       set:
-        #control signals and address routing
         pe_run: "'1'"
         pe_data_source: "@PE_SOURCE_FIELD"
         pe_data_addr: "@PE_DATA_START_ADDR"
         pe_weight_addr: "@PE_WEIGHT_START_ADDR"
       wait_for: pe_drive_done
-    "0x01": #reset
+
+    "0x01": # reset
       set:
         pe_reset: "'1'"
-    "0x02": #drain pe, to target addr
+
+    "0x02": # drain pe, to target addr
       set:
         pe_drain: "'1'"
         pe_drain_addr: "@PE_DRAIN_START_ADDR"
@@ -102,32 +91,37 @@ decode_tree:
         quant_mult: "@PE_ACT_QUANT_MULT"
         shift_amt: "@PE_ACT_SHIFT_AMT"
       wait_for: pe_drain_done
-    "0x03": #top level interrupt, triggers the top level interrupt
+
+    "0x03": # top level interrupt, triggers the top level interrupt
       set:
-        #to interrupt module
         trigger_interrupt: "'1'"
-    "0x04": #top_level_output_addr
+
+    "0x04": # top_level_output_addr (immediate)
       set:
         vo_int_addr: "'1'"
         int_targ_addr: "@INT_TARG_ADDR"
-    "0x05": #jump instruction
+
+    "0x05": # jump instruction
       set:
         jump_addr_vo: "'1'"
         jump_addr: "@JUMP_ADDR"
-    "0x06": #addi
+
+    "0x06": # addi
       set:
         add_i_rt: "@REGISTER_RT"
         add_i_rs: "@REGISTER_RS"
         add_i_imm: "@ADD_I_IMM"
         add_i_en: "'1'"
       wait_for: add_i_done
-    "0x07": #beq
+
+    "0x07": # beq
       set:
         beq_rt: "@REGISTER_RT"
         beq_rs: "@REGISTER_RS"
         beq_en: "'1'"
         beq_addr: "@BEQ_J_ADDR"
       wait_for: beq_done
+
     "0x08": # beq, register source
       set:
         beq_reg_rt: "@REGISTER_RT"
@@ -141,6 +135,7 @@ decode_tree:
         jr_rs: "@REGISTER_RS"
         jr_en: "'1'"
       wait_for: jr_done
+
     "0x0A": # drive, register source
       set:
         pe_run: "'1'"
@@ -159,6 +154,13 @@ decode_tree:
         drn_use_reg: "'1'"
         drn_addr_rs: "@DRN_ADDR_RS"
       wait_for: pe_drain_done
-    "0x0C": #DMA decode tree
+
+    "0x0C": # top level output addr, register source
+      set:
+        vo_int_addr: "'1'"
+        int_use_reg: "'1'"
+        int_addr_rs: "@INT_ADDR_RS"
+
+    "0x0D": # DMA decode tree
       match:
         field: DMA_OP_CODE

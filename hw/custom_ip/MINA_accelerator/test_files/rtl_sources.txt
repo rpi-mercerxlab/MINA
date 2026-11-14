@@ -1,0 +1,22 @@
+# Core packages and primitives
+../pe_pkg.vhd
+../basic_bram.vhd
+../instr_bram.vhd
+../instr_fetcher.vhd
+
+# PE Array & Datapath
+../PE.vhd
+../PE_arr.vhd
+../PE_scratchpad_ram.vhd
+../PE_weight_ram.vhd
+../PE_skew_buffer.vhd
+../PE_arr_driver.vhd
+../sigmoidLUT.vhd
+../output_pe.vhd
+../PPU.vhd
+
+# Control, Executor & Top-Level
+../r_file_and_exec.vhd
+../interrupt_controller.vhd
+../decoder/npu_decoder.vhd
+../NPU.vhd

@@ -35,16 +35,16 @@ entity r_file_n_exec is
         drv_data_rs   : in std_logic_vector(3 downto 0);
         drv_weight_rs : in std_logic_vector(3 downto 0);
         drn_addr_rs   : in std_logic_vector(3 downto 0);
+        int_addr_rs   : in std_logic_vector(3 downto 0);
 
         exec_pe_data_addr   : out std_logic_vector(11 downto 0);
         exec_pe_weight_addr : out std_logic_vector(11 downto 0);
-        exec_pe_drain_addr  : out std_logic_vector(11 downto 0)
-
+        exec_pe_drain_addr  : out std_logic_vector(11 downto 0);
+        exec_int_targ_addr  : out std_logic_vector(11 downto 0)
     );
 end entity r_file_n_exec;
 
 architecture rtl of r_file_n_exec is
-
     type reg_file is array (0 to 15) of std_logic_vector(15 downto 0);
     signal registers : reg_file;
 
@@ -55,9 +55,9 @@ architecture rtl of r_file_n_exec is
     signal beq_reg_rt_val   : std_logic_vector(15 downto 0);
     signal beq_reg_rs_val   : std_logic_vector(15 downto 0);
     signal beq_reg_addr_val : std_logic_vector(15 downto 0);
-
+    signal add_i_done_reg : std_logic := '0';
 begin
-
+    add_i_done <= add_i_done_reg;
     add_i_rs_val <= registers(to_integer(unsigned(add_i_rs)));
     beq_rt_val <= registers(to_integer(unsigned(beq_rt)));
     beq_rs_val <= registers(to_integer(unsigned(beq_rs)));
@@ -65,6 +65,7 @@ begin
     exec_pe_data_addr   <= registers(to_integer(unsigned(drv_data_rs)))(11 downto 0);
     exec_pe_weight_addr <= registers(to_integer(unsigned(drv_weight_rs)))(11 downto 0);
     exec_pe_drain_addr  <= registers(to_integer(unsigned(drn_addr_rs)))(11 downto 0);
+    exec_int_targ_addr  <= registers(to_integer(unsigned(int_addr_rs)))(11 downto 0);
 
     jr_rs_val        <= registers(to_integer(unsigned(jr_rs)));
     beq_reg_rt_val   <= registers(to_integer(unsigned(beq_reg_rt)));
@@ -75,29 +76,29 @@ begin
     begin
         if rising_edge(clk) then
             if rst_n = '0' then
-                registers <= (others => (others => '0'));
-                add_i_done <= '0';
-                beq_done   <= '0';
-                jump_vo    <= '0';
-                jump_addr  <= (others => '0');
-                jr_done      <= '0';
-                beq_reg_done <= '0';
+                registers      <= (others => (others => '0'));
+                add_i_done_reg <= '0';
+                beq_done       <= '0';
+                jump_vo        <= '0';
+                jump_addr      <= (others => '0');
+                jr_done        <= '0';
+                beq_reg_done   <= '0';
             else
-                add_i_done <= '0';
-                beq_done   <= '0';
-                jump_vo    <= '0';
-                jr_done      <= '0';
-                beq_reg_done <= '0';
-                -- executes the add_i instruction
-                if add_i_en = '1' then
+                add_i_done_reg <= '0';
+                beq_done       <= '0';
+                jump_vo        <= '0';
+                jr_done        <= '0';
+                beq_reg_done   <= '0';
+
+                -- Only execute on the first cycle of S_EXEC (when add_i_done_reg = '0')
+                if add_i_en = '1' and add_i_done_reg = '0' then
                     registers(to_integer(unsigned(add_i_rt))) <= std_logic_vector(signed(add_i_rs_val) + signed(add_i_imm));
-                    add_i_done <= '1';
+                    add_i_done_reg <= '1';
                 end if;
 
                 -- Execute the beq instruction
                 if beq_en = '1' then
                     beq_done <= '1'; -- Signal to the fetcher that the instruction is complete
-                    
                     -- Compare the two register values
                     if beq_rt_val = beq_rs_val then
                         jump_vo   <= '1';         -- Tell fetcher to jump
@@ -120,9 +121,7 @@ begin
                         jump_addr <= beq_reg_addr_val(9 downto 0);
                     end if;
                 end if;
-
             end if;
         end if;
     end process;
-
 end architecture rtl;
