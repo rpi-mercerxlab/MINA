@@ -6,6 +6,9 @@ entity instr_fetcher is
     port (
         clk           : in  std_logic;
         reset_n       : in  std_logic;
+        run           : in  std_logic := '1';
+        halted        : out std_logic;
+        pc_debug      : out std_logic_vector(9 downto 0);
 
         -- Handshake & Jump signals with npu_decoder
         instr_done    : in  std_logic;
@@ -31,11 +34,13 @@ begin
 
     -- Wire PC and BRAM data straight through combinationally
     addr_o  <= std_logic_vector(PC_register);
-    bram_en <= '1';
+    bram_en <= reset_n;
+    pc_debug <= std_logic_vector(PC_register);
+    halted <= '1' when state = S_FETCH and run = '0' else '0';
     instr_o <= d_in;
 
     -- Decoder only sees valid instruction during S_EXEC (after BRAM read completes)
-    instr_valid_o <= '1' when state = S_EXEC else '0';
+    instr_valid_o <= '1' when state = S_EXEC and reset_n = '1' else '0';
 
     process(clk)
     begin
@@ -47,7 +52,9 @@ begin
                 case state is
                     when S_FETCH =>
                         -- Wait 1 clock cycle for synchronous BRAM to output data for PC_register
-                        state <= S_EXEC;
+                        if run = '1' then
+                            state <= S_EXEC;
+                        end if;
 
                     when S_EXEC =>
                         -- Hold PC steady until the decoder reports the instruction is done

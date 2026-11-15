@@ -7,6 +7,9 @@ entity NPU is
     port (
         clk      : in  std_logic;
         rst_n    : in  std_logic;
+        run      : in  std_logic := '1';
+        halted   : out std_logic;
+        pc_debug : out std_logic_vector(9 downto 0);
         -- connections to port B of instruction RAM
         instr_we : in std_logic;
         instr_addr : in std_logic_vector(9 downto 0);
@@ -173,6 +176,9 @@ begin
         port map (
             clk => clk,
             reset_n => rst_n,
+            run => run,
+            halted => halted,
+            pc_debug => pc_debug,
             instr_done => instr_done_buf,
             jump_addr_vo => jump_addr_vo_buf,
             jump_addr => jump_addr_buf,
