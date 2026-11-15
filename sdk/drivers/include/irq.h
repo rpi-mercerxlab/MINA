@@ -46,6 +46,7 @@
 #define PLIC_CDMA_MASK (1 << 1)
 #define PLIC_GPIO_MASK (1 << 2)
 #define PLIC_SPI_MASK (1 << 3)
+#define PLIC_NPU_MASK (1 << 4)
 
 extern void (*plic_irq_handlers[8])(void);
 extern int plic_irq_priorities[8];

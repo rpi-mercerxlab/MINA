@@ -9,9 +9,6 @@ entity npu_axil_wrapper is
     generic (QUIESCE_CYCLES : positive := WRITEBACK_LATENCY + 2);
     port (
         clk, aresetn : in std_logic;
-        -- System mode input, synchronous to clk. 1 requests AXI-Lite RAM access
-        -- and a graceful stop; 0 requests raw ownership. Poll STATUS for grant.
-        axil_mem : in std_logic := '1';
         -- Connect UART npu_boot_active here. Same clock domain.
         boot_mode : in std_logic := '0';
         raw_mem_ready : out std_logic;
@@ -41,11 +38,11 @@ entity npu_axil_wrapper is
         raw_instr_din : in std_logic_vector(35 downto 0) := (others => '0');
         raw_instr_dout : out std_logic_vector(35 downto 0);
         raw_weight_we : in std_logic := '0';
-        raw_weight_addr : in std_logic_vector(HOST_ADDR_WIDTH-1 downto 0) := (others => '0');
+        raw_weight_addr : in std_logic_vector(12 downto 0) := (others => '0');
         raw_weight_din : in std_logic_vector(31 downto 0) := (others => '0');
         raw_weight_dout : out std_logic_vector(31 downto 0);
         raw_scratchpad_we : in std_logic := '0';
-        raw_scratchpad_addr : in std_logic_vector(HOST_ADDR_WIDTH-1 downto 0) := (others => '0');
+        raw_scratchpad_addr : in std_logic_vector(12 downto 0) := (others => '0');
         raw_scratchpad_din : in std_logic_vector(31 downto 0) := (others => '0');
         raw_scratchpad_dout : out std_logic_vector(31 downto 0);
         interrupt : out std_logic
@@ -76,7 +73,7 @@ architecture rtl of npu_axil_wrapper is
     signal merged : std_logic_vector(35 downto 0) := (others => '0');
     signal i_we, w_we, s_we : std_logic;
     signal i_addr : std_logic_vector(9 downto 0);
-    signal w_addr, s_addr : std_logic_vector(HOST_ADDR_WIDTH-1 downto 0);
+    signal w_addr, s_addr : std_logic_vector(13-1 downto 0);
     signal i_din, i_dout : std_logic_vector(35 downto 0);
     signal w_din, w_dout, s_din, s_dout : std_logic_vector(31 downto 0);
 
@@ -84,16 +81,16 @@ architecture rtl of npu_axil_wrapper is
         variable n : natural := to_integer(unsigned(a));
     begin
         if n >= 16#100000# and n < 16#102000# then return 1;
-        elsif n >= 16#200000# and n < 16#200000# + 4*2**HOST_ADDR_WIDTH then return 2;
-        elsif n >= 16#300000# and n < 16#300000# + 4*2**HOST_ADDR_WIDTH then return 3;
+        elsif n >= 16#200000# and n < 16#200000# + 4*2**13 then return 2;
+        elsif n >= 16#300000# and n < 16#300000# + 4*2**13 then return 3;
         else return 0;
         end if;
     end;
 begin
-    mem_request <= axil_mem and not boot_mode;
+    mem_request <= not boot_mode;
     raw_mem_ready <= safe_halted and not mem_owned and not mem_request
         and not run_req and not reset_pulse;
-    assert HOST_ADDR_WIDTH <= 18 report "RAM host address too wide for 1 MiB window" severity failure;
+    assert 13 <= 18 report "RAM host address too wide for 1 MiB window" severity failure;
     core_rst_n <= aresetn and not reset_pulse;
     safe_halted <= '1' when quiet_count = QUIESCE_CYCLES and
         fetch_halted = '1' and reset_pulse = '0' and aresetn = '1' else '0';
@@ -106,8 +103,8 @@ begin
 
     -- Same paradigm as muxed_ram: mux address/data/write-enable, share read data.
     i_addr <= mem_addr(12 downto 3) when mem_owned = '1' else raw_instr_addr;
-    w_addr <= mem_addr(HOST_ADDR_WIDTH+1 downto 2) when mem_owned = '1' else raw_weight_addr;
-    s_addr <= mem_addr(HOST_ADDR_WIDTH+1 downto 2) when mem_owned = '1' else raw_scratchpad_addr;
+    w_addr <= mem_addr(13+1 downto 2) when mem_owned = '1' else raw_weight_addr;
+    s_addr <= mem_addr(13+1 downto 2) when mem_owned = '1' else raw_scratchpad_addr;
     i_din <= merged when mem_owned = '1' else raw_instr_din;
     w_din <= merged(31 downto 0) when mem_owned = '1' else raw_weight_din;
     s_din <= merged(31 downto 0) when mem_owned = '1' else raw_scratchpad_din;
@@ -195,8 +192,7 @@ begin
                                     if boot_mode = '1' then bad := true;
                                     else
                                     -- Mode is a pin, not a writable CSR bit.
-                                    if w_data(0) = '1' and (boot_mode = '1' or mem_owned = '1' or mem_request = '1' or
-                                        reset_pulse = '1' or w_data(1) = '1') then
+                                    if w_data(0) = '1' and (boot_mode = '1' or reset_pulse = '1' or w_data(1) = '1') then
                                         bad := true;
                                     else
                                         run_req <= w_data(0);
@@ -263,7 +259,7 @@ begin
                 end case;
                 -- A memory-mode request stops instruction flow automatically.
                 -- Returning the pin low does not automatically restart execution.
-                if mem_request = '1' or boot_mode = '1' then run_req <= '0'; end if;
+                if boot_mode = '1' then run_req <= '0'; end if;
             end if;
         end if;
     end process;

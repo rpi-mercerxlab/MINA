@@ -1,14 +1,13 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x9D0647E30F6889CC",
+      "boundary_crc": "0x9D0647E34B4A3ED4",
       "device": "xc7s50csga324-1",
       "gen_directory": "../../../../MINA_proj.gen/sources_1/bd/design_1",
       "name": "design_1",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2025.2",
-      "validated": "true"
+      "tool_version": "2025.2"
     },
     "design_tree": {
       "VexRiscvMcuAxi_0": "",
@@ -42,7 +41,8 @@
       },
       "negation_1": "",
       "clk_wiz_0": "",
-      "negation_2": ""
+      "negation_2": "",
+      "npu_axil_wrapper_0": ""
     },
     "interface_ports": {
       "GPIO_0": {
@@ -159,24 +159,8 @@
         "type": "clk",
         "direction": "I",
         "parameters": {
-          "CLK_DOMAIN": {
-            "value": "design_1_in_clk",
-            "value_src": "default"
-          },
           "FREQ_HZ": {
             "value": "100000000"
-          },
-          "FREQ_TOLERANCE_HZ": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "INSERT_VIP": {
-            "value": "0",
-            "value_src": "default"
-          },
-          "PHASE": {
-            "value": "0.0",
-            "value_src": "default"
           }
         }
       },
@@ -1966,6 +1950,56 @@
             "direction": "IO",
             "left": "0",
             "right": "0"
+          },
+          "npu_ready": {
+            "direction": "I"
+          },
+          "npu_boot_active": {
+            "direction": "O"
+          },
+          "npu_instr_we": {
+            "direction": "O"
+          },
+          "npu_instr_addr": {
+            "direction": "O",
+            "left": "9",
+            "right": "0"
+          },
+          "npu_instr_din": {
+            "direction": "O",
+            "left": "35",
+            "right": "0"
+          },
+          "npu_weight_we": {
+            "direction": "O"
+          },
+          "npu_weight_addr": {
+            "direction": "O",
+            "left": "15",
+            "right": "0"
+          },
+          "npu_weight_din": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "npu_scratchpad_we": {
+            "direction": "O"
+          },
+          "npu_scratchpad_addr": {
+            "direction": "O",
+            "left": "15",
+            "right": "0"
+          },
+          "npu_scratchpad_din": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "npu_int": {
+            "direction": "I",
+            "left": "0",
+            "right": "0"
           }
         },
         "components": {
@@ -3207,10 +3241,6 @@
                     "value": "AXI4LITE",
                     "value_src": "constant"
                   },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
                   "ID_WIDTH": {
                     "value": "0",
                     "value_src": "constant"
@@ -3294,30 +3324,6 @@
                   "MAX_BURST_LENGTH": {
                     "value": "1",
                     "value_src": "auto"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "/clk_wiz_0_clk_out1",
-                    "value_src": "ip_prop"
-                  },
-                  "NUM_READ_THREADS": {
-                    "value": "1",
-                    "value_src": "user_prop"
-                  },
-                  "NUM_WRITE_THREADS": {
-                    "value": "1",
-                    "value_src": "user_prop"
-                  },
-                  "RUSER_BITS_PER_BYTE": {
-                    "value": "0",
-                    "value_src": "user_prop"
-                  },
-                  "WUSER_BITS_PER_BYTE": {
-                    "value": "0",
-                    "value_src": "user_prop"
                   }
                 },
                 "memory_map_ref": "s_axi",
@@ -3419,18 +3425,6 @@
                   "ASSOCIATED_RESET": {
                     "value": "s_axi_aresetn",
                     "value_src": "constant"
-                  },
-                  "FREQ_HZ": {
-                    "value": "100000000",
-                    "value_src": "ip_prop"
-                  },
-                  "PHASE": {
-                    "value": "0.0",
-                    "value_src": "ip_prop"
-                  },
-                  "CLK_DOMAIN": {
-                    "value": "/clk_wiz_0_clk_out1",
-                    "value_src": "ip_prop"
                   }
                 }
               },
@@ -3460,10 +3454,6 @@
                   "SENSITIVITY": {
                     "value": "LEVEL_HIGH",
                     "value_src": "constant"
-                  },
-                  "PortWidth": {
-                    "value": "1",
-                    "value_src": "default_prop"
                   }
                 }
               },
@@ -3481,6 +3471,51 @@
                 "right": "0"
               },
               "bram_din": {
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "npu_boot_active": {
+                "direction": "O"
+              },
+              "npu_ready": {
+                "direction": "I"
+              },
+              "npu_instr_we": {
+                "direction": "O"
+              },
+              "npu_instr_addr": {
+                "direction": "O",
+                "left": "9",
+                "right": "0"
+              },
+              "npu_instr_din": {
+                "direction": "O",
+                "left": "35",
+                "right": "0"
+              },
+              "npu_weight_we": {
+                "direction": "O"
+              },
+              "npu_weight_addr": {
+                "direction": "O",
+                "left": "15",
+                "right": "0"
+              },
+              "npu_weight_din": {
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "npu_scratchpad_we": {
+                "direction": "O"
+              },
+              "npu_scratchpad_addr": {
+                "direction": "O",
+                "left": "15",
+                "right": "0"
+              },
+              "npu_scratchpad_din": {
                 "direction": "O",
                 "left": "31",
                 "right": "0"
@@ -3609,11 +3644,11 @@
               "i2c_master_axil_0/clk",
               "negation_1/clk",
               "smartconnect_1/aclk",
-              "axi_uart_bootloader_1/s_axi_aclk",
               "axi_quad_spi_0/s_axi_aclk",
               "axi_quad_spi_0/ext_spi_clk",
               "axil_timer_64_0/S_AXI_ACLK",
-              "plic_axil_wrapper_0/S_AXI_ACLK"
+              "plic_axil_wrapper_0/S_AXI_ACLK",
+              "axi_uart_bootloader_1/s_axi_aclk"
             ]
           },
           "axi_gpio_0_ip2intc_irpt": {
@@ -3634,10 +3669,10 @@
               "negation_1/a",
               "axi_gpio_0/s_axi_aresetn",
               "smartconnect_1/aresetn",
-              "axi_uart_bootloader_1/s_axi_aresetn",
               "axi_quad_spi_0/s_axi_aresetn",
               "axil_timer_64_0/S_AXI_ARESETN",
-              "plic_axil_wrapper_0/S_AXI_ARESETN"
+              "plic_axil_wrapper_0/S_AXI_ARESETN",
+              "axi_uart_bootloader_1/s_axi_aresetn"
             ]
           },
           "axi_uart_bootloader_1_bram_addr": {
@@ -3662,6 +3697,66 @@
             "ports": [
               "axi_uart_bootloader_1/bram_we",
               "bram_we"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_boot_active": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_boot_active",
+              "npu_boot_active"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_instr_addr": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_instr_addr",
+              "npu_instr_addr"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_instr_din": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_instr_din",
+              "npu_instr_din"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_instr_we": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_instr_we",
+              "npu_instr_we"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_scratchpad_addr": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_scratchpad_addr",
+              "npu_scratchpad_addr"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_scratchpad_din": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_scratchpad_din",
+              "npu_scratchpad_din"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_scratchpad_we": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_scratchpad_we",
+              "npu_scratchpad_we"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_weight_addr": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_weight_addr",
+              "npu_weight_addr"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_weight_din": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_weight_din",
+              "npu_weight_din"
+            ]
+          },
+          "axi_uart_bootloader_1_npu_weight_we": {
+            "ports": [
+              "axi_uart_bootloader_1/npu_weight_we",
+              "npu_weight_we"
             ]
           },
           "axi_uart_bootloader_1_uart_irq": {
@@ -3716,6 +3811,18 @@
             "ports": [
               "negation_1/b",
               "i2c_master_axil_0/rst"
+            ]
+          },
+          "npu_int_1": {
+            "ports": [
+              "npu_int",
+              "xlconcat_0/In4"
+            ]
+          },
+          "npu_ready_1": {
+            "ports": [
+              "npu_ready",
+              "axi_uart_bootloader_1/npu_ready"
             ]
           },
           "plic_axil_wrapper_0_ext_intr": {
@@ -4014,6 +4121,313 @@
             }
           }
         }
+      },
+      "npu_axil_wrapper_0": {
+        "vlnv": "xilinx.com:module_ref:npu_axil_wrapper:1.0",
+        "ip_revision": "1",
+        "xci_name": "design_1_npu_axil_wrapper_0_0",
+        "xci_path": "ip/design_1_npu_axil_wrapper_0_0/design_1_npu_axil_wrapper_0_0.xci",
+        "inst_hier_path": "npu_axil_wrapper_0",
+        "has_run_ip_tcl": "true",
+        "reference_info": {
+          "ref_type": "hdl",
+          "ref_name": "npu_axil_wrapper",
+          "boundary_crc": "0x0"
+        },
+        "interface_ports": {
+          "s_axi": {
+            "mode": "Slave",
+            "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
+            "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "DATA_WIDTH": {
+                "value": "32",
+                "value_src": "constant"
+              },
+              "PROTOCOL": {
+                "value": "AXI4LITE",
+                "value_src": "constant"
+              },
+              "ID_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "ADDR_WIDTH": {
+                "value": "24",
+                "value_src": "constant"
+              },
+              "AWUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "ARUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "WUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "RUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "BUSER_WIDTH": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "READ_WRITE_MODE": {
+                "value": "READ_WRITE",
+                "value_src": "constant"
+              },
+              "HAS_BURST": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_LOCK": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_PROT": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "HAS_CACHE": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_QOS": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_REGION": {
+                "value": "0",
+                "value_src": "constant"
+              },
+              "HAS_WSTRB": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "HAS_BRESP": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "HAS_RRESP": {
+                "value": "1",
+                "value_src": "constant"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0",
+                "value_src": "auto"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "1",
+                "value_src": "auto"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "1",
+                "value_src": "auto"
+              },
+              "MAX_BURST_LENGTH": {
+                "value": "1",
+                "value_src": "auto"
+              }
+            },
+            "memory_map_ref": "s_axi",
+            "port_maps": {
+              "AWADDR": {
+                "physical_name": "s_axi_awaddr",
+                "direction": "I",
+                "left": "23",
+                "right": "0"
+              },
+              "AWPROT": {
+                "physical_name": "s_axi_awprot",
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "AWVALID": {
+                "physical_name": "s_axi_awvalid",
+                "direction": "I"
+              },
+              "AWREADY": {
+                "physical_name": "s_axi_awready",
+                "direction": "O"
+              },
+              "WDATA": {
+                "physical_name": "s_axi_wdata",
+                "direction": "I",
+                "left": "31",
+                "right": "0"
+              },
+              "WSTRB": {
+                "physical_name": "s_axi_wstrb",
+                "direction": "I",
+                "left": "3",
+                "right": "0"
+              },
+              "WVALID": {
+                "physical_name": "s_axi_wvalid",
+                "direction": "I"
+              },
+              "WREADY": {
+                "physical_name": "s_axi_wready",
+                "direction": "O"
+              },
+              "BRESP": {
+                "physical_name": "s_axi_bresp",
+                "direction": "O",
+                "left": "1",
+                "right": "0"
+              },
+              "BVALID": {
+                "physical_name": "s_axi_bvalid",
+                "direction": "O"
+              },
+              "BREADY": {
+                "physical_name": "s_axi_bready",
+                "direction": "I"
+              },
+              "ARADDR": {
+                "physical_name": "s_axi_araddr",
+                "direction": "I",
+                "left": "23",
+                "right": "0"
+              },
+              "ARPROT": {
+                "physical_name": "s_axi_arprot",
+                "direction": "I",
+                "left": "2",
+                "right": "0"
+              },
+              "ARVALID": {
+                "physical_name": "s_axi_arvalid",
+                "direction": "I"
+              },
+              "ARREADY": {
+                "physical_name": "s_axi_arready",
+                "direction": "O"
+              },
+              "RDATA": {
+                "physical_name": "s_axi_rdata",
+                "direction": "O",
+                "left": "31",
+                "right": "0"
+              },
+              "RRESP": {
+                "physical_name": "s_axi_rresp",
+                "direction": "O",
+                "left": "1",
+                "right": "0"
+              },
+              "RVALID": {
+                "physical_name": "s_axi_rvalid",
+                "direction": "O"
+              },
+              "RREADY": {
+                "physical_name": "s_axi_rready",
+                "direction": "I"
+              }
+            }
+          }
+        },
+        "ports": {
+          "clk": {
+            "type": "clk",
+            "direction": "I",
+            "parameters": {
+              "ASSOCIATED_BUSIF": {
+                "value": "s_axi",
+                "value_src": "constant"
+              },
+              "ASSOCIATED_RESET": {
+                "value": "aresetn",
+                "value_src": "constant"
+              }
+            }
+          },
+          "aresetn": {
+            "type": "rst",
+            "direction": "I",
+            "parameters": {
+              "POLARITY": {
+                "value": "ACTIVE_LOW",
+                "value_src": "constant"
+              }
+            }
+          },
+          "boot_mode": {
+            "direction": "I"
+          },
+          "raw_mem_ready": {
+            "direction": "O"
+          },
+          "raw_instr_we": {
+            "direction": "I"
+          },
+          "raw_instr_addr": {
+            "direction": "I",
+            "left": "9",
+            "right": "0"
+          },
+          "raw_instr_din": {
+            "direction": "I",
+            "left": "35",
+            "right": "0"
+          },
+          "raw_instr_dout": {
+            "direction": "O",
+            "left": "35",
+            "right": "0"
+          },
+          "raw_weight_we": {
+            "direction": "I"
+          },
+          "raw_weight_addr": {
+            "direction": "I",
+            "left": "12",
+            "right": "0"
+          },
+          "raw_weight_din": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "raw_weight_dout": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "raw_scratchpad_we": {
+            "direction": "I"
+          },
+          "raw_scratchpad_addr": {
+            "direction": "I",
+            "left": "12",
+            "right": "0"
+          },
+          "raw_scratchpad_din": {
+            "direction": "I",
+            "left": "31",
+            "right": "0"
+          },
+          "raw_scratchpad_dout": {
+            "direction": "O",
+            "left": "31",
+            "right": "0"
+          },
+          "interrupt": {
+            "type": "intr",
+            "direction": "O",
+            "parameters": {
+              "SENSITIVITY": {
+                "value": "LEVEL_HIGH",
+                "value_src": "constant"
+              }
+            }
+          }
+        }
       }
     },
     "interface_nets": {
@@ -4070,6 +4484,12 @@
           "smartconnect_0/M03_AXI",
           "axi_cdma_0/S_AXI_LITE"
         ]
+      },
+      "smartconnect_0_M04_AXI": {
+        "interface_ports": [
+          "npu_axil_wrapper_0/s_axi",
+          "smartconnect_0/M04_AXI"
+        ]
       }
     },
     "nets": {
@@ -4104,7 +4524,8 @@
           "instr_ram/ram_clk",
           "axi_ram_0/clk",
           "negation_2/clk",
-          "VexRiscvMcuAxi_0/clk"
+          "VexRiscvMcuAxi_0/clk",
+          "npu_axil_wrapper_0/clk"
         ]
       },
       "cpu_reset_controller_c": {
@@ -4139,6 +4560,18 @@
           "negation_2/b",
           "peripherals/boot_mode",
           "instr_ram/ram_mux_select"
+        ]
+      },
+      "npu_axil_wrapper_0_interrupt": {
+        "ports": [
+          "npu_axil_wrapper_0/interrupt",
+          "peripherals/npu_int"
+        ]
+      },
+      "npu_axil_wrapper_0_raw_mem_ready": {
+        "ports": [
+          "npu_axil_wrapper_0/raw_mem_ready",
+          "peripherals/npu_ready"
         ]
       },
       "peripherals_IRQ": {
@@ -4177,6 +4610,66 @@
           "VexRiscvMcuAxi_0/externalInterrupt"
         ]
       },
+      "peripherals_npu_boot_active": {
+        "ports": [
+          "peripherals/npu_boot_active",
+          "npu_axil_wrapper_0/boot_mode"
+        ]
+      },
+      "peripherals_npu_instr_addr": {
+        "ports": [
+          "peripherals/npu_instr_addr",
+          "npu_axil_wrapper_0/raw_instr_addr"
+        ]
+      },
+      "peripherals_npu_instr_din": {
+        "ports": [
+          "peripherals/npu_instr_din",
+          "npu_axil_wrapper_0/raw_instr_din"
+        ]
+      },
+      "peripherals_npu_instr_we": {
+        "ports": [
+          "peripherals/npu_instr_we",
+          "npu_axil_wrapper_0/raw_instr_we"
+        ]
+      },
+      "peripherals_npu_scratchpad_addr": {
+        "ports": [
+          "peripherals/npu_scratchpad_addr",
+          "npu_axil_wrapper_0/raw_scratchpad_addr"
+        ]
+      },
+      "peripherals_npu_scratchpad_din": {
+        "ports": [
+          "peripherals/npu_scratchpad_din",
+          "npu_axil_wrapper_0/raw_scratchpad_din"
+        ]
+      },
+      "peripherals_npu_scratchpad_we": {
+        "ports": [
+          "peripherals/npu_scratchpad_we",
+          "npu_axil_wrapper_0/raw_scratchpad_we"
+        ]
+      },
+      "peripherals_npu_weight_addr": {
+        "ports": [
+          "peripherals/npu_weight_addr",
+          "npu_axil_wrapper_0/raw_weight_addr"
+        ]
+      },
+      "peripherals_npu_weight_din": {
+        "ports": [
+          "peripherals/npu_weight_din",
+          "npu_axil_wrapper_0/raw_weight_din"
+        ]
+      },
+      "peripherals_npu_weight_we": {
+        "ports": [
+          "peripherals/npu_weight_we",
+          "npu_axil_wrapper_0/raw_weight_we"
+        ]
+      },
       "peripherals_uart_tx_0": {
         "ports": [
           "peripherals/uart_tx_0",
@@ -4191,7 +4684,8 @@
           "peripherals/axi_resetn",
           "instr_ram/s_axi_aresetn",
           "smartconnect_0/aresetn",
-          "cpu_reset_controller/sys_reset"
+          "cpu_reset_controller/sys_reset",
+          "npu_axil_wrapper_0/aresetn"
         ]
       },
       "uart_rx_0_1": {
