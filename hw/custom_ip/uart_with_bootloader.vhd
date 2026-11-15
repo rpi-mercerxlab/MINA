@@ -257,7 +257,8 @@ entity axi_uart_bootloader is
 
         -- Number of WORD-address bits on the native 32-bit BRAM port.
         -- Example: BRAM_ADDR_WIDTH = 14 -> 16384 x 32 = 64 KiB.
-        BRAM_ADDR_WIDTH : integer := 14
+        BRAM_ADDR_WIDTH : integer := 14;
+        NPU_HOST_ADDR_WIDTH : positive := 16
     );
     port (
         -----------------------------------------------------------------------
@@ -326,7 +327,19 @@ entity axi_uart_bootloader is
         bram_en   : out std_logic;
         bram_we   : out std_logic_vector(3 downto 0);
         bram_addr : out std_logic_vector(BRAM_ADDR_WIDTH - 1 downto 0);
-        bram_din  : out std_logic_vector(31 downto 0)
+        bram_din  : out std_logic_vector(31 downto 0);
+        -- Same clock as NPU. Connect active/ready to its wrapper.
+        npu_boot_active : out std_logic;
+        npu_ready : in std_logic := '0';
+        npu_instr_we : out std_logic;
+        npu_instr_addr : out std_logic_vector(9 downto 0);
+        npu_instr_din : out std_logic_vector(35 downto 0);
+        npu_weight_we : out std_logic;
+        npu_weight_addr : out std_logic_vector(NPU_HOST_ADDR_WIDTH-1 downto 0);
+        npu_weight_din : out std_logic_vector(31 downto 0);
+        npu_scratchpad_we : out std_logic;
+        npu_scratchpad_addr : out std_logic_vector(NPU_HOST_ADDR_WIDTH-1 downto 0);
+        npu_scratchpad_din : out std_logic_vector(31 downto 0)
     );
 end entity;
 
@@ -340,6 +353,9 @@ architecture rtl of axi_uart_bootloader is
     constant AXI_SLVERR : std_logic_vector(1 downto 0) := "10";
 
     constant BOOT_SYNC  : std_logic_vector(7 downto 0) := x"55";
+    constant CMD_NPU_INSTR : std_logic_vector(7 downto 0) := x"02";
+    constant CMD_NPU_WEIGHT : std_logic_vector(7 downto 0) := x"03";
+    constant CMD_NPU_SCRATCH : std_logic_vector(7 downto 0) := x"04";
     constant CMD_WRITE  : std_logic_vector(7 downto 0) := x"01";
 
     constant UART_ACK   : std_logic_vector(7 downto 0) := x"06";
@@ -459,6 +475,7 @@ architecture rtl of axi_uart_bootloader is
         BOOT_ADDR_1,
         BOOT_ADDR_0,
 
+        BOOT_DATA_4,
         BOOT_DATA_3,
         BOOT_DATA_2,
         BOOT_DATA_1,
@@ -467,6 +484,11 @@ architecture rtl of axi_uart_bootloader is
         BOOT_CHECKSUM_BYTE
     );
 
+    signal boot_command : std_logic_vector(7 downto 0) := x"00";
+    signal boot_data_hi : std_logic_vector(7 downto 0) := x"00";
+    signal npu_i_we, npu_w_we, npu_s_we : std_logic := '0';
+    signal npu_address : std_logic_vector(31 downto 0) := (others => '0');
+    signal npu_data : std_logic_vector(35 downto 0) := (others => '0');
     signal boot_state : boot_state_t := BOOT_WAIT_SYNC;
 
     signal boot_address : std_logic_vector(31 downto 0)
@@ -528,6 +550,18 @@ begin
     s_axi_rdata  <= rdata_reg;
     s_axi_rresp  <= rresp_reg;
 
+    assert NPU_HOST_ADDR_WIDTH <= 18
+        report "NPU_HOST_ADDR_WIDTH must match pe_pkg.HOST_ADDR_WIDTH (max 18)" severity failure;
+    npu_boot_active <= boot_active;
+    npu_instr_we <= npu_i_we and boot_active and npu_ready and s_axi_aresetn;
+    npu_weight_we <= npu_w_we and boot_active and npu_ready and s_axi_aresetn;
+    npu_scratchpad_we <= npu_s_we and boot_active and npu_ready and s_axi_aresetn;
+    npu_instr_addr <= npu_address(12 downto 3);
+    npu_weight_addr <= npu_address(NPU_HOST_ADDR_WIDTH+1 downto 2);
+    npu_scratchpad_addr <= npu_address(NPU_HOST_ADDR_WIDTH+1 downto 2);
+    npu_instr_din <= npu_data;
+    npu_weight_din <= npu_data(31 downto 0);
+    npu_scratchpad_din <= npu_data(31 downto 0);
     bram_en   <= bram_en_reg;
     bram_we   <= bram_we_reg;
     bram_addr <= bram_addr_reg;
@@ -1205,6 +1239,7 @@ begin
             -- BRAM write controls are one-cycle pulses.
             -------------------------------------------------------------------
 
+            npu_i_we <= '0'; npu_w_we <= '0'; npu_s_we <= '0';
             bram_en_reg <= '0';
             bram_we_reg <= (others => '0');
 
@@ -1245,7 +1280,10 @@ begin
                 -- Parse incoming packet.
                 ----------------------------------------------------------------
 
-                if phy_rx_valid = '1' then
+                if phy_rx_frame_error = '1' then
+                    boot_state <= BOOT_WAIT_SYNC;
+                    boot_reply <= UART_NAK; boot_reply_pending <= '1';
+                elsif phy_rx_valid = '1' then
 
                     case boot_state is
 
@@ -1268,7 +1306,10 @@ begin
 
                         when BOOT_CMD =>
 
-                            if phy_rx_data = CMD_WRITE then
+                            if phy_rx_data = CMD_WRITE or phy_rx_data = CMD_NPU_INSTR or
+                               phy_rx_data = CMD_NPU_WEIGHT or phy_rx_data = CMD_NPU_SCRATCH then
+                                boot_command <= phy_rx_data;
+                                boot_data_hi <= (others => '0');
 
                                 boot_checksum <= phy_rx_data;
                                 boot_state    <= BOOT_ADDR_3;
@@ -1319,6 +1360,15 @@ begin
 
                             boot_address(7 downto 0) <= phy_rx_data;
                             boot_checksum <= boot_checksum xor phy_rx_data;
+                            if boot_command = CMD_NPU_INSTR then
+                                boot_state <= BOOT_DATA_4;
+                            else
+                                boot_state <= BOOT_DATA_3;
+                            end if;
+
+                        when BOOT_DATA_4 =>
+                            boot_data_hi <= phy_rx_data;
+                            boot_checksum <= boot_checksum xor phy_rx_data;
                             boot_state <= BOOT_DATA_3;
 
                         --------------------------------------------------------
@@ -1367,51 +1417,37 @@ begin
 
                         when BOOT_CHECKSUM_BYTE =>
 
+                            -- Default failure: no memory is touched unless every
+                            -- check passes. NPU addresses are local byte offsets.
+                            boot_reply <= UART_NAK;
+                            boot_reply_pending <= '1';
                             if phy_rx_data = boot_checksum then
-
-                                ------------------------------------------------
-                                -- Require 32-bit alignment.
-                                ------------------------------------------------
-
-                                if boot_address(1 downto 0) = "00" then
-
-                                    --------------------------------------------
-                                    -- CPU byte address -> BRAM word address.
-                                    --
-                                    -- High CPU address bits are intentionally
-                                    -- discarded. For example with a memory map
-                                    -- based at 0x80000000:
-                                    --
-                                    -- 0x80000000 -> BRAM word 0
-                                    -- 0x80000004 -> BRAM word 1
-                                    -- 0x80000008 -> BRAM word 2
-                                    --------------------------------------------
-
-                                    bram_addr_reg <=
-                                        boot_address(
-                                            BRAM_ADDR_WIDTH + 1 downto 2
-                                        );
-
-                                    bram_din_reg <= boot_data;
-
-                                    bram_en_reg <= '1';
-                                    bram_we_reg <= "1111";
-
-                                    boot_reply         <= UART_ACK;
-                                    boot_reply_pending <= '1';
-
-                                else
-
-                                    boot_reply         <= UART_NAK;
-                                    boot_reply_pending <= '1';
-
+                                if boot_command = CMD_WRITE then
+                                    -- Preserve CPU address aliasing and 32-bit format.
+                                    if boot_address(1 downto 0) = "00" then
+                                        bram_addr_reg <= boot_address(BRAM_ADDR_WIDTH+1 downto 2);
+                                        bram_din_reg <= boot_data;
+                                        bram_en_reg <= '1'; bram_we_reg <= "1111";
+                                        boot_reply <= UART_ACK;
+                                    end if;
+                                elsif npu_ready = '1' then
+                                    npu_address <= boot_address;
+                                    npu_data <= boot_data_hi(3 downto 0) & boot_data;
+                                    if boot_command = CMD_NPU_INSTR then
+                                        if unsigned(boot_address) < 8192 and
+                                           boot_address(2 downto 0) = "000" and
+                                           boot_data_hi(7 downto 4) = "0000" then
+                                            npu_i_we <= '1'; boot_reply <= UART_ACK;
+                                        end if;
+                                    elsif boot_address(1 downto 0) = "00" and
+                                          unsigned(boot_address) < 2**(NPU_HOST_ADDR_WIDTH+2) then
+                                        if boot_command = CMD_NPU_WEIGHT then
+                                            npu_w_we <= '1'; boot_reply <= UART_ACK;
+                                        elsif boot_command = CMD_NPU_SCRATCH then
+                                            npu_s_we <= '1'; boot_reply <= UART_ACK;
+                                        end if;
+                                    end if;
                                 end if;
-
-                            else
-
-                                boot_reply         <= UART_NAK;
-                                boot_reply_pending <= '1';
-
                             end if;
 
                             boot_state <= BOOT_WAIT_SYNC;

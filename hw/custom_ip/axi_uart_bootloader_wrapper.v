@@ -13,7 +13,8 @@ module axi_uart_bootloader_wrapper #(
     parameter integer BAUD_RATE       = 115200,
     parameter integer AXI_ADDR_WIDTH  = 32,
     parameter integer FIFO_DEPTH      = 16,
-    parameter integer BRAM_ADDR_WIDTH = 14
+    parameter integer BRAM_ADDR_WIDTH = 14,
+    parameter integer NPU_HOST_ADDR_WIDTH = 16
 )(
     // Clock / reset
     input  wire                          s_axi_aclk,
@@ -61,7 +62,18 @@ module axi_uart_bootloader_wrapper #(
     output wire                          bram_en,
     output wire [3:0]                    bram_we,
     output wire [BRAM_ADDR_WIDTH-1:0]    bram_addr,
-    output wire [31:0]                   bram_din
+    output wire [31:0]                   bram_din,
+    output wire npu_boot_active,
+    input wire npu_ready,
+    output wire npu_instr_we,
+    output wire [9:0] npu_instr_addr,
+    output wire [35:0] npu_instr_din,
+    output wire npu_weight_we,
+    output wire [NPU_HOST_ADDR_WIDTH-1:0] npu_weight_addr,
+    output wire [31:0] npu_weight_din,
+    output wire npu_scratchpad_we,
+    output wire [NPU_HOST_ADDR_WIDTH-1:0] npu_scratchpad_addr,
+    output wire [31:0] npu_scratchpad_din
 );
 
     axi_uart_bootloader #(
@@ -69,7 +81,8 @@ module axi_uart_bootloader_wrapper #(
         .BAUD_RATE       (BAUD_RATE),
         .AXI_ADDR_WIDTH  (AXI_ADDR_WIDTH),
         .FIFO_DEPTH      (FIFO_DEPTH),
-        .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH)
+        .BRAM_ADDR_WIDTH (BRAM_ADDR_WIDTH),
+        .NPU_HOST_ADDR_WIDTH (NPU_HOST_ADDR_WIDTH)
     ) u_axi_uart_bootloader (
         .s_axi_aclk      (s_axi_aclk),
         .s_axi_aresetn   (s_axi_aresetn),
@@ -106,7 +119,18 @@ module axi_uart_bootloader_wrapper #(
         .bram_en         (bram_en),
         .bram_we         (bram_we),
         .bram_addr       (bram_addr),
-        .bram_din        (bram_din)
+        .bram_din        (bram_din),
+        .npu_boot_active (npu_boot_active),
+        .npu_ready (npu_ready),
+        .npu_instr_we (npu_instr_we),
+        .npu_instr_addr (npu_instr_addr),
+        .npu_instr_din (npu_instr_din),
+        .npu_weight_we (npu_weight_we),
+        .npu_weight_addr (npu_weight_addr),
+        .npu_weight_din (npu_weight_din),
+        .npu_scratchpad_we (npu_scratchpad_we),
+        .npu_scratchpad_addr (npu_scratchpad_addr),
+        .npu_scratchpad_din (npu_scratchpad_din)
     );
 
 endmodule

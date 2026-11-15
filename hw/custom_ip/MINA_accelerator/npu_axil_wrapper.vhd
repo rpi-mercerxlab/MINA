@@ -12,6 +12,9 @@ entity npu_axil_wrapper is
         -- System mode input, synchronous to clk. 1 requests AXI-Lite RAM access
         -- and a graceful stop; 0 requests raw ownership. Poll STATUS for grant.
         axil_mem : in std_logic := '1';
+        -- Connect UART npu_boot_active here. Same clock domain.
+        boot_mode : in std_logic := '0';
+        raw_mem_ready : out std_logic;
         s_axi_awaddr : in std_logic_vector(23 downto 0);
         s_axi_awprot : in std_logic_vector(2 downto 0) := "000";
         s_axi_awvalid : in std_logic;
@@ -59,6 +62,7 @@ architecture rtl of npu_axil_wrapper is
     signal bv, rv : std_logic := '0';
     signal bp, rp : std_logic_vector(1 downto 0) := "00";
     signal rd : std_logic_vector(31 downto 0) := (others => '0');
+    signal mem_request : std_logic;
     signal run_req : std_logic := '0';
     signal mem_owned : std_logic := '1';
     signal reset_pulse, irq_clear : std_logic := '0';
@@ -86,6 +90,9 @@ architecture rtl of npu_axil_wrapper is
         end if;
     end;
 begin
+    mem_request <= axil_mem and not boot_mode;
+    raw_mem_ready <= safe_halted and not mem_owned and not mem_request
+        and not run_req and not reset_pulse;
     assert HOST_ADDR_WIDTH <= 18 report "RAM host address too wide for 1 MiB window" severity failure;
     core_rst_n <= aresetn and not reset_pulse;
     safe_halted <= '1' when quiet_count = QUIESCE_CYCLES and
@@ -106,13 +113,13 @@ begin
     s_din <= merged(31 downto 0) when mem_owned = '1' else raw_scratchpad_din;
     i_we <= '1' when safe_halted = '1' and
         ((mem_owned = '1' and state = MEM_WRITE and mem_sel = 1) or
-         (mem_owned = '0' and axil_mem = '0' and raw_instr_we = '1')) else '0';
+         (mem_owned = '0' and mem_request = '0' and raw_instr_we = '1')) else '0';
     w_we <= '1' when safe_halted = '1' and
         ((mem_owned = '1' and state = MEM_WRITE and mem_sel = 2) or
-         (mem_owned = '0' and axil_mem = '0' and raw_weight_we = '1')) else '0';
+         (mem_owned = '0' and mem_request = '0' and raw_weight_we = '1')) else '0';
     s_we <= '1' when safe_halted = '1' and
         ((mem_owned = '1' and state = MEM_WRITE and mem_sel = 3) or
-         (mem_owned = '0' and axil_mem = '0' and raw_scratchpad_we = '1')) else '0';
+         (mem_owned = '0' and mem_request = '0' and raw_scratchpad_we = '1')) else '0';
     raw_instr_dout <= i_dout;
     raw_weight_dout <= w_dout;
     raw_scratchpad_dout <= s_dout;
@@ -139,14 +146,14 @@ begin
                 state <= IDLE;
                 aw_full <= '0'; w_full <= '0'; ar_full <= '0';
                 bv <= '0'; rv <= '0'; bp <= "00"; rp <= "00"; rd <= (others => '0');
-                run_req <= '0'; mem_owned <= axil_mem;
+                run_req <= '0'; mem_owned <= mem_request;
                 reset_pulse <= '0'; irq_clear <= '0';
                 quiet_count <= 0;
             else
                 reset_pulse <= '0'; irq_clear <= '0';
                 -- Keep ownership stable across the entire bridge transaction.
                 if safe_halted = '1' and state = IDLE and bv = '0' and rv = '0' then
-                    mem_owned <= axil_mem;
+                    mem_owned <= mem_request;
                 end if;
                 if fetch_halted = '0' or run_req = '1' or reset_pulse = '1' then
                     quiet_count <= 0;
@@ -176,7 +183,7 @@ begin
                             t := target(a); r := (others => '0'); bad := false;
                             if a(1 downto 0) /= "00" then bad := true;
                             elsif t /= 0 then
-                                if mem_owned = '0' or axil_mem = '0' or safe_halted = '0' then bad := true;
+                                if mem_owned = '0' or mem_request = '0' or safe_halted = '0' then bad := true;
                                 else
                                     mem_addr <= a; mem_sel <= t;
                                     if writing then mem_is_write <= '1'; else mem_is_write <= '0'; end if;
@@ -185,8 +192,10 @@ begin
                             elsif a = x"000000" then
                                 r(0) := run_req;
                                 if writing and w_strb(0) = '1' then
+                                    if boot_mode = '1' then bad := true;
+                                    else
                                     -- Mode is a pin, not a writable CSR bit.
-                                    if w_data(0) = '1' and (mem_owned = '1' or axil_mem = '1' or
+                                    if w_data(0) = '1' and (boot_mode = '1' or mem_owned = '1' or mem_request = '1' or
                                         reset_pulse = '1' or w_data(1) = '1') then
                                         bad := true;
                                     else
@@ -198,11 +207,12 @@ begin
                                         end if;
                                         irq_clear <= w_data(3);
                                     end if;
+                                    end if;
                                 end if;
                             elsif a = x"000004" then
                                 r(0) := safe_halted; r(1) := run_req;
                                 r(2) := mem_owned; r(3) := reset_pulse;
-                                r(4) := irq; r(5) := mem_owned xor axil_mem;
+                                r(4) := irq; r(5) := mem_owned xor mem_request;
                                 if writing then bad := true; end if;
                             elsif a = x"000008" then
                                 r(9 downto 0) := pc;
@@ -253,7 +263,7 @@ begin
                 end case;
                 -- A memory-mode request stops instruction flow automatically.
                 -- Returning the pin low does not automatically restart execution.
-                if axil_mem = '1' then run_req <= '0'; end if;
+                if mem_request = '1' or boot_mode = '1' then run_req <= '0'; end if;
             end if;
         end if;
     end process;

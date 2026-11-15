@@ -1,39 +1,75 @@
-#!/bin/bash
+#!/usr/bin/env bash
+set -euo pipefail
 
-# Ensure the script is run with root privileges
-if [ "$EUID" -ne 0 ]; then
-    echo "Error: Please run this script as root (e.g., sudo ./install.sh)"
+if [[ $EUID -ne 0 ]]; then
+    echo "Error: run this script as root: sudo ./install-sdk" >&2
     exit 1
 fi
 
+# Locate sources relative to this script, independent of the caller's directory.
+SOURCE_ROOT="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
+SDK_SOURCE="$SOURCE_ROOT/sdk"
+FLASHER_SOURCE="$SOURCE_ROOT/utils/py-flasher.py"
 SDK_TARGET="/opt/mina-sdk"
-BIN_TARGET="/usr/local/bin/mina-build"
 
-echo "Installing MINA SDK to $SDK_TARGET..."
+for source in "$SDK_SOURCE/mina-build" "$FLASHER_SOURCE"; do
+    if [[ ! -f $source ]]; then
+        echo "Error: required file is missing: $source" >&2
+        exit 1
+    fi
+done
+if [[ $SOURCE_ROOT == "$SDK_TARGET" || $SOURCE_ROOT == "$SDK_TARGET/"* ]]; then
+    echo 'Error: run install-sdk from your source checkout, outside /opt/mina-sdk.' >&2
+    exit 1
+fi
+command -v python3 >/dev/null || { echo 'Error: Python 3 is required.' >&2; exit 1; }
 
-# 1. Create the target directory (and clear it if doing a reinstall/update)
-mkdir -p "$SDK_TARGET"
-rm -rf "${SDK_TARGET:?}/"*
+# Prepare a complete installation before touching an existing SDK.
+mkdir -p /opt /usr/local/bin
+STAGING="$(mktemp -d /opt/mina-sdk-stage.XXXXXXXX)"
+BACKUP=""
+cleanup() {
+    rm -rf -- "$STAGING"
+    if [[ -n $BACKUP && -d $BACKUP && ! -e $SDK_TARGET ]]; then
+        mv -- "$BACKUP" "$SDK_TARGET"
+    fi
+}
+trap cleanup EXIT
+cp -a "$SDK_SOURCE/." "$STAGING/"
+mkdir -p "$STAGING/utils"
+install -m 644 "$FLASHER_SOURCE" "$STAGING/utils/py-flasher.py"
+chmod +x "$STAGING/mina-build"
+if ! python3 -m venv "$STAGING/.venv"; then
+    echo 'Error: Python venv support is required (Debian/Ubuntu: install python3-venv).' >&2
+    exit 1
+fi
+# Invoke Python explicitly: venv console-script shebangs contain the staging path.
+"$STAGING/.venv/bin/python" -m pip install --disable-pip-version-check 'pyserial==3.5'
+"$STAGING/.venv/bin/python" -c 'import serial'
 
-# 2. Copy the SDK contents (assuming install.sh is run from the SDK root)
-cp -r ./sdk/* "$SDK_TARGET/"
+if [[ -e $SDK_TARGET ]]; then
+    BACKUP="$(mktemp -d /opt/mina-sdk-backup.XXXXXXXX)"
+    rmdir "$BACKUP"
+    mv -- "$SDK_TARGET" "$BACKUP"
+fi
+mv -- "$STAGING" "$SDK_TARGET"
+# Final-path interpreter works after relocation; do not use .venv/bin/pip or activate.
+"$SDK_TARGET/.venv/bin/python" -c 'import serial'
 
-# Ensure the core script has execution permissions
-chmod +x "$SDK_TARGET/mina-build"
-
-# 3. Create a global launcher script in the system PATH
-echo "Creating system-wide launcher at $BIN_TARGET..."
-
-cat << 'EOF' > "$BIN_TARGET"
-#!/bin/bash
-# Force the SDK path environment variable so the wrapper knows where the Makefile is
+cat > /usr/local/bin/mina-flasher <<'EOF'
+#!/usr/bin/env bash
+set -euo pipefail
+export MINA_SDK_PATH="/opt/mina-sdk"
+exec "$MINA_SDK_PATH/.venv/bin/python" "$MINA_SDK_PATH/utils/py-flasher.py" "$@"
+EOF
+cat > /usr/local/bin/mina-build <<'EOF'
+#!/usr/bin/env bash
 export MINA_SDK_PATH="/opt/mina-sdk"
 exec /opt/mina-sdk/mina-build "$@"
 EOF
-
-# Make the launcher executable
-chmod +x "$BIN_TARGET"
-
-echo "MINA SDK successfully installed!"
-echo "You can now compile projects from any directory by typing:"
-echo "  mina-build <main.c> [user_includes_dir] [user_src_dir]"
+chmod 755 /usr/local/bin/mina-flasher /usr/local/bin/mina-build
+if [[ -n $BACKUP ]]; then rm -rf -- "$BACKUP"; fi
+printf '%s\n' 'MINA SDK installed.' \
+    '  mina-flasher --help' \
+    '  mina-build <main.c> [user_includes_dir] [user_src_dir]' \
+    'The existing mina-build command is also available.'
