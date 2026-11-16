@@ -18,31 +18,48 @@ void init_interrupts(void) {
 }
 
 void __attribute__((interrupt("machine"), aligned(4))) trap_handler(void) {
-
-  // Read the machine cause register
   unsigned long cause = read_csr(mcause);
 
-  // Check if the MSB is set (indicating an interrupt, not an exception)
-  // Casting to signed long makes the MSB act as a sign bit
+  // Check if MSB is set (Interrupt vs Exception)
   if ((long)cause < 0) {
-
-    // Strip the MSB to get the exception code
     unsigned long exception_code = cause & ~(1UL << (sizeof(long) * 8 - 1));
-
-    // Check if it's a Machine External Interrupt
     if (exception_code == IRQ_M_EXT) {
-      // branch to handling with the PLIC
       plic_irq_handler();
     } else if (exception_code == IRQ_M_TIMER) {
-
       if (timer_irq_handler) {
         timer_irq_handler();
       }
-
-    } else if (exception_code == IRQ_M_SOFT) {
     }
   } else {
-    // Handle synchronous exceptions (faults, illegal instructions, ecalls) here
+    // Synchronous Exception (Fault / Crash)
+    uart_polled_puts("\r\n\r\n=== CPU EXCEPTION / CRASH DETECTED ===\r\n");
+    uart_print_hex("mcause: 0x", (uint32_t)cause);
+    uart_print_hex("mepc  : 0x", (uint32_t)read_csr(mepc));
+    uart_print_hex("mtval : 0x", (uint32_t)read_csr(mtval));
+
+    // Optional: Dump Stack Backtrace
+    // We grab the stack pointer (sp) at the moment of exception
+    register uint32_t *stack_ptr asm("sp");
+
+    uart_polled_puts("--- Stack Backtrace Search ---\r\n");
+    extern uint32_t _stack_top; // Defined by link.ld as top of CPU_RAM
+    uint32_t *stack_top_ptr = &_stack_top;
+
+    // Scan memory from current stack pointer up to stack top
+    while (stack_ptr < stack_top_ptr) {
+      uint32_t val = *stack_ptr;
+      // Check if value points to valid SHARED_RAM code section (0x00000000 to
+      // 0x00004000)
+      if (val >= 0x00000000 && val < 0x00004000) {
+        uart_print_hex("  from instruction addr: 0x", val);
+      }
+      stack_ptr++;
+    }
+
+    uart_polled_puts("System halted.\r\n");
+    while (1) {
+      // Hang indefinitely for debugger attachment
+    }
   }
 }
 

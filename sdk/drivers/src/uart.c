@@ -79,3 +79,31 @@ void uart_puts(const char *str) {
     str++;
   }
 }
+
+void uart_polled_putc(char c) {
+  // Wait directly on the hardware status register until TX FIFO is not
+  // full/empty
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+    ;
+  *UART_TX_FIFO = (uint32_t)c;
+}
+
+void uart_polled_puts(const char *str) {
+  while (*str != '\0') {
+    uart_polled_putc(*str);
+    str++;
+  }
+}
+
+void uart_print_hex(const char *prefix, uint32_t val) {
+  uart_polled_puts(prefix);
+  char buf[9];
+  buf[8] = '\0';
+  for (int i = 7; i >= 0; i--) {
+    uint32_t nibble = val & 0xF;
+    buf[i] = (nibble < 10) ? ('0' + nibble) : ('a' + nibble - 10);
+    val >>= 4;
+  }
+  uart_polled_puts(buf);
+  uart_polled_puts("\r\n");
+}

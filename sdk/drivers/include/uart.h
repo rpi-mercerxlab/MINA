@@ -46,4 +46,8 @@ void uart_puts(const char *str);
 void uart_isr(void);
 void uart_init();
 
+void uart_polled_putc(char c);
+void uart_polled_puts(const char *str);
+void uart_print_hex(const char *prefix, uint32_t val);
+
 #endif

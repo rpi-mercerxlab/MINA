@@ -1,5 +1,5 @@
 
-/tmp/mina_build_ozkNlV/firmware.elf:     file format elf32-littleriscv
+/tmp/mina_build_LHLyQr/firmware.elf:     file format elf32-littleriscv
 
 
 Disassembly of section .text:
@@ -29,7 +29,7 @@ _start:
     /* 4. Copy .data from SHARED_RAM to CPU_RAM */
     la a0, _data_load_start /* Source address */
   14:	00001517          	auipc	a0,0x1
-  18:	c9c50513          	addi	a0,a0,-868 # cb0 <_data_load_start>
+  18:	ea450513          	addi	a0,a0,-348 # eb8 <_data_load_start>
     la a1, _sdata           /* Destination address */
   1c:	10000597          	auipc	a1,0x10000
   20:	fe458593          	addi	a1,a1,-28 # 10000000 <plic_idx_sort>
@@ -233,7 +233,7 @@ void npu_irq_handler(void) {
  164:	03743533          	mulhu	a0,s0,s7
  168:	8115                	srli	a0,a0,0x5
  16a:	03050513          	addi	a0,a0,48
- 16e:	25b000ef          	jal	bc8 <uart_putc>
+ 16e:	2e5000ef          	jal	c52 <uart_putc>
   uart_putc(value >= 10 ? '0' + (value / 10) % 10 : ' ');
  172:	02943533          	mulhu	a0,s0,s1
  176:	810d                	srli	a0,a0,0x3
@@ -245,7 +245,7 @@ void npu_irq_handler(void) {
  186:	8d1d                	sub	a0,a0,a5
  188:	03050513          	addi	a0,a0,48
  18c:	0ff57513          	zext.b	a0,a0
- 190:	239000ef          	jal	bc8 <uart_putc>
+ 190:	2c3000ef          	jal	c52 <uart_putc>
   uart_putc('0' + value % 10);
  194:	02943733          	mulhu	a4,s0,s1
       for (uint32_t lane = 0; lane < 4u; ++lane) {
@@ -258,10 +258,10 @@ void npu_irq_handler(void) {
  1a4:	40f40533          	sub	a0,s0,a5
  1a8:	03050513          	addi	a0,a0,48
  1ac:	0ff57513          	zext.b	a0,a0
- 1b0:	219000ef          	jal	bc8 <uart_putc>
+ 1b0:	2a3000ef          	jal	c52 <uart_putc>
         uart_putc(' ');
  1b4:	02000513          	li	a0,32
- 1b8:	211000ef          	jal	bc8 <uart_putc>
+ 1b8:	29b000ef          	jal	c52 <uart_putc>
       for (uint32_t lane = 0; lane < 4u; ++lane) {
  1bc:	f92c9ce3          	bne	s9,s2,154 <npu_irq_handler+0x60>
     for (uint32_t word = 0; word < 2u; ++word) {
@@ -269,10 +269,10 @@ void npu_irq_handler(void) {
  1c2:	f95b14e3          	bne	s6,s5,14a <npu_irq_handler+0x56>
     uart_putc('\r');
  1c6:	4535                	li	a0,13
- 1c8:	201000ef          	jal	bc8 <uart_putc>
+ 1c8:	28b000ef          	jal	c52 <uart_putc>
     uart_putc('\n');
  1cc:	4529                	li	a0,10
- 1ce:	1fb000ef          	jal	bc8 <uart_putc>
+ 1ce:	285000ef          	jal	c52 <uart_putc>
   for (uint32_t row = 0; row < MATRIX_DIM; ++row) {
  1d2:	403007b7          	lui	a5,0x40300
  1d6:	0b21                	addi	s6,s6,8
@@ -280,10 +280,10 @@ void npu_irq_handler(void) {
  1dc:	f6fb13e3          	bne	s6,a5,142 <npu_irq_handler+0x4e>
   uart_putc('\r');
  1e0:	4535                	li	a0,13
- 1e2:	1e7000ef          	jal	bc8 <uart_putc>
+ 1e2:	271000ef          	jal	c52 <uart_putc>
   uart_putc('\n');
  1e6:	4529                	li	a0,10
- 1e8:	1e1000ef          	jal	bc8 <uart_putc>
+ 1e8:	26b000ef          	jal	c52 <uart_putc>
 
   // 3. Read result matrix C from 0x400 and print over UART
   print_matrix();
@@ -323,7 +323,7 @@ void npu_irq_handler(void) {
  21a:	6145                	addi	sp,sp,48
  21c:	8082                	ret
   uart_putc(value >= 100 ? '0' + value / 100 : ' ');
- 21e:	1ab000ef          	jal	bc8 <uart_putc>
+ 21e:	235000ef          	jal	c52 <uart_putc>
   uart_putc(value >= 10 ? '0' + (value / 10) % 10 : ' ');
  222:	02000513          	li	a0,32
  226:	f68c75e3          	bgeu	s8,s0,190 <npu_irq_handler+0x9c>
@@ -346,18 +346,18 @@ int main(void) {
   init_interrupts();
  23a:	286d                	jal	2f4 <init_interrupts>
   uart_init();
- 23c:	159000ef          	jal	b94 <uart_init>
+ 23c:	1e3000ef          	jal	c1e <uart_init>
   reg_NPU_irq(npu_irq_handler, 1);
  240:	0f400513          	li	a0,244
  244:	4691                	li	a3,4
  246:	4641                	li	a2,16
  248:	4585                	li	a1,1
- 24a:	2e51                	jal	5de <reg_irq_handler>
+ 24a:	2939                	jal	668 <reg_irq_handler>
 
   uart_puts("Starting program, loaded interrupts\n");
  24c:	6505                	lui	a0,0x1
- 24e:	c7050513          	addi	a0,a0,-912 # c70 <uart_puts+0x20>
- 252:	1ff000ef          	jal	c50 <uart_puts>
+ 24e:	dcc50513          	addi	a0,a0,-564 # dcc <uart_print_hex+0x9a>
+ 252:	289000ef          	jal	cda <uart_puts>
 
   // Ensure NPU is halted and reset before touching Scratchpad RAM
   NPU_RESET();
@@ -391,12 +391,12 @@ int main(void) {
     counter++;
     if (counter == 100000000) {
       uart_puts("Program counter, NPU: ");
- 27c:	c9898993          	addi	s3,s3,-872 # c98 <uart_puts+0x48>
+ 27c:	df498993          	addi	s3,s3,-524 # df4 <uart_print_hex+0xc2>
     buf[i++] = '0' + (val % 10);
  280:	ccd40413          	addi	s0,s0,-819 # cccccccd <_stack_top+0xbccbcccd>
       uart_puts("Program counter, NPU: ");
  284:	854e                	mv	a0,s3
- 286:	1cb000ef          	jal	c50 <uart_puts>
+ 286:	255000ef          	jal	cda <uart_puts>
  28a:	400007b7          	lui	a5,0x40000
  28e:	0050                	addi	a2,sp,4
  290:	07a1                	addi	a5,a5,8 # 40000008 <_stack_top+0x2fff0008>
@@ -423,7 +423,7 @@ int main(void) {
   while (i > 0) {
  2ba:	1a7d                	addi	s4,s4,-1
     uart_putc(buf[--i]);
- 2bc:	10d000ef          	jal	bc8 <uart_putc>
+ 2bc:	197000ef          	jal	c52 <uart_putc>
   while (i > 0) {
  2c0:	ff449be3          	bne	s1,s4,2b6 <main+0x8a>
 
@@ -431,7 +431,7 @@ int main(void) {
 
       uart_putc('\n');
  2c4:	4529                	li	a0,10
- 2c6:	103000ef          	jal	bc8 <uart_putc>
+ 2c6:	18d000ef          	jal	c52 <uart_putc>
       counter = 0;
  2ca:	bf6d                	j	284 <main+0x58>
 
@@ -471,7 +471,7 @@ void init_interrupts(void) {
   // B. Enable Machine External Interrupts in the 'mie' register
   set_csr(mie, MIE_MEIE);
  2fc:	6785                	lui	a5,0x1
- 2fe:	80078793          	addi	a5,a5,-2048 # 800 <_deactivate_timer.part.0+0x6>
+ 2fe:	80078793          	addi	a5,a5,-2048 # 800 <min_heapify+0xac>
  302:	3047a7f3          	csrrs	a5,mie,a5
 
   // C. Enable Global Machine Interrupts in the 'mstatus' register
@@ -481,8 +481,8 @@ void init_interrupts(void) {
  30a:	8082                	ret
 
 0000030c <plic_irq_handler>:
-  } else {
-    // Handle synchronous exceptions (faults, illegal instructions, ecalls) here
+      // Hang indefinitely for debugger attachment
+    }
   }
 }
 
@@ -574,1397 +574,1614 @@ void plic_irq_handler(void) {
 
 0000038c <trap_handler>:
 void __attribute__((interrupt("machine"), aligned(4))) trap_handler(void) {
- 38c:	7139                	addi	sp,sp,-64
- 38e:	de06                	sw	ra,60(sp)
- 390:	dc16                	sw	t0,56(sp)
- 392:	da1a                	sw	t1,52(sp)
- 394:	d81e                	sw	t2,48(sp)
- 396:	d62a                	sw	a0,44(sp)
- 398:	d42e                	sw	a1,40(sp)
- 39a:	d232                	sw	a2,36(sp)
- 39c:	d036                	sw	a3,32(sp)
- 39e:	ce3a                	sw	a4,28(sp)
- 3a0:	cc3e                	sw	a5,24(sp)
- 3a2:	ca42                	sw	a6,20(sp)
- 3a4:	c846                	sw	a7,16(sp)
- 3a6:	c672                	sw	t3,12(sp)
- 3a8:	c476                	sw	t4,8(sp)
- 3aa:	c27a                	sw	t5,4(sp)
- 3ac:	c07e                	sw	t6,0(sp)
+ 38c:	715d                	addi	sp,sp,-80
+ 38e:	c686                	sw	ra,76(sp)
+ 390:	c496                	sw	t0,72(sp)
+ 392:	c29a                	sw	t1,68(sp)
+ 394:	c09e                	sw	t2,64(sp)
+ 396:	de22                	sw	s0,60(sp)
+ 398:	dc26                	sw	s1,56(sp)
+ 39a:	da2a                	sw	a0,52(sp)
+ 39c:	d82e                	sw	a1,48(sp)
+ 39e:	d632                	sw	a2,44(sp)
+ 3a0:	d436                	sw	a3,40(sp)
+ 3a2:	d23a                	sw	a4,36(sp)
+ 3a4:	d03e                	sw	a5,32(sp)
+ 3a6:	ce42                	sw	a6,28(sp)
+ 3a8:	cc46                	sw	a7,24(sp)
+ 3aa:	ca4a                	sw	s2,20(sp)
+ 3ac:	c84e                	sw	s3,16(sp)
+ 3ae:	c672                	sw	t3,12(sp)
+ 3b0:	c476                	sw	t4,8(sp)
+ 3b2:	c27a                	sw	t5,4(sp)
+ 3b4:	c07e                	sw	t6,0(sp)
   unsigned long cause = read_csr(mcause);
- 3ae:	342027f3          	csrr	a5,mcause
+ 3b6:	34202473          	csrr	s0,mcause
   if ((long)cause < 0) {
- 3b2:	0207c563          	bltz	a5,3dc <trap_handler+0x50>
-}
- 3b6:	50f2                	lw	ra,60(sp)
- 3b8:	52e2                	lw	t0,56(sp)
- 3ba:	5352                	lw	t1,52(sp)
- 3bc:	53c2                	lw	t2,48(sp)
- 3be:	5532                	lw	a0,44(sp)
- 3c0:	55a2                	lw	a1,40(sp)
- 3c2:	5612                	lw	a2,36(sp)
- 3c4:	5682                	lw	a3,32(sp)
- 3c6:	4772                	lw	a4,28(sp)
- 3c8:	47e2                	lw	a5,24(sp)
- 3ca:	4852                	lw	a6,20(sp)
- 3cc:	48c2                	lw	a7,16(sp)
- 3ce:	4e32                	lw	t3,12(sp)
- 3d0:	4ea2                	lw	t4,8(sp)
- 3d2:	4f12                	lw	t5,4(sp)
- 3d4:	4f82                	lw	t6,0(sp)
- 3d6:	6121                	addi	sp,sp,64
- 3d8:	30200073          	mret
+ 3ba:	04045263          	bgez	s0,3fe <trap_handler+0x72>
     unsigned long exception_code = cause & ~(1UL << (sizeof(long) * 8 - 1));
- 3dc:	0786                	slli	a5,a5,0x1
- 3de:	8385                	srli	a5,a5,0x1
+ 3be:	00141793          	slli	a5,s0,0x1
+ 3c2:	8385                	srli	a5,a5,0x1
     if (exception_code == IRQ_M_EXT) {
- 3e0:	472d                	li	a4,11
- 3e2:	00e78c63          	beq	a5,a4,3fa <trap_handler+0x6e>
+ 3c4:	472d                	li	a4,11
+ 3c6:	0ae78863          	beq	a5,a4,476 <trap_handler+0xea>
     } else if (exception_code == IRQ_M_TIMER) {
- 3e6:	471d                	li	a4,7
- 3e8:	fce797e3          	bne	a5,a4,3b6 <trap_handler+0x2a>
-      if (timer_irq_handler) {
- 3ec:	100007b7          	lui	a5,0x10000
- 3f0:	0487a783          	lw	a5,72(a5) # 10000048 <timer_irq_handler>
- 3f4:	d3e9                	beqz	a5,3b6 <trap_handler+0x2a>
-        timer_irq_handler();
- 3f6:	9782                	jalr	a5
+ 3ca:	471d                	li	a4,7
+ 3cc:	0ae78763          	beq	a5,a4,47a <trap_handler+0xee>
 }
- 3f8:	bf7d                	j	3b6 <trap_handler+0x2a>
+ 3d0:	5472                	lw	s0,60(sp)
+ 3d2:	40b6                	lw	ra,76(sp)
+ 3d4:	42a6                	lw	t0,72(sp)
+ 3d6:	4316                	lw	t1,68(sp)
+ 3d8:	4386                	lw	t2,64(sp)
+ 3da:	54e2                	lw	s1,56(sp)
+ 3dc:	5552                	lw	a0,52(sp)
+ 3de:	55c2                	lw	a1,48(sp)
+ 3e0:	5632                	lw	a2,44(sp)
+ 3e2:	56a2                	lw	a3,40(sp)
+ 3e4:	5712                	lw	a4,36(sp)
+ 3e6:	5782                	lw	a5,32(sp)
+ 3e8:	4872                	lw	a6,28(sp)
+ 3ea:	48e2                	lw	a7,24(sp)
+ 3ec:	4952                	lw	s2,20(sp)
+ 3ee:	49c2                	lw	s3,16(sp)
+ 3f0:	4e32                	lw	t3,12(sp)
+ 3f2:	4ea2                	lw	t4,8(sp)
+ 3f4:	4f12                	lw	t5,4(sp)
+ 3f6:	4f82                	lw	t6,0(sp)
+ 3f8:	6161                	addi	sp,sp,80
+ 3fa:	30200073          	mret
+    uart_polled_puts("\r\n\r\n=== CPU EXCEPTION / CRASH DETECTED ===\r\n");
+ 3fe:	6505                	lui	a0,0x1
+ 400:	e0c50513          	addi	a0,a0,-500 # e0c <uart_print_hex+0xda>
+ 404:	10b000ef          	jal	d0e <uart_polled_puts>
+    uart_print_hex("mcause: 0x", (uint32_t)cause);
+ 408:	6505                	lui	a0,0x1
+ 40a:	85a2                	mv	a1,s0
+ 40c:	e3c50513          	addi	a0,a0,-452 # e3c <uart_print_hex+0x10a>
+ 410:	123000ef          	jal	d32 <uart_print_hex>
+    uart_print_hex("mepc  : 0x", (uint32_t)read_csr(mepc));
+ 414:	341025f3          	csrr	a1,mepc
+ 418:	6505                	lui	a0,0x1
+ 41a:	e4850513          	addi	a0,a0,-440 # e48 <uart_print_hex+0x116>
+ 41e:	115000ef          	jal	d32 <uart_print_hex>
+    uart_print_hex("mtval : 0x", (uint32_t)read_csr(mtval));
+ 422:	343025f3          	csrr	a1,mtval
+ 426:	6505                	lui	a0,0x1
+ 428:	e5450513          	addi	a0,a0,-428 # e54 <uart_print_hex+0x122>
+ 42c:	107000ef          	jal	d32 <uart_print_hex>
+    uart_polled_puts("--- Stack Backtrace Search ---\r\n");
+ 430:	6505                	lui	a0,0x1
+    while (stack_ptr < stack_top_ptr) {
+ 432:	100104b7          	lui	s1,0x10010
+    uart_polled_puts("--- Stack Backtrace Search ---\r\n");
+ 436:	e6050513          	addi	a0,a0,-416 # e60 <uart_print_hex+0x12e>
+    while (stack_ptr < stack_top_ptr) {
+ 43a:	00048493          	mv	s1,s1
+    uart_polled_puts("--- Stack Backtrace Search ---\r\n");
+ 43e:	0d1000ef          	jal	d0e <uart_polled_puts>
+    while (stack_ptr < stack_top_ptr) {
+ 442:	02917463          	bgeu	sp,s1,46a <trap_handler+0xde>
+ 446:	6785                	lui	a5,0x1
+        uart_print_hex("  from instruction addr: 0x", val);
+ 448:	e8478993          	addi	s3,a5,-380 # e84 <uart_print_hex+0x152>
+ 44c:	840a                	mv	s0,sp
+      if (val >= 0x00000000 && val < 0x00004000) {
+ 44e:	6911                	lui	s2,0x4
+ 450:	a021                	j	458 <trap_handler+0xcc>
+    while (stack_ptr < stack_top_ptr) {
+ 452:	0411                	addi	s0,s0,4
+ 454:	00947b63          	bgeu	s0,s1,46a <trap_handler+0xde>
+      uint32_t val = *stack_ptr;
+ 458:	400c                	lw	a1,0(s0)
+      if (val >= 0x00000000 && val < 0x00004000) {
+ 45a:	ff25fce3          	bgeu	a1,s2,452 <trap_handler+0xc6>
+        uart_print_hex("  from instruction addr: 0x", val);
+ 45e:	854e                	mv	a0,s3
+    while (stack_ptr < stack_top_ptr) {
+ 460:	0411                	addi	s0,s0,4
+        uart_print_hex("  from instruction addr: 0x", val);
+ 462:	0d1000ef          	jal	d32 <uart_print_hex>
+    while (stack_ptr < stack_top_ptr) {
+ 466:	fe9469e3          	bltu	s0,s1,458 <trap_handler+0xcc>
+    uart_polled_puts("System halted.\r\n");
+ 46a:	6505                	lui	a0,0x1
+ 46c:	ea050513          	addi	a0,a0,-352 # ea0 <uart_print_hex+0x16e>
+ 470:	09f000ef          	jal	d0e <uart_polled_puts>
+    while (1) {
+ 474:	a001                	j	474 <trap_handler+0xe8>
       plic_irq_handler();
- 3fa:	3f09                	jal	30c <plic_irq_handler>
- 3fc:	bf6d                	j	3b6 <trap_handler+0x2a>
+ 476:	3d59                	jal	30c <plic_irq_handler>
+ 478:	bfa1                	j	3d0 <trap_handler+0x44>
+      if (timer_irq_handler) {
+ 47a:	100007b7          	lui	a5,0x10000
+ 47e:	0487a783          	lw	a5,72(a5) # 10000048 <timer_irq_handler>
+ 482:	d7b9                	beqz	a5,3d0 <trap_handler+0x44>
+        timer_irq_handler();
+ 484:	9782                	jalr	a5
+ 486:	b7a9                	j	3d0 <trap_handler+0x44>
 
-000003fe <resort_by_prior>:
+00000488 <resort_by_prior>:
   *PLIC_IRQ_ACTV |= actv_mask;
 
   resort_by_prior();
 }
 
 void resort_by_prior() {
- 3fe:	1141                	addi	sp,sp,-16
+ 488:	1141                	addi	sp,sp,-16
 
   for (int i = 0; i < 8; i++) {
     plic_idx_sort[i] = i;
- 400:	100007b7          	lui	a5,0x10000
- 404:	00078793          	mv	a5,a5
+ 48a:	100007b7          	lui	a5,0x10000
+ 48e:	00078793          	mv	a5,a5
 void resort_by_prior() {
- 408:	c622                	sw	s0,12(sp)
- 40a:	c426                	sw	s1,8(sp)
- 40c:	c24a                	sw	s2,4(sp)
- 40e:	c04e                	sw	s3,0(sp)
+ 492:	c622                	sw	s0,12(sp)
+ 494:	c426                	sw	s1,8(sp)
+ 496:	c24a                	sw	s2,4(sp)
+ 498:	c04e                	sw	s3,0(sp)
     plic_idx_sort[i] = i;
- 410:	4709                	li	a4,2
- 412:	c798                	sw	a4,8(a5)
- 414:	470d                	li	a4,3
- 416:	c7d8                	sw	a4,12(a5)
- 418:	4711                	li	a4,4
- 41a:	cb98                	sw	a4,16(a5)
- 41c:	4715                	li	a4,5
- 41e:	cbd8                	sw	a4,20(a5)
- 420:	4719                	li	a4,6
- 422:	cf98                	sw	a4,24(a5)
+ 49a:	4709                	li	a4,2
+ 49c:	c798                	sw	a4,8(a5)
+ 49e:	470d                	li	a4,3
+ 4a0:	c7d8                	sw	a4,12(a5)
+ 4a2:	4711                	li	a4,4
+ 4a4:	cb98                	sw	a4,16(a5)
+ 4a6:	4715                	li	a4,5
+ 4a8:	cbd8                	sw	a4,20(a5)
+ 4aa:	4719                	li	a4,6
+ 4ac:	cf98                	sw	a4,24(a5)
   }
 
   // 19-Comparator Sorting Network for N=8
   // Layer 1
   CS(0, 1);
- 424:	0207a283          	lw	t0,32(a5) # 10000020 <plic_irq_priorities>
+ 4ae:	0207a283          	lw	t0,32(a5) # 10000020 <plic_irq_priorities>
     plic_idx_sort[i] = i;
- 428:	471d                	li	a4,7
+ 4b2:	471d                	li	a4,7
   CS(0, 1);
- 42a:	53c4                	lw	s1,36(a5)
+ 4b4:	53c4                	lw	s1,36(a5)
     plic_idx_sort[i] = i;
- 42c:	cfd8                	sw	a4,28(a5)
- 42e:	4705                	li	a4,1
- 430:	0007a023          	sw	zero,0(a5)
- 434:	c3d8                	sw	a4,4(a5)
+ 4b6:	cfd8                	sw	a4,28(a5)
+ 4b8:	4705                	li	a4,1
+ 4ba:	0007a023          	sw	zero,0(a5)
+ 4be:	c3d8                	sw	a4,4(a5)
   CS(0, 1);
- 436:	8eba                	mv	t4,a4
- 438:	4401                	li	s0,0
- 43a:	0092da63          	bge	t0,s1,44e <resort_by_prior+0x50>
- 43e:	8696                	mv	a3,t0
- 440:	c398                	sw	a4,0(a5)
- 442:	82a6                	mv	t0,s1
- 444:	0007a223          	sw	zero,4(a5)
- 448:	84b6                	mv	s1,a3
- 44a:	843a                	mv	s0,a4
- 44c:	4e81                	li	t4,0
+ 4c0:	8eba                	mv	t4,a4
+ 4c2:	4401                	li	s0,0
+ 4c4:	0092da63          	bge	t0,s1,4d8 <resort_by_prior+0x50>
+ 4c8:	8696                	mv	a3,t0
+ 4ca:	c398                	sw	a4,0(a5)
+ 4cc:	82a6                	mv	t0,s1
+ 4ce:	0007a223          	sw	zero,4(a5)
+ 4d2:	84b6                	mv	s1,a3
+ 4d4:	843a                	mv	s0,a4
+ 4d6:	4e81                	li	t4,0
   CS(2, 3);
- 44e:	578c                	lw	a1,40(a5)
- 450:	57d8                	lw	a4,44(a5)
- 452:	4f0d                	li	t5,3
- 454:	4809                	li	a6,2
- 456:	00e5db63          	bge	a1,a4,46c <resort_by_prior+0x6e>
- 45a:	86ae                	mv	a3,a1
- 45c:	01e7a423          	sw	t5,8(a5)
- 460:	0107a623          	sw	a6,12(a5)
- 464:	85ba                	mv	a1,a4
- 466:	8f42                	mv	t5,a6
- 468:	8736                	mv	a4,a3
- 46a:	480d                	li	a6,3
+ 4d8:	578c                	lw	a1,40(a5)
+ 4da:	57d8                	lw	a4,44(a5)
+ 4dc:	4f0d                	li	t5,3
+ 4de:	4809                	li	a6,2
+ 4e0:	00e5db63          	bge	a1,a4,4f6 <resort_by_prior+0x6e>
+ 4e4:	86ae                	mv	a3,a1
+ 4e6:	01e7a423          	sw	t5,8(a5)
+ 4ea:	0107a623          	sw	a6,12(a5)
+ 4ee:	85ba                	mv	a1,a4
+ 4f0:	8f42                	mv	t5,a6
+ 4f2:	8736                	mv	a4,a3
+ 4f4:	480d                	li	a6,3
   CS(4, 5);
- 46c:	5b94                	lw	a3,48(a5)
- 46e:	5bd0                	lw	a2,52(a5)
- 470:	4e15                	li	t3,5
- 472:	4311                	li	t1,4
- 474:	00c6db63          	bge	a3,a2,48a <resort_by_prior+0x8c>
- 478:	8536                	mv	a0,a3
- 47a:	01c7a823          	sw	t3,16(a5)
- 47e:	0067aa23          	sw	t1,20(a5)
- 482:	86b2                	mv	a3,a2
- 484:	8e1a                	mv	t3,t1
- 486:	862a                	mv	a2,a0
- 488:	4315                	li	t1,5
+ 4f6:	5b94                	lw	a3,48(a5)
+ 4f8:	5bd0                	lw	a2,52(a5)
+ 4fa:	4e15                	li	t3,5
+ 4fc:	4311                	li	t1,4
+ 4fe:	00c6db63          	bge	a3,a2,514 <resort_by_prior+0x8c>
+ 502:	8536                	mv	a0,a3
+ 504:	01c7a823          	sw	t3,16(a5)
+ 508:	0067aa23          	sw	t1,20(a5)
+ 50c:	86b2                	mv	a3,a2
+ 50e:	8e1a                	mv	t3,t1
+ 510:	862a                	mv	a2,a0
+ 512:	4315                	li	t1,5
   CS(6, 7);
- 48a:	5f88                	lw	a0,56(a5)
- 48c:	03c7af83          	lw	t6,60(a5)
- 490:	439d                	li	t2,7
- 492:	4899                	li	a7,6
- 494:	01f55b63          	bge	a0,t6,4aa <resort_by_prior+0xac>
- 498:	892a                	mv	s2,a0
- 49a:	0077ac23          	sw	t2,24(a5)
- 49e:	0117ae23          	sw	a7,28(a5)
- 4a2:	857e                	mv	a0,t6
- 4a4:	83c6                	mv	t2,a7
- 4a6:	8fca                	mv	t6,s2
- 4a8:	489d                	li	a7,7
+ 514:	5f88                	lw	a0,56(a5)
+ 516:	03c7af83          	lw	t6,60(a5)
+ 51a:	439d                	li	t2,7
+ 51c:	4899                	li	a7,6
+ 51e:	01f55b63          	bge	a0,t6,534 <resort_by_prior+0xac>
+ 522:	892a                	mv	s2,a0
+ 524:	0077ac23          	sw	t2,24(a5)
+ 528:	0117ae23          	sw	a7,28(a5)
+ 52c:	857e                	mv	a0,t6
+ 52e:	83c6                	mv	t2,a7
+ 530:	8fca                	mv	t6,s2
+ 532:	489d                	li	a7,7
   // Layer 2
   CS(0, 2);
- 4aa:	00b2db63          	bge	t0,a1,4c0 <resort_by_prior+0xc2>
- 4ae:	89ae                	mv	s3,a1
- 4b0:	8942                	mv	s2,a6
- 4b2:	0107a023          	sw	a6,0(a5)
- 4b6:	c780                	sw	s0,8(a5)
- 4b8:	8596                	mv	a1,t0
- 4ba:	8822                	mv	a6,s0
- 4bc:	82ce                	mv	t0,s3
- 4be:	844a                	mv	s0,s2
+ 534:	00b2db63          	bge	t0,a1,54a <resort_by_prior+0xc2>
+ 538:	89ae                	mv	s3,a1
+ 53a:	8942                	mv	s2,a6
+ 53c:	0107a023          	sw	a6,0(a5)
+ 540:	c780                	sw	s0,8(a5)
+ 542:	8596                	mv	a1,t0
+ 544:	8822                	mv	a6,s0
+ 546:	82ce                	mv	t0,s3
+ 548:	844a                	mv	s0,s2
   CS(1, 3);
- 4c0:	00e4dc63          	bge	s1,a4,4d8 <resort_by_prior+0xda>
- 4c4:	89a6                	mv	s3,s1
- 4c6:	8976                	mv	s2,t4
- 4c8:	01d7a623          	sw	t4,12(a5)
- 4cc:	01e7a223          	sw	t5,4(a5)
- 4d0:	84ba                	mv	s1,a4
- 4d2:	8efa                	mv	t4,t5
- 4d4:	874e                	mv	a4,s3
- 4d6:	8f4a                	mv	t5,s2
+ 54a:	00e4dc63          	bge	s1,a4,562 <resort_by_prior+0xda>
+ 54e:	89a6                	mv	s3,s1
+ 550:	8976                	mv	s2,t4
+ 552:	01d7a623          	sw	t4,12(a5)
+ 556:	01e7a223          	sw	t5,4(a5)
+ 55a:	84ba                	mv	s1,a4
+ 55c:	8efa                	mv	t4,t5
+ 55e:	874e                	mv	a4,s3
+ 560:	8f4a                	mv	t5,s2
   CS(4, 6);
- 4d8:	00a6dc63          	bge	a3,a0,4f0 <resort_by_prior+0xf2>
- 4dc:	89aa                	mv	s3,a0
- 4de:	8946                	mv	s2,a7
- 4e0:	0117a823          	sw	a7,16(a5)
- 4e4:	0067ac23          	sw	t1,24(a5)
- 4e8:	8536                	mv	a0,a3
- 4ea:	889a                	mv	a7,t1
- 4ec:	86ce                	mv	a3,s3
- 4ee:	834a                	mv	t1,s2
+ 562:	00a6dc63          	bge	a3,a0,57a <resort_by_prior+0xf2>
+ 566:	89aa                	mv	s3,a0
+ 568:	8946                	mv	s2,a7
+ 56a:	0117a823          	sw	a7,16(a5)
+ 56e:	0067ac23          	sw	t1,24(a5)
+ 572:	8536                	mv	a0,a3
+ 574:	889a                	mv	a7,t1
+ 576:	86ce                	mv	a3,s3
+ 578:	834a                	mv	t1,s2
   CS(5, 7);
- 4f0:	01f65c63          	bge	a2,t6,508 <resort_by_prior+0x10a>
- 4f4:	89b2                	mv	s3,a2
- 4f6:	8972                	mv	s2,t3
- 4f8:	01c7ae23          	sw	t3,28(a5)
- 4fc:	0077aa23          	sw	t2,20(a5)
- 500:	867e                	mv	a2,t6
- 502:	8e1e                	mv	t3,t2
- 504:	8fce                	mv	t6,s3
- 506:	83ca                	mv	t2,s2
+ 57a:	01f65c63          	bge	a2,t6,592 <resort_by_prior+0x10a>
+ 57e:	89b2                	mv	s3,a2
+ 580:	8972                	mv	s2,t3
+ 582:	01c7ae23          	sw	t3,28(a5)
+ 586:	0077aa23          	sw	t2,20(a5)
+ 58a:	867e                	mv	a2,t6
+ 58c:	8e1e                	mv	t3,t2
+ 58e:	8fce                	mv	t6,s3
+ 590:	83ca                	mv	t2,s2
   // Layer 3
   CS(1, 2);
- 508:	00b4dc63          	bge	s1,a1,520 <resort_by_prior+0x122>
- 50c:	89a6                	mv	s3,s1
- 50e:	8976                	mv	s2,t4
- 510:	01d7a423          	sw	t4,8(a5)
- 514:	0107a223          	sw	a6,4(a5)
- 518:	84ae                	mv	s1,a1
- 51a:	8ec2                	mv	t4,a6
- 51c:	85ce                	mv	a1,s3
- 51e:	884a                	mv	a6,s2
+ 592:	00b4dc63          	bge	s1,a1,5aa <resort_by_prior+0x122>
+ 596:	89a6                	mv	s3,s1
+ 598:	8976                	mv	s2,t4
+ 59a:	01d7a423          	sw	t4,8(a5)
+ 59e:	0107a223          	sw	a6,4(a5)
+ 5a2:	84ae                	mv	s1,a1
+ 5a4:	8ec2                	mv	t4,a6
+ 5a6:	85ce                	mv	a1,s3
+ 5a8:	884a                	mv	a6,s2
   CS(5, 6);
- 520:	00a65c63          	bge	a2,a0,538 <resort_by_prior+0x13a>
- 524:	89b2                	mv	s3,a2
- 526:	8972                	mv	s2,t3
- 528:	01c7ac23          	sw	t3,24(a5)
- 52c:	0117aa23          	sw	a7,20(a5)
- 530:	862a                	mv	a2,a0
- 532:	8e46                	mv	t3,a7
- 534:	854e                	mv	a0,s3
- 536:	88ca                	mv	a7,s2
+ 5aa:	00a65c63          	bge	a2,a0,5c2 <resort_by_prior+0x13a>
+ 5ae:	89b2                	mv	s3,a2
+ 5b0:	8972                	mv	s2,t3
+ 5b2:	01c7ac23          	sw	t3,24(a5)
+ 5b6:	0117aa23          	sw	a7,20(a5)
+ 5ba:	862a                	mv	a2,a0
+ 5bc:	8e46                	mv	t3,a7
+ 5be:	854e                	mv	a0,s3
+ 5c0:	88ca                	mv	a7,s2
   CS(0, 4);
- 538:	00d2d763          	bge	t0,a3,546 <resort_by_prior+0x148>
- 53c:	0067a023          	sw	t1,0(a5)
- 540:	cb80                	sw	s0,16(a5)
- 542:	8696                	mv	a3,t0
- 544:	8322                	mv	t1,s0
+ 5c2:	00d2d763          	bge	t0,a3,5d0 <resort_by_prior+0x148>
+ 5c6:	0067a023          	sw	t1,0(a5)
+ 5ca:	cb80                	sw	s0,16(a5)
+ 5cc:	8696                	mv	a3,t0
+ 5ce:	8322                	mv	t1,s0
   CS(3, 7);
- 546:	01f75863          	bge	a4,t6,556 <resort_by_prior+0x158>
- 54a:	01e7ae23          	sw	t5,28(a5)
- 54e:	0077a623          	sw	t2,12(a5)
- 552:	877e                	mv	a4,t6
- 554:	8f1e                	mv	t5,t2
+ 5d0:	01f75863          	bge	a4,t6,5e0 <resort_by_prior+0x158>
+ 5d4:	01e7ae23          	sw	t5,28(a5)
+ 5d8:	0077a623          	sw	t2,12(a5)
+ 5dc:	877e                	mv	a4,t6
+ 5de:	8f1e                	mv	t5,t2
   // Layer 4
   CS(1, 5);
- 556:	00c4dc63          	bge	s1,a2,56e <resort_by_prior+0x170>
- 55a:	82a6                	mv	t0,s1
- 55c:	8ff6                	mv	t6,t4
- 55e:	01d7aa23          	sw	t4,20(a5)
- 562:	01c7a223          	sw	t3,4(a5)
- 566:	84b2                	mv	s1,a2
- 568:	8ef2                	mv	t4,t3
- 56a:	8616                	mv	a2,t0
- 56c:	8e7e                	mv	t3,t6
+ 5e0:	00c4dc63          	bge	s1,a2,5f8 <resort_by_prior+0x170>
+ 5e4:	82a6                	mv	t0,s1
+ 5e6:	8ff6                	mv	t6,t4
+ 5e8:	01d7aa23          	sw	t4,20(a5)
+ 5ec:	01c7a223          	sw	t3,4(a5)
+ 5f0:	84b2                	mv	s1,a2
+ 5f2:	8ef2                	mv	t4,t3
+ 5f4:	8616                	mv	a2,t0
+ 5f6:	8e7e                	mv	t3,t6
   CS(2, 6);
- 56e:	00a5dc63          	bge	a1,a0,586 <resort_by_prior+0x188>
- 572:	82aa                	mv	t0,a0
- 574:	8fc6                	mv	t6,a7
- 576:	0117a423          	sw	a7,8(a5)
- 57a:	0107ac23          	sw	a6,24(a5)
- 57e:	852e                	mv	a0,a1
- 580:	88c2                	mv	a7,a6
- 582:	8596                	mv	a1,t0
- 584:	887e                	mv	a6,t6
+ 5f8:	00a5dc63          	bge	a1,a0,610 <resort_by_prior+0x188>
+ 5fc:	82aa                	mv	t0,a0
+ 5fe:	8fc6                	mv	t6,a7
+ 600:	0117a423          	sw	a7,8(a5)
+ 604:	0107ac23          	sw	a6,24(a5)
+ 608:	852e                	mv	a0,a1
+ 60a:	88c2                	mv	a7,a6
+ 60c:	8596                	mv	a1,t0
+ 60e:	887e                	mv	a6,t6
   // Layer 5
   CS(1, 4);
- 586:	00d4d863          	bge	s1,a3,596 <resort_by_prior+0x198>
- 58a:	0067a223          	sw	t1,4(a5)
- 58e:	01d7a823          	sw	t4,16(a5)
- 592:	86a6                	mv	a3,s1
- 594:	8376                	mv	t1,t4
+ 610:	00d4d863          	bge	s1,a3,620 <resort_by_prior+0x198>
+ 614:	0067a223          	sw	t1,4(a5)
+ 618:	01d7a823          	sw	t4,16(a5)
+ 61c:	86a6                	mv	a3,s1
+ 61e:	8376                	mv	t1,t4
   CS(3, 6);
- 596:	00a75863          	bge	a4,a0,5a6 <resort_by_prior+0x1a8>
- 59a:	01e7ac23          	sw	t5,24(a5)
- 59e:	0117a623          	sw	a7,12(a5)
- 5a2:	872a                	mv	a4,a0
- 5a4:	8f46                	mv	t5,a7
+ 620:	00a75863          	bge	a4,a0,630 <resort_by_prior+0x1a8>
+ 624:	01e7ac23          	sw	t5,24(a5)
+ 628:	0117a623          	sw	a7,12(a5)
+ 62c:	872a                	mv	a4,a0
+ 62e:	8f46                	mv	t5,a7
   // Layer 6
   CS(2, 4);
- 5a6:	00d5d863          	bge	a1,a3,5b6 <resort_by_prior+0x1b8>
- 5aa:	0067a423          	sw	t1,8(a5)
- 5ae:	0107a823          	sw	a6,16(a5)
- 5b2:	86ae                	mv	a3,a1
- 5b4:	8342                	mv	t1,a6
+ 630:	00d5d863          	bge	a1,a3,640 <resort_by_prior+0x1b8>
+ 634:	0067a423          	sw	t1,8(a5)
+ 638:	0107a823          	sw	a6,16(a5)
+ 63c:	86ae                	mv	a3,a1
+ 63e:	8342                	mv	t1,a6
   CS(3, 5);
- 5b6:	00c75863          	bge	a4,a2,5c6 <resort_by_prior+0x1c8>
- 5ba:	01e7aa23          	sw	t5,20(a5)
- 5be:	01c7a623          	sw	t3,12(a5)
- 5c2:	8732                	mv	a4,a2
- 5c4:	8f72                	mv	t5,t3
+ 640:	00c75863          	bge	a4,a2,650 <resort_by_prior+0x1c8>
+ 644:	01e7aa23          	sw	t5,20(a5)
+ 648:	01c7a623          	sw	t3,12(a5)
+ 64c:	8732                	mv	a4,a2
+ 64e:	8f72                	mv	t5,t3
   // Layer 7
   CS(3, 4);
- 5c6:	00d75663          	bge	a4,a3,5d2 <resort_by_prior+0x1d4>
- 5ca:	0067a623          	sw	t1,12(a5)
- 5ce:	01e7a823          	sw	t5,16(a5)
+ 650:	00d75663          	bge	a4,a3,65c <resort_by_prior+0x1d4>
+ 654:	0067a623          	sw	t1,12(a5)
+ 658:	01e7a823          	sw	t5,16(a5)
 }
- 5d2:	4432                	lw	s0,12(sp)
- 5d4:	44a2                	lw	s1,8(sp)
- 5d6:	4912                	lw	s2,4(sp)
- 5d8:	4982                	lw	s3,0(sp)
- 5da:	0141                	addi	sp,sp,16
- 5dc:	8082                	ret
+ 65c:	4432                	lw	s0,12(sp)
+ 65e:	44a2                	lw	s1,8(sp)
+ 660:	4912                	lw	s2,4(sp)
+ 662:	4982                	lw	s3,0(sp)
+ 664:	0141                	addi	sp,sp,16
+ 666:	8082                	ret
 
-000005de <reg_irq_handler>:
+00000668 <reg_irq_handler>:
   *PLIC_IRQ_ACTV |= actv_mask;
- 5de:	200008b7          	lui	a7,0x20000
- 5e2:	0008a803          	lw	a6,0(a7) # 20000000 <_stack_top+0xfff0000>
+ 668:	200008b7          	lui	a7,0x20000
+ 66c:	0008a803          	lw	a6,0(a7) # 20000000 <_stack_top+0xfff0000>
   plic_irq_priorities[arr_idx] = priority;
- 5e6:	100007b7          	lui	a5,0x10000
+ 670:	100007b7          	lui	a5,0x10000
   plic_irq_handlers[arr_idx] = _plic_irq_handler;
- 5ea:	068a                	slli	a3,a3,0x2
- 5ec:	81018713          	addi	a4,gp,-2032 # 10000050 <plic_irq_handlers>
+ 674:	068a                	slli	a3,a3,0x2
+ 676:	81018713          	addi	a4,gp,-2032 # 10000050 <plic_irq_handlers>
   plic_irq_priorities[arr_idx] = priority;
- 5f0:	00078793          	mv	a5,a5
+ 67a:	00078793          	mv	a5,a5
   plic_irq_handlers[arr_idx] = _plic_irq_handler;
- 5f4:	9736                	add	a4,a4,a3
+ 67e:	9736                	add	a4,a4,a3
   plic_irq_priorities[arr_idx] = priority;
- 5f6:	97b6                	add	a5,a5,a3
+ 680:	97b6                	add	a5,a5,a3
   plic_irq_handlers[arr_idx] = _plic_irq_handler;
- 5f8:	c308                	sw	a0,0(a4)
+ 682:	c308                	sw	a0,0(a4)
   plic_irq_priorities[arr_idx] = priority;
- 5fa:	d38c                	sw	a1,32(a5)
+ 684:	d38c                	sw	a1,32(a5)
   *PLIC_IRQ_ACTV |= actv_mask;
- 5fc:	00c86833          	or	a6,a6,a2
- 600:	0108a023          	sw	a6,0(a7)
+ 686:	00c86833          	or	a6,a6,a2
+ 68a:	0108a023          	sw	a6,0(a7)
   resort_by_prior();
- 604:	bbed                	j	3fe <resort_by_prior>
+ 68e:	bbed                	j	488 <resort_by_prior>
 
-00000606 <reg_timer_irq>:
+00000690 <reg_timer_irq>:
 
 void reg_timer_irq(void (*_timer_irq_handler)(void)) {
   timer_irq_handler = _timer_irq_handler;
- 606:	100007b7          	lui	a5,0x10000
- 60a:	04a7a423          	sw	a0,72(a5) # 10000048 <timer_irq_handler>
+ 690:	100007b7          	lui	a5,0x10000
+ 694:	04a7a423          	sw	a0,72(a5) # 10000048 <timer_irq_handler>
 }
- 60e:	8082                	ret
+ 698:	8082                	ret
 
-00000610 <init_ring_buffer>:
+0000069a <init_ring_buffer>:
 #include "../include/ring_buff.h"
 
 void init_ring_buffer(ring_buffer_t *rb) {
   // No malloc needed! The memory is already allocated as part of the struct.
   rb->head = 0;
- 610:	10050023          	sb	zero,256(a0)
+ 69a:	10050023          	sb	zero,256(a0)
   rb->tail = 0;
- 614:	100500a3          	sb	zero,257(a0)
+ 69e:	100500a3          	sb	zero,257(a0)
 }
- 618:	8082                	ret
+ 6a2:	8082                	ret
 
-0000061a <reset_ring_buffer>:
+000006a4 <reset_ring_buffer>:
 
 void reset_ring_buffer(ring_buffer_t *rb) {
- 61a:	10050023          	sb	zero,256(a0)
- 61e:	100500a3          	sb	zero,257(a0)
- 622:	8082                	ret
+ 6a4:	10050023          	sb	zero,256(a0)
+ 6a8:	100500a3          	sb	zero,257(a0)
+ 6ac:	8082                	ret
 
-00000624 <insert_rb>:
+000006ae <insert_rb>:
 }
 
 bool insert_rb(ring_buffer_t *rb, char c) {
   // Calculate what the next head position will be.
   // uint8_t naturally wraps from 255 back to 0.
   uint8_t next_head = (uint8_t)(rb->head + 1);
- 624:	10054703          	lbu	a4,256(a0)
+ 6ae:	10054703          	lbu	a4,256(a0)
 
   // If the next head hits the tail, the buffer is full.
   // Note: This design sacrifices 1 byte of capacity, holding a max of 255
   // items.
   if (next_head == rb->tail) {
- 628:	10154683          	lbu	a3,257(a0)
+ 6b2:	10154683          	lbu	a3,257(a0)
   uint8_t next_head = (uint8_t)(rb->head + 1);
- 62c:	00170793          	addi	a5,a4,1 # 20003001 <_stack_top+0xfff3001>
- 630:	0ff7f793          	zext.b	a5,a5
+ 6b6:	00170793          	addi	a5,a4,1 # 20003001 <_stack_top+0xfff3001>
+ 6ba:	0ff7f793          	zext.b	a5,a5
   if (next_head == rb->tail) {
- 634:	00f68963          	beq	a3,a5,646 <insert_rb+0x22>
+ 6be:	00f68963          	beq	a3,a5,6d0 <insert_rb+0x22>
     return false;
   }
 
   rb->buffer[rb->head] = c;
- 638:	972a                	add	a4,a4,a0
- 63a:	00b70023          	sb	a1,0(a4)
+ 6c2:	972a                	add	a4,a4,a0
+ 6c4:	00b70023          	sb	a1,0(a4)
   rb->head = next_head;
- 63e:	10f50023          	sb	a5,256(a0)
+ 6c8:	10f50023          	sb	a5,256(a0)
 
   return true;
- 642:	4505                	li	a0,1
- 644:	8082                	ret
+ 6cc:	4505                	li	a0,1
+ 6ce:	8082                	ret
     return false;
- 646:	4501                	li	a0,0
+ 6d0:	4501                	li	a0,0
 }
- 648:	8082                	ret
+ 6d2:	8082                	ret
 
-0000064a <pop_rb>:
+000006d4 <pop_rb>:
 
 bool pop_rb(ring_buffer_t *rb, char *c) {
   // If head and tail are at the same position, the buffer is empty.
   if (rb->head == rb->tail) {
- 64a:	10154703          	lbu	a4,257(a0)
- 64e:	10054683          	lbu	a3,256(a0)
+ 6d4:	10154703          	lbu	a4,257(a0)
+ 6d8:	10054683          	lbu	a3,256(a0)
 bool pop_rb(ring_buffer_t *rb, char *c) {
- 652:	87aa                	mv	a5,a0
+ 6dc:	87aa                	mv	a5,a0
   if (rb->head == rb->tail) {
- 654:	00e68e63          	beq	a3,a4,670 <pop_rb+0x26>
+ 6de:	00e68e63          	beq	a3,a4,6fa <pop_rb+0x26>
     return false;
   }
 
   *c = rb->buffer[rb->tail];
- 658:	972a                	add	a4,a4,a0
- 65a:	00074703          	lbu	a4,0(a4)
+ 6e2:	972a                	add	a4,a4,a0
+ 6e4:	00074703          	lbu	a4,0(a4)
   rb->tail = (uint8_t)(rb->tail + 1); // Naturally wraps back to 0
 
   return true;
- 65e:	4505                	li	a0,1
+ 6e8:	4505                	li	a0,1
   *c = rb->buffer[rb->tail];
- 660:	00e58023          	sb	a4,0(a1)
+ 6ea:	00e58023          	sb	a4,0(a1)
   rb->tail = (uint8_t)(rb->tail + 1); // Naturally wraps back to 0
- 664:	1017c703          	lbu	a4,257(a5)
- 668:	972a                	add	a4,a4,a0
- 66a:	10e780a3          	sb	a4,257(a5)
+ 6ee:	1017c703          	lbu	a4,257(a5)
+ 6f2:	972a                	add	a4,a4,a0
+ 6f4:	10e780a3          	sb	a4,257(a5)
   return true;
- 66e:	8082                	ret
+ 6f8:	8082                	ret
     return false;
- 670:	4501                	li	a0,0
+ 6fa:	4501                	li	a0,0
 }
- 672:	8082                	ret
+ 6fc:	8082                	ret
 
-00000674 <init_timers>:
+000006fe <init_timers>:
 #include "../include/timer.h"
 #include <stdint.h>
 
 void init_timers() {
- 674:	1141                	addi	sp,sp,-16
- 676:	c606                	sw	ra,12(sp)
+ 6fe:	1141                	addi	sp,sp,-16
+ 700:	c606                	sw	ra,12(sp)
 
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 678:	20000737          	lui	a4,0x20000
- 67c:	56fd                	li	a3,-1
- 67e:	c714                	sw	a3,8(a4)
+ 702:	20000737          	lui	a4,0x20000
+ 706:	56fd                	li	a3,-1
+ 708:	c714                	sw	a3,8(a4)
   *TIMER_COMP_PART2 = 0xFFFFFFFF;
 
   reg_timer_irq(master_timer_isr);
- 680:	6505                	lui	a0,0x1
+ 70a:	6505                	lui	a0,0x1
   *TIMER_COMP_PART2 = 0xFFFFFFFF;
- 682:	c754                	sw	a3,12(a4)
+ 70c:	c754                	sw	a3,12(a4)
   reg_timer_irq(master_timer_isr);
- 684:	8b050513          	addi	a0,a0,-1872 # 8b0 <master_timer_isr>
- 688:	3fbd                	jal	606 <reg_timer_irq>
+ 70e:	93a50513          	addi	a0,a0,-1734 # 93a <master_timer_isr>
+ 712:	3fbd                	jal	690 <reg_timer_irq>
 
   set_csr(mie, MIE_MTIE);
- 68a:	08000793          	li	a5,128
- 68e:	3047a7f3          	csrrs	a5,mie,a5
+ 714:	08000793          	li	a5,128
+ 718:	3047a7f3          	csrrs	a5,mie,a5
 }
- 692:	40b2                	lw	ra,12(sp)
- 694:	0141                	addi	sp,sp,16
- 696:	8082                	ret
+ 71c:	40b2                	lw	ra,12(sp)
+ 71e:	0141                	addi	sp,sp,16
+ 720:	8082                	ret
 
-00000698 <read_time>:
+00000722 <read_time>:
 
 uint64_t read_time() {
   uint32_t lo = *TIMER_COMP_PART1;
- 698:	200007b7          	lui	a5,0x20000
- 69c:	4788                	lw	a0,8(a5)
+ 722:	200007b7          	lui	a5,0x20000
+ 726:	4788                	lw	a0,8(a5)
 
   uint32_t hi = *TIMER_COMP_PART2;
- 69e:	200007b7          	lui	a5,0x20000
+ 728:	200007b7          	lui	a5,0x20000
 
   return (((uint64_t)hi) << 32) | lo;
 }
- 6a2:	47cc                	lw	a1,12(a5)
- 6a4:	8082                	ret
+ 72c:	47cc                	lw	a1,12(a5)
+ 72e:	8082                	ret
 
-000006a6 <set_compare>:
+00000730 <set_compare>:
 
 void set_compare(uint64_t comp) {
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 6a6:	200007b7          	lui	a5,0x20000
- 6aa:	56fd                	li	a3,-1
- 6ac:	c794                	sw	a3,8(a5)
+ 730:	200007b7          	lui	a5,0x20000
+ 734:	56fd                	li	a3,-1
+ 736:	c794                	sw	a3,8(a5)
 
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- 6ae:	c7cc                	sw	a1,12(a5)
+ 738:	c7cc                	sw	a1,12(a5)
 
   *TIMER_COMP_PART1 = (uint32_t)comp;
- 6b0:	c788                	sw	a0,8(a5)
+ 73a:	c788                	sw	a0,8(a5)
 }
- 6b2:	8082                	ret
+ 73c:	8082                	ret
 
-000006b4 <swap_in_heap>:
+0000073e <swap_in_heap>:
 
 void swap_in_heap(int a_i, int b_i) {
   irq_timer_t *temp = timer_heap[a_i];
- 6b4:	83018793          	addi	a5,gp,-2000 # 10000070 <timer_heap>
+ 73e:	83018793          	addi	a5,gp,-2000 # 10000070 <timer_heap>
   timer_heap[a_i] = timer_heap[b_i];
- 6b8:	058a                	slli	a1,a1,0x2
- 6ba:	95be                	add	a1,a1,a5
+ 742:	058a                	slli	a1,a1,0x2
+ 744:	95be                	add	a1,a1,a5
   irq_timer_t *temp = timer_heap[a_i];
- 6bc:	050a                	slli	a0,a0,0x2
+ 746:	050a                	slli	a0,a0,0x2
   timer_heap[a_i] = timer_heap[b_i];
- 6be:	4194                	lw	a3,0(a1)
+ 748:	4194                	lw	a3,0(a1)
   irq_timer_t *temp = timer_heap[a_i];
- 6c0:	97aa                	add	a5,a5,a0
- 6c2:	4398                	lw	a4,0(a5)
+ 74a:	97aa                	add	a5,a5,a0
+ 74c:	4398                	lw	a4,0(a5)
   timer_heap[a_i] = timer_heap[b_i];
- 6c4:	c394                	sw	a3,0(a5)
+ 74e:	c394                	sw	a3,0(a5)
   timer_heap[b_i] = temp;
- 6c6:	c198                	sw	a4,0(a1)
+ 750:	c198                	sw	a4,0(a1)
 }
- 6c8:	8082                	ret
+ 752:	8082                	ret
 
-000006ca <min_heapify>:
+00000754 <min_heapify>:
 
 // first call should be, num_timers, 0
 void min_heapify(int sz, int i) {
   int smallest = i;
   int left = 2 * i + 1;
- 6ca:	00159793          	slli	a5,a1,0x1
- 6ce:	00178693          	addi	a3,a5,1 # 20000001 <_stack_top+0xfff0001>
+ 754:	00159793          	slli	a5,a1,0x1
+ 758:	00178693          	addi	a3,a5,1 # 20000001 <_stack_top+0xfff0001>
   int right = 2 * i + 2;
 
   if (left < sz &&
       timer_heap[left]->expires_at < timer_heap[smallest]->expires_at) {
- 6d2:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
+ 75c:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
   int right = 2 * i + 2;
- 6d6:	0789                	addi	a5,a5,2
+ 760:	0789                	addi	a5,a5,2
   if (left < sz &&
- 6d8:	06a6de63          	bge	a3,a0,754 <min_heapify+0x8a>
+ 762:	06a6de63          	bge	a3,a0,7de <min_heapify+0x8a>
       timer_heap[left]->expires_at < timer_heap[smallest]->expires_at) {
- 6dc:	00269713          	slli	a4,a3,0x2
- 6e0:	00259613          	slli	a2,a1,0x2
- 6e4:	9742                	add	a4,a4,a6
- 6e6:	00c80333          	add	t1,a6,a2
- 6ea:	00072883          	lw	a7,0(a4) # 20000000 <_stack_top+0xfff0000>
- 6ee:	00032e03          	lw	t3,0(t1)
- 6f2:	0048a703          	lw	a4,4(a7)
+ 766:	00269713          	slli	a4,a3,0x2
+ 76a:	00259613          	slli	a2,a1,0x2
+ 76e:	9742                	add	a4,a4,a6
+ 770:	00c80333          	add	t1,a6,a2
+ 774:	00072883          	lw	a7,0(a4) # 20000000 <_stack_top+0xfff0000>
+ 778:	00032e03          	lw	t3,0(t1)
+ 77c:	0048a703          	lw	a4,4(a7)
   if (left < sz &&
- 6f6:	004e2303          	lw	t1,4(t3)
+ 780:	004e2303          	lw	t1,4(t3)
       timer_heap[left]->expires_at < timer_heap[smallest]->expires_at) {
- 6fa:	0008a883          	lw	a7,0(a7)
+ 784:	0008a883          	lw	a7,0(a7)
   if (left < sz &&
- 6fe:	00676863          	bltu	a4,t1,70e <min_heapify+0x44>
- 702:	04e31963          	bne	t1,a4,754 <min_heapify+0x8a>
- 706:	000e2303          	lw	t1,0(t3)
- 70a:	0468f563          	bgeu	a7,t1,754 <min_heapify+0x8a>
+ 788:	00676863          	bltu	a4,t1,798 <min_heapify+0x44>
+ 78c:	04e31963          	bne	t1,a4,7de <min_heapify+0x8a>
+ 790:	000e2303          	lw	t1,0(t3)
+ 794:	0468f563          	bgeu	a7,t1,7de <min_heapify+0x8a>
     smallest = left;
   }
 
   if (right < sz &&
- 70e:	00a7dd63          	bge	a5,a0,728 <min_heapify+0x5e>
+ 798:	00a7dd63          	bge	a5,a0,7b2 <min_heapify+0x5e>
       timer_heap[right]->expires_at < timer_heap[smallest]->expires_at) {
- 712:	00279313          	slli	t1,a5,0x2
- 716:	9342                	add	t1,t1,a6
- 718:	00032e03          	lw	t3,0(t1)
+ 79c:	00279313          	slli	t1,a5,0x2
+ 7a0:	9342                	add	t1,t1,a6
+ 7a2:	00032e03          	lw	t3,0(t1)
   if (right < sz &&
- 71c:	004e2303          	lw	t1,4(t3)
- 720:	00e36563          	bltu	t1,a4,72a <min_heapify+0x60>
- 724:	06e30563          	beq	t1,a4,78e <min_heapify+0xc4>
- 728:	87b6                	mv	a5,a3
+ 7a6:	004e2303          	lw	t1,4(t3)
+ 7aa:	00e36563          	bltu	t1,a4,7b4 <min_heapify+0x60>
+ 7ae:	06e30563          	beq	t1,a4,818 <min_heapify+0xc4>
+ 7b2:	87b6                	mv	a5,a3
     smallest = right;
   }
 
   if (smallest != i) {
- 72a:	06b78163          	beq	a5,a1,78c <min_heapify+0xc2>
+ 7b4:	06b78163          	beq	a5,a1,816 <min_heapify+0xc2>
   timer_heap[a_i] = timer_heap[b_i];
- 72e:	00279713          	slli	a4,a5,0x2
- 732:	9742                	add	a4,a4,a6
+ 7b8:	00279713          	slli	a4,a5,0x2
+ 7bc:	9742                	add	a4,a4,a6
   irq_timer_t *temp = timer_heap[a_i];
- 734:	00c806b3          	add	a3,a6,a2
+ 7be:	00c806b3          	add	a3,a6,a2
   timer_heap[a_i] = timer_heap[b_i];
- 738:	00072883          	lw	a7,0(a4)
+ 7c2:	00072883          	lw	a7,0(a4)
   irq_timer_t *temp = timer_heap[a_i];
- 73c:	4290                	lw	a2,0(a3)
+ 7c6:	4290                	lw	a2,0(a3)
     swap_in_heap(i, smallest);
     min_heapify(sz, smallest);
- 73e:	85be                	mv	a1,a5
+ 7c8:	85be                	mv	a1,a5
   timer_heap[a_i] = timer_heap[b_i];
- 740:	0116a023          	sw	a7,0(a3)
+ 7ca:	0116a023          	sw	a7,0(a3)
   int left = 2 * i + 1;
- 744:	00159793          	slli	a5,a1,0x1
- 748:	00178693          	addi	a3,a5,1
+ 7ce:	00159793          	slli	a5,a1,0x1
+ 7d2:	00178693          	addi	a3,a5,1
   timer_heap[b_i] = temp;
- 74c:	c310                	sw	a2,0(a4)
+ 7d6:	c310                	sw	a2,0(a4)
   int right = 2 * i + 2;
- 74e:	0789                	addi	a5,a5,2
+ 7d8:	0789                	addi	a5,a5,2
   if (left < sz &&
- 750:	f8a6c6e3          	blt	a3,a0,6dc <min_heapify+0x12>
+ 7da:	f8a6c6e3          	blt	a3,a0,766 <min_heapify+0x12>
   if (right < sz &&
- 754:	00a7c363          	blt	a5,a0,75a <min_heapify+0x90>
- 758:	8082                	ret
+ 7de:	00a7c363          	blt	a5,a0,7e4 <min_heapify+0x90>
+ 7e2:	8082                	ret
       timer_heap[right]->expires_at < timer_heap[smallest]->expires_at) {
- 75a:	00259613          	slli	a2,a1,0x2
- 75e:	00279713          	slli	a4,a5,0x2
- 762:	00c806b3          	add	a3,a6,a2
- 766:	9742                	add	a4,a4,a6
- 768:	0006a303          	lw	t1,0(a3)
- 76c:	00072883          	lw	a7,0(a4)
+ 7e4:	00259613          	slli	a2,a1,0x2
+ 7e8:	00279713          	slli	a4,a5,0x2
+ 7ec:	00c806b3          	add	a3,a6,a2
+ 7f0:	9742                	add	a4,a4,a6
+ 7f2:	0006a303          	lw	t1,0(a3)
+ 7f6:	00072883          	lw	a7,0(a4)
   if (right < sz &&
- 770:	00432683          	lw	a3,4(t1)
- 774:	0048a703          	lw	a4,4(a7)
- 778:	fad769e3          	bltu	a4,a3,72a <min_heapify+0x60>
- 77c:	00e69863          	bne	a3,a4,78c <min_heapify+0xc2>
- 780:	00032683          	lw	a3,0(t1)
- 784:	0008a703          	lw	a4,0(a7)
- 788:	fad761e3          	bltu	a4,a3,72a <min_heapify+0x60>
+ 7fa:	00432683          	lw	a3,4(t1)
+ 7fe:	0048a703          	lw	a4,4(a7)
+ 802:	fad769e3          	bltu	a4,a3,7b4 <min_heapify+0x60>
+ 806:	00e69863          	bne	a3,a4,816 <min_heapify+0xc2>
+ 80a:	00032683          	lw	a3,0(t1)
+ 80e:	0008a703          	lw	a4,0(a7)
+ 812:	fad761e3          	bltu	a4,a3,7b4 <min_heapify+0x60>
   }
 }
- 78c:	8082                	ret
+ 816:	8082                	ret
   if (right < sz &&
- 78e:	000e2703          	lw	a4,0(t3)
- 792:	f9176ce3          	bltu	a4,a7,72a <min_heapify+0x60>
- 796:	87b6                	mv	a5,a3
- 798:	bf49                	j	72a <min_heapify+0x60>
+ 818:	000e2703          	lw	a4,0(t3)
+ 81c:	f9176ce3          	bltu	a4,a7,7b4 <min_heapify+0x60>
+ 820:	87b6                	mv	a5,a3
+ 822:	bf49                	j	7b4 <min_heapify+0x60>
 
-0000079a <sift_up>:
+00000824 <sift_up>:
 
 void sift_up(int i) {
   int parent = (i - 1) / 2;
   while (i > 0 && timer_heap[i]->expires_at < timer_heap[parent]->expires_at) {
- 79a:	04a05f63          	blez	a0,7f8 <sift_up+0x5e>
- 79e:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
- 7a2:	00251793          	slli	a5,a0,0x2
- 7a6:	97b2                	add	a5,a5,a2
- 7a8:	0007a303          	lw	t1,0(a5)
+ 824:	04a05f63          	blez	a0,882 <sift_up+0x5e>
+ 828:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
+ 82c:	00251793          	slli	a5,a0,0x2
+ 830:	97b2                	add	a5,a5,a2
+ 832:	0007a303          	lw	t1,0(a5)
   int parent = (i - 1) / 2;
- 7ac:	fff50713          	addi	a4,a0,-1
- 7b0:	8705                	srai	a4,a4,0x1
+ 836:	fff50713          	addi	a4,a0,-1
+ 83a:	8705                	srai	a4,a4,0x1
   while (i > 0 && timer_heap[i]->expires_at < timer_heap[parent]->expires_at) {
- 7b2:	00032e83          	lw	t4,0(t1)
- 7b6:	00432e03          	lw	t3,4(t1)
- 7ba:	a809                	j	7cc <sift_up+0x32>
+ 83c:	00032e83          	lw	t4,0(t1)
+ 840:	00432e03          	lw	t3,4(t1)
+ 844:	a809                	j	856 <sift_up+0x32>
   timer_heap[a_i] = timer_heap[b_i];
- 7bc:	c10c                	sw	a1,0(a0)
+ 846:	c10c                	sw	a1,0(a0)
   timer_heap[b_i] = temp;
- 7be:	0067a023          	sw	t1,0(a5)
+ 848:	0067a023          	sw	t1,0(a5)
     swap_in_heap(i, parent);
 
     // Move up the tree
     i = parent;
     parent = (i - 1) / 2;
- 7c2:	96c2                	add	a3,a3,a6
+ 84c:	96c2                	add	a3,a3,a6
   while (i > 0 && timer_heap[i]->expires_at < timer_heap[parent]->expires_at) {
- 7c4:	853a                	mv	a0,a4
- 7c6:	cb0d                	beqz	a4,7f8 <sift_up+0x5e>
- 7c8:	4016d713          	srai	a4,a3,0x1
- 7cc:	00271793          	slli	a5,a4,0x2
- 7d0:	00f606b3          	add	a3,a2,a5
- 7d4:	428c                	lw	a1,0(a3)
+ 84e:	853a                	mv	a0,a4
+ 850:	cb0d                	beqz	a4,882 <sift_up+0x5e>
+ 852:	4016d713          	srai	a4,a3,0x1
+ 856:	00271793          	slli	a5,a4,0x2
+ 85a:	00f606b3          	add	a3,a2,a5
+ 85e:	428c                	lw	a1,0(a3)
   timer_heap[a_i] = timer_heap[b_i];
- 7d6:	050a                	slli	a0,a0,0x2
+ 860:	050a                	slli	a0,a0,0x2
     parent = (i - 1) / 2;
- 7d8:	fff70813          	addi	a6,a4,-1
+ 862:	fff70813          	addi	a6,a4,-1
   while (i > 0 && timer_heap[i]->expires_at < timer_heap[parent]->expires_at) {
- 7dc:	0045a883          	lw	a7,4(a1)
+ 866:	0045a883          	lw	a7,4(a1)
   timer_heap[b_i] = temp;
- 7e0:	87b6                	mv	a5,a3
+ 86a:	87b6                	mv	a5,a3
   timer_heap[a_i] = timer_heap[b_i];
- 7e2:	9532                	add	a0,a0,a2
+ 86c:	9532                	add	a0,a0,a2
     parent = (i - 1) / 2;
- 7e4:	01f85693          	srli	a3,a6,0x1f
+ 86e:	01f85693          	srli	a3,a6,0x1f
   while (i > 0 && timer_heap[i]->expires_at < timer_heap[parent]->expires_at) {
- 7e8:	fd1e6ae3          	bltu	t3,a7,7bc <sift_up+0x22>
- 7ec:	01c89663          	bne	a7,t3,7f8 <sift_up+0x5e>
- 7f0:	0005a883          	lw	a7,0(a1)
- 7f4:	fd1ee4e3          	bltu	t4,a7,7bc <sift_up+0x22>
+ 872:	fd1e6ae3          	bltu	t3,a7,846 <sift_up+0x22>
+ 876:	01c89663          	bne	a7,t3,882 <sift_up+0x5e>
+ 87a:	0005a883          	lw	a7,0(a1)
+ 87e:	fd1ee4e3          	bltu	t4,a7,846 <sift_up+0x22>
   }
 }
- 7f8:	8082                	ret
+ 882:	8082                	ret
 
-000007fa <_deactivate_timer.part.0>:
+00000884 <_deactivate_timer.part.0>:
   // 1. Mark as inactive so the pool slot can be reused
   timer->active = false;
 
   // 2. Find the timer in the heap (O(N) search, but MAX_TIMERS is small)
   int heap_idx = -1;
   for (int i = 0; i < num_timers; i++) {
- 7fa:	80c1a683          	lw	a3,-2036(gp) # 1000004c <num_timers>
+ 884:	80c1a683          	lw	a3,-2036(gp) # 1000004c <num_timers>
   timer->active = false;
- 7fe:	00050a23          	sb	zero,20(a0)
+ 888:	00050a23          	sb	zero,20(a0)
   for (int i = 0; i < num_timers; i++) {
- 802:	06d05063          	blez	a3,862 <_deactivate_timer.part.0+0x68>
- 806:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
- 80a:	87b2                	mv	a5,a2
- 80c:	4581                	li	a1,0
- 80e:	a021                	j	816 <_deactivate_timer.part.0+0x1c>
- 810:	0585                	addi	a1,a1,1
- 812:	04d58863          	beq	a1,a3,862 <_deactivate_timer.part.0+0x68>
+ 88c:	06d05063          	blez	a3,8ec <_deactivate_timer.part.0+0x68>
+ 890:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
+ 894:	87b2                	mv	a5,a2
+ 896:	4581                	li	a1,0
+ 898:	a021                	j	8a0 <_deactivate_timer.part.0+0x1c>
+ 89a:	0585                	addi	a1,a1,1
+ 89c:	04d58863          	beq	a1,a3,8ec <_deactivate_timer.part.0+0x68>
     if (timer_heap[i] == timer) {
- 816:	4398                	lw	a4,0(a5)
+ 8a0:	4398                	lw	a4,0(a5)
   for (int i = 0; i < num_timers; i++) {
- 818:	0791                	addi	a5,a5,4
+ 8a2:	0791                	addi	a5,a5,4
     if (timer_heap[i] == timer) {
- 81a:	fee51be3          	bne	a0,a4,810 <_deactivate_timer.part.0+0x16>
+ 8a4:	fee51be3          	bne	a0,a4,89a <_deactivate_timer.part.0+0x16>
   if (heap_idx == -1) {
     return false; // Timer was active but not in heap (state error)
   }
 
   // 3. Replace the removed timer with the last timer in the heap
   timer_heap[heap_idx] = timer_heap[num_timers - 1];
- 81e:	fff68513          	addi	a0,a3,-1
- 822:	00251793          	slli	a5,a0,0x2
- 826:	97b2                	add	a5,a5,a2
- 828:	4398                	lw	a4,0(a5)
+ 8a8:	fff68513          	addi	a0,a3,-1
+ 8ac:	00251793          	slli	a5,a0,0x2
+ 8b0:	97b2                	add	a5,a5,a2
+ 8b2:	4398                	lw	a4,0(a5)
 bool _deactivate_timer(irq_timer_t *timer) {
- 82a:	1141                	addi	sp,sp,-16
+ 8b4:	1141                	addi	sp,sp,-16
   timer_heap[heap_idx] = timer_heap[num_timers - 1];
- 82c:	00259793          	slli	a5,a1,0x2
+ 8b6:	00259793          	slli	a5,a1,0x2
 bool _deactivate_timer(irq_timer_t *timer) {
- 830:	c606                	sw	ra,12(sp)
+ 8ba:	c606                	sw	ra,12(sp)
   timer_heap[heap_idx] = timer_heap[num_timers - 1];
- 832:	97b2                	add	a5,a5,a2
+ 8bc:	97b2                	add	a5,a5,a2
   num_timers--;
- 834:	80a1a623          	sw	a0,-2036(gp) # 1000004c <num_timers>
+ 8be:	80a1a623          	sw	a0,-2036(gp) # 1000004c <num_timers>
   timer_heap[heap_idx] = timer_heap[num_timers - 1];
- 838:	c398                	sw	a4,0(a5)
+ 8c2:	c398                	sw	a4,0(a5)
 
   // 4. Restore the heap property
   if (heap_idx < num_timers) {
- 83a:	02a5d663          	bge	a1,a0,866 <_deactivate_timer.part.0+0x6c>
+ 8c4:	02a5d663          	bge	a1,a0,8f0 <_deactivate_timer.part.0+0x6c>
     int parent = (heap_idx - 1) / 2;
 
     // If the new node is smaller than its parent, it needs to bubble up
     if (heap_idx > 0 &&
- 83e:	c5ad                	beqz	a1,8a8 <_deactivate_timer.part.0+0xae>
+ 8c8:	c5ad                	beqz	a1,932 <_deactivate_timer.part.0+0xae>
     int parent = (heap_idx - 1) / 2;
- 840:	fff58793          	addi	a5,a1,-1
- 844:	8785                	srai	a5,a5,0x1
+ 8ca:	fff58793          	addi	a5,a1,-1
+ 8ce:	8785                	srai	a5,a5,0x1
         timer_heap[heap_idx]->expires_at < timer_heap[parent]->expires_at) {
- 846:	078a                	slli	a5,a5,0x2
- 848:	963e                	add	a2,a2,a5
- 84a:	4210                	lw	a2,0(a2)
+ 8d0:	078a                	slli	a5,a5,0x2
+ 8d2:	963e                	add	a2,a2,a5
+ 8d4:	4210                	lw	a2,0(a2)
     if (heap_idx > 0 &&
- 84c:	435c                	lw	a5,4(a4)
- 84e:	4254                	lw	a3,4(a2)
- 850:	04d7e963          	bltu	a5,a3,8a2 <_deactivate_timer.part.0+0xa8>
- 854:	04f68363          	beq	a3,a5,89a <_deactivate_timer.part.0+0xa0>
+ 8d6:	435c                	lw	a5,4(a4)
+ 8d8:	4254                	lw	a3,4(a2)
+ 8da:	04d7e963          	bltu	a5,a3,92c <_deactivate_timer.part.0+0xa8>
+ 8de:	04f68363          	beq	a3,a5,924 <_deactivate_timer.part.0+0xa0>
       sift_up(heap_idx);
     }
     // Otherwise, it might need to bubble down
     else {
       min_heapify(num_timers, heap_idx);
- 858:	3d8d                	jal	6ca <min_heapify>
+ 8e2:	3d8d                	jal	754 <min_heapify>
       set_compare(0xFFFFFFFFFFFFFFFFULL);
     }
   }
 
   return true;
 }
- 85a:	40b2                	lw	ra,12(sp)
+ 8e4:	40b2                	lw	ra,12(sp)
   return true;
- 85c:	4505                	li	a0,1
+ 8e6:	4505                	li	a0,1
 }
- 85e:	0141                	addi	sp,sp,16
- 860:	8082                	ret
+ 8e8:	0141                	addi	sp,sp,16
+ 8ea:	8082                	ret
     return false;
- 862:	4501                	li	a0,0
+ 8ec:	4501                	li	a0,0
 }
- 864:	8082                	ret
+ 8ee:	8082                	ret
   if (heap_idx == 0 || num_timers == 0) {
- 866:	ed99                	bnez	a1,884 <_deactivate_timer.part.0+0x8a>
+ 8f0:	ed99                	bnez	a1,90e <_deactivate_timer.part.0+0x8a>
     if (num_timers > 0) {
- 868:	cd19                	beqz	a0,886 <_deactivate_timer.part.0+0x8c>
+ 8f2:	cd19                	beqz	a0,910 <_deactivate_timer.part.0+0x8c>
       set_compare(timer_heap[0]->expires_at);
- 86a:	4218                	lw	a4,0(a2)
+ 8f4:	4218                	lw	a4,0(a2)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 86c:	200007b7          	lui	a5,0x20000
- 870:	55fd                	li	a1,-1
+ 8f6:	200007b7          	lui	a5,0x20000
+ 8fa:	55fd                	li	a1,-1
       set_compare(timer_heap[0]->expires_at);
- 872:	4350                	lw	a2,4(a4)
- 874:	4314                	lw	a3,0(a4)
+ 8fc:	4350                	lw	a2,4(a4)
+ 8fe:	4314                	lw	a3,0(a4)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 876:	c78c                	sw	a1,8(a5)
+ 900:	c78c                	sw	a1,8(a5)
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- 878:	c7d0                	sw	a2,12(a5)
+ 902:	c7d0                	sw	a2,12(a5)
   *TIMER_COMP_PART1 = (uint32_t)comp;
- 87a:	c794                	sw	a3,8(a5)
+ 904:	c794                	sw	a3,8(a5)
 }
- 87c:	40b2                	lw	ra,12(sp)
+ 906:	40b2                	lw	ra,12(sp)
   return true;
- 87e:	4505                	li	a0,1
+ 908:	4505                	li	a0,1
 }
- 880:	0141                	addi	sp,sp,16
- 882:	8082                	ret
+ 90a:	0141                	addi	sp,sp,16
+ 90c:	8082                	ret
   if (heap_idx == 0 || num_timers == 0) {
- 884:	fd65                	bnez	a0,87c <_deactivate_timer.part.0+0x82>
+ 90e:	fd65                	bnez	a0,906 <_deactivate_timer.part.0+0x82>
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 886:	200007b7          	lui	a5,0x20000
- 88a:	577d                	li	a4,-1
- 88c:	c798                	sw	a4,8(a5)
+ 910:	200007b7          	lui	a5,0x20000
+ 914:	577d                	li	a4,-1
+ 916:	c798                	sw	a4,8(a5)
 }
- 88e:	40b2                	lw	ra,12(sp)
+ 918:	40b2                	lw	ra,12(sp)
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- 890:	c7d8                	sw	a4,12(a5)
+ 91a:	c7d8                	sw	a4,12(a5)
   *TIMER_COMP_PART1 = (uint32_t)comp;
- 892:	c798                	sw	a4,8(a5)
+ 91c:	c798                	sw	a4,8(a5)
   return true;
- 894:	4505                	li	a0,1
+ 91e:	4505                	li	a0,1
 }
- 896:	0141                	addi	sp,sp,16
- 898:	8082                	ret
+ 920:	0141                	addi	sp,sp,16
+ 922:	8082                	ret
     if (heap_idx > 0 &&
- 89a:	4214                	lw	a3,0(a2)
- 89c:	431c                	lw	a5,0(a4)
- 89e:	fad7fde3          	bgeu	a5,a3,858 <_deactivate_timer.part.0+0x5e>
+ 924:	4214                	lw	a3,0(a2)
+ 926:	431c                	lw	a5,0(a4)
+ 928:	fad7fde3          	bgeu	a5,a3,8e2 <_deactivate_timer.part.0+0x5e>
       sift_up(heap_idx);
- 8a2:	852e                	mv	a0,a1
- 8a4:	3ddd                	jal	79a <sift_up>
+ 92c:	852e                	mv	a0,a1
+ 92e:	3ddd                	jal	824 <sift_up>
   if (heap_idx == 0 || num_timers == 0) {
- 8a6:	bfd9                	j	87c <_deactivate_timer.part.0+0x82>
+ 930:	bfd9                	j	906 <_deactivate_timer.part.0+0x82>
       min_heapify(num_timers, heap_idx);
- 8a8:	350d                	jal	6ca <min_heapify>
+ 932:	350d                	jal	754 <min_heapify>
   if (heap_idx == 0 || num_timers == 0) {
- 8aa:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
- 8ae:	bf75                	j	86a <_deactivate_timer.part.0+0x70>
+ 934:	83018613          	addi	a2,gp,-2000 # 10000070 <timer_heap>
+ 938:	bf75                	j	8f4 <_deactivate_timer.part.0+0x70>
 
-000008b0 <master_timer_isr>:
+0000093a <master_timer_isr>:
 
 void master_timer_isr() {
- 8b0:	1101                	addi	sp,sp,-32
- 8b2:	c452                	sw	s4,8(sp)
+ 93a:	1101                	addi	sp,sp,-32
+ 93c:	c452                	sw	s4,8(sp)
   // Loop to handle cases where multiple timers expire at the same time,
   // or if a callback execution delays us past the next timer's expiration.
   while (num_timers > 0 && timer_heap[0]->expires_at <= read_time()) {
- 8b4:	80c1a783          	lw	a5,-2036(gp) # 1000004c <num_timers>
+ 93e:	80c1a783          	lw	a5,-2036(gp) # 1000004c <num_timers>
 void master_timer_isr() {
- 8b8:	ce06                	sw	ra,28(sp)
+ 942:	ce06                	sw	ra,28(sp)
   while (num_timers > 0 && timer_heap[0]->expires_at <= read_time()) {
- 8ba:	04f05f63          	blez	a5,918 <master_timer_isr+0x68>
- 8be:	ca26                	sw	s1,20(sp)
- 8c0:	c84a                	sw	s2,16(sp)
- 8c2:	c64e                	sw	s3,12(sp)
- 8c4:	200009b7          	lui	s3,0x20000
- 8c8:	20000937          	lui	s2,0x20000
- 8cc:	cc22                	sw	s0,24(sp)
- 8ce:	c256                	sw	s5,4(sp)
- 8d0:	83018493          	addi	s1,gp,-2000 # 10000070 <timer_heap>
- 8d4:	09a1                	addi	s3,s3,8 # 20000008 <_stack_top+0xfff0008>
- 8d6:	0931                	addi	s2,s2,12 # 2000000c <_stack_top+0xfff000c>
- 8d8:	4080                	lw	s0,0(s1)
+ 944:	04f05f63          	blez	a5,9a2 <master_timer_isr+0x68>
+ 948:	ca26                	sw	s1,20(sp)
+ 94a:	c84a                	sw	s2,16(sp)
+ 94c:	c64e                	sw	s3,12(sp)
+ 94e:	200009b7          	lui	s3,0x20000
+ 952:	20000937          	lui	s2,0x20000
+ 956:	cc22                	sw	s0,24(sp)
+ 958:	c256                	sw	s5,4(sp)
+ 95a:	83018493          	addi	s1,gp,-2000 # 10000070 <timer_heap>
+ 95e:	09a1                	addi	s3,s3,8 # 20000008 <_stack_top+0xfff0008>
+ 960:	0931                	addi	s2,s2,12 # 2000000c <_stack_top+0xfff000c>
+ 962:	4080                	lw	s0,0(s1)
   uint32_t lo = *TIMER_COMP_PART1;
- 8da:	0009a683          	lw	a3,0(s3)
+ 964:	0009a683          	lw	a3,0(s3)
   uint32_t hi = *TIMER_COMP_PART2;
- 8de:	00092783          	lw	a5,0(s2)
+ 968:	00092783          	lw	a5,0(s2)
   while (num_timers > 0 && timer_heap[0]->expires_at <= read_time()) {
- 8e2:	4058                	lw	a4,4(s0)
- 8e4:	06e7e263          	bltu	a5,a4,948 <master_timer_isr+0x98>
- 8e8:	04f70d63          	beq	a4,a5,942 <master_timer_isr+0x92>
+ 96c:	4058                	lw	a4,4(s0)
+ 96e:	06e7e263          	bltu	a5,a4,9d2 <master_timer_isr+0x98>
+ 972:	04f70d63          	beq	a4,a5,9cc <master_timer_isr+0x92>
 
     // 1. Get the timer at the top of the heap
     irq_timer_t *top_timer = timer_heap[0];
 
     // 2. Run the callback function
     if (top_timer->callback_function != NULL) {
- 8ec:	481c                	lw	a5,16(s0)
- 8ee:	c391                	beqz	a5,8f2 <master_timer_isr+0x42>
+ 976:	481c                	lw	a5,16(s0)
+ 978:	c391                	beqz	a5,97c <master_timer_isr+0x42>
       // Cast the void* to a function pointer and execute it
       void (*callback)(void) = (void (*)(void))top_timer->callback_function;
       callback();
- 8f0:	9782                	jalr	a5
+ 97a:	9782                	jalr	a5
     }
 
     // 3. Handle periodic vs absolute
     if (top_timer->period > 0) {
- 8f2:	441c                	lw	a5,8(s0)
- 8f4:	4454                	lw	a3,12(s0)
- 8f6:	00d7e733          	or	a4,a5,a3
- 8fa:	e31d                	bnez	a4,920 <master_timer_isr+0x70>
+ 97c:	441c                	lw	a5,8(s0)
+ 97e:	4454                	lw	a3,12(s0)
+ 980:	00d7e733          	or	a4,a5,a3
+ 984:	e31d                	bnez	a4,9aa <master_timer_isr+0x70>
   if (timer == NULL || !timer->active) {
- 8fc:	01444783          	lbu	a5,20(s0)
- 900:	c399                	beqz	a5,906 <master_timer_isr+0x56>
+ 986:	01444783          	lbu	a5,20(s0)
+ 98a:	c399                	beqz	a5,990 <master_timer_isr+0x56>
   timer->active = false;
- 902:	8522                	mv	a0,s0
- 904:	3ddd                	jal	7fa <_deactivate_timer.part.0>
+ 98c:	8522                	mv	a0,s0
+ 98e:	3ddd                	jal	884 <_deactivate_timer.part.0>
   while (num_timers > 0 && timer_heap[0]->expires_at <= read_time()) {
- 906:	80c1aa83          	lw	s5,-2036(gp) # 1000004c <num_timers>
- 90a:	fd5047e3          	bgtz	s5,8d8 <master_timer_isr+0x28>
- 90e:	4462                	lw	s0,24(sp)
- 910:	44d2                	lw	s1,20(sp)
- 912:	4942                	lw	s2,16(sp)
- 914:	49b2                	lw	s3,12(sp)
- 916:	4a92                	lw	s5,4(sp)
+ 990:	80c1aa83          	lw	s5,-2036(gp) # 1000004c <num_timers>
+ 994:	fd5047e3          	bgtz	s5,962 <master_timer_isr+0x28>
+ 998:	4462                	lw	s0,24(sp)
+ 99a:	44d2                	lw	s1,20(sp)
+ 99c:	4942                	lw	s2,16(sp)
+ 99e:	49b2                	lw	s3,12(sp)
+ 9a0:	4a92                	lw	s5,4(sp)
   }
 
   if (num_timers > 0) {
     set_compare(timer_heap[0]->expires_at);
   }
 }
- 918:	40f2                	lw	ra,28(sp)
- 91a:	4a22                	lw	s4,8(sp)
- 91c:	6105                	addi	sp,sp,32
- 91e:	8082                	ret
+ 9a2:	40f2                	lw	ra,28(sp)
+ 9a4:	4a22                	lw	s4,8(sp)
+ 9a6:	6105                	addi	sp,sp,32
+ 9a8:	8082                	ret
       top_timer->expires_at += top_timer->period;
- 920:	4018                	lw	a4,0(s0)
- 922:	4050                	lw	a2,4(s0)
+ 9aa:	4018                	lw	a4,0(s0)
+ 9ac:	4050                	lw	a2,4(s0)
       min_heapify(num_timers, 0);
- 924:	80c1aa83          	lw	s5,-2036(gp) # 1000004c <num_timers>
+ 9ae:	80c1aa83          	lw	s5,-2036(gp) # 1000004c <num_timers>
       top_timer->expires_at += top_timer->period;
- 928:	97ba                	add	a5,a5,a4
- 92a:	00e7b733          	sltu	a4,a5,a4
- 92e:	96b2                	add	a3,a3,a2
- 930:	9736                	add	a4,a4,a3
- 932:	c01c                	sw	a5,0(s0)
- 934:	c058                	sw	a4,4(s0)
+ 9b2:	97ba                	add	a5,a5,a4
+ 9b4:	00e7b733          	sltu	a4,a5,a4
+ 9b8:	96b2                	add	a3,a3,a2
+ 9ba:	9736                	add	a4,a4,a3
+ 9bc:	c01c                	sw	a5,0(s0)
+ 9be:	c058                	sw	a4,4(s0)
       min_heapify(num_timers, 0);
- 936:	8556                	mv	a0,s5
- 938:	4581                	li	a1,0
- 93a:	3b41                	jal	6ca <min_heapify>
+ 9c0:	8556                	mv	a0,s5
+ 9c2:	4581                	li	a1,0
+ 9c4:	3b41                	jal	754 <min_heapify>
   while (num_timers > 0 && timer_heap[0]->expires_at <= read_time()) {
- 93c:	f9504ee3          	bgtz	s5,8d8 <master_timer_isr+0x28>
- 940:	b7f9                	j	90e <master_timer_isr+0x5e>
- 942:	401c                	lw	a5,0(s0)
- 944:	faf6f4e3          	bgeu	a3,a5,8ec <master_timer_isr+0x3c>
+ 9c6:	f9504ee3          	bgtz	s5,962 <master_timer_isr+0x28>
+ 9ca:	b7f9                	j	998 <master_timer_isr+0x5e>
+ 9cc:	401c                	lw	a5,0(s0)
+ 9ce:	faf6f4e3          	bgeu	a3,a5,976 <master_timer_isr+0x3c>
     set_compare(timer_heap[0]->expires_at);
- 948:	4098                	lw	a4,0(s1)
+ 9d2:	4098                	lw	a4,0(s1)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 94a:	200007b7          	lui	a5,0x20000
- 94e:	55fd                	li	a1,-1
+ 9d4:	200007b7          	lui	a5,0x20000
+ 9d8:	55fd                	li	a1,-1
     set_compare(timer_heap[0]->expires_at);
- 950:	4350                	lw	a2,4(a4)
- 952:	4314                	lw	a3,0(a4)
+ 9da:	4350                	lw	a2,4(a4)
+ 9dc:	4314                	lw	a3,0(a4)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- 954:	c78c                	sw	a1,8(a5)
+ 9de:	c78c                	sw	a1,8(a5)
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- 956:	c7d0                	sw	a2,12(a5)
+ 9e0:	c7d0                	sw	a2,12(a5)
   *TIMER_COMP_PART1 = (uint32_t)comp;
- 958:	c794                	sw	a3,8(a5)
- 95a:	bf55                	j	90e <master_timer_isr+0x5e>
+ 9e2:	c794                	sw	a3,8(a5)
+ 9e4:	bf55                	j	998 <master_timer_isr+0x5e>
 
-0000095c <register_isr_periodic>:
+000009e6 <register_isr_periodic>:
   if (num_timers == MAX_TIMERS) {
- 95c:	80c1a883          	lw	a7,-2036(gp) # 1000004c <num_timers>
- 960:	04000793          	li	a5,64
- 964:	0af88e63          	beq	a7,a5,a20 <register_isr_periodic+0xc4>
+ 9e6:	80c1a883          	lw	a7,-2036(gp) # 1000004c <num_timers>
+ 9ea:	04000793          	li	a5,64
+ 9ee:	0af88e63          	beq	a7,a5,aaa <register_isr_periodic+0xc4>
     if (timer_pool[i].active == false) {
- 968:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
- 96c:	11484783          	lbu	a5,276(a6)
+ 9f2:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
+ 9f6:	11484783          	lbu	a5,276(a6)
 irq_timer_handler register_isr_periodic(uint64_t period, void *cb) {
- 970:	1101                	addi	sp,sp,-32
- 972:	ce06                	sw	ra,28(sp)
+ 9fa:	1101                	addi	sp,sp,-32
+ 9fc:	ce06                	sw	ra,28(sp)
     if (timer_pool[i].active == false) {
- 974:	cbc5                	beqz	a5,a24 <register_isr_periodic+0xc8>
- 976:	12c80793          	addi	a5,a6,300
+ 9fe:	cbc5                	beqz	a5,aae <register_isr_periodic+0xc8>
+ a00:	12c80793          	addi	a5,a6,300
   int i = 0;
- 97a:	4701                	li	a4,0
+ a04:	4701                	li	a4,0
     if (timer_pool[i].active == false) {
- 97c:	0007c683          	lbu	a3,0(a5) # 20000000 <_stack_top+0xfff0000>
- 980:	07e1                	addi	a5,a5,24
+ a06:	0007c683          	lbu	a3,0(a5) # 20000000 <_stack_top+0xfff0000>
+ a0a:	07e1                	addi	a5,a5,24
       i++;
- 982:	0705                	addi	a4,a4,1
+ a0c:	0705                	addi	a4,a4,1
     if (timer_pool[i].active == false) {
- 984:	fee5                	bnez	a3,97c <register_isr_periodic+0x20>
+ a0e:	fee5                	bnez	a3,a06 <register_isr_periodic+0x20>
   timer_heap[num_timers - 1] = &timer_pool[i];
- 986:	00171793          	slli	a5,a4,0x1
- 98a:	00e78333          	add	t1,a5,a4
- 98e:	030e                	slli	t1,t1,0x3
- 990:	10080693          	addi	a3,a6,256
- 994:	969a                	add	a3,a3,t1
+ a10:	00171793          	slli	a5,a4,0x1
+ a14:	00e78333          	add	t1,a5,a4
+ a18:	030e                	slli	t1,t1,0x3
+ a1a:	10080693          	addi	a3,a6,256
+ a1e:	969a                	add	a3,a3,t1
   uint32_t lo = *TIMER_COMP_PART1;
- 996:	20000e37          	lui	t3,0x20000
+ a20:	20000e37          	lui	t3,0x20000
   timer_pool[i].expires_at = read_time() + period;
- 99a:	97ba                	add	a5,a5,a4
+ a24:	97ba                	add	a5,a5,a4
   uint32_t lo = *TIMER_COMP_PART1;
- 99c:	008e2703          	lw	a4,8(t3) # 20000008 <_stack_top+0xfff0008>
- 9a0:	832a                	mv	t1,a0
+ a26:	008e2703          	lw	a4,8(t3) # 20000008 <_stack_top+0xfff0008>
+ a2a:	832a                	mv	t1,a0
   uint32_t hi = *TIMER_COMP_PART2;
- 9a2:	00ce2503          	lw	a0,12(t3)
+ a2c:	00ce2503          	lw	a0,12(t3)
   timer_pool[i].expires_at = read_time() + period;
- 9a6:	006702b3          	add	t0,a4,t1
- 9aa:	00e2b733          	sltu	a4,t0,a4
- 9ae:	952e                	add	a0,a0,a1
- 9b0:	078e                	slli	a5,a5,0x3
- 9b2:	97c2                	add	a5,a5,a6
- 9b4:	972a                	add	a4,a4,a0
+ a30:	006702b3          	add	t0,a4,t1
+ a34:	00e2b733          	sltu	a4,t0,a4
+ a38:	952e                	add	a0,a0,a1
+ a3a:	078e                	slli	a5,a5,0x3
+ a3c:	97c2                	add	a5,a5,a6
+ a3e:	972a                	add	a4,a4,a0
   timer_pool[i].active = true;
- 9b6:	4385                	li	t2,1
+ a40:	4385                	li	t2,1
   timer_heap[num_timers - 1] = &timer_pool[i];
- 9b8:	00289f13          	slli	t5,a7,0x2
+ a42:	00289f13          	slli	t5,a7,0x2
   timer_pool[i].expires_at = read_time() + period;
- 9bc:	10e7a223          	sw	a4,260(a5)
+ a46:	10e7a223          	sw	a4,260(a5)
   timer_heap[num_timers - 1] = &timer_pool[i];
- 9c0:	9f42                	add	t5,t5,a6
+ a4a:	9f42                	add	t5,t5,a6
   num_timers++;
- 9c2:	00788733          	add	a4,a7,t2
+ a4c:	00788733          	add	a4,a7,t2
   sift_up(num_timers - 1);
- 9c6:	8546                	mv	a0,a7
+ a50:	8546                	mv	a0,a7
   timer_pool[i].expires_at = read_time() + period;
- 9c8:	1057a023          	sw	t0,256(a5)
+ a52:	1057a023          	sw	t0,256(a5)
   timer_pool[i].period = period;
- 9cc:	1067a423          	sw	t1,264(a5)
- 9d0:	10b7a623          	sw	a1,268(a5)
+ a56:	1067a423          	sw	t1,264(a5)
+ a5a:	10b7a623          	sw	a1,268(a5)
   timer_pool[i].callback_function = cb;
- 9d4:	10c7a823          	sw	a2,272(a5)
+ a5e:	10c7a823          	sw	a2,272(a5)
   timer_pool[i].active = true;
- 9d8:	10778a23          	sb	t2,276(a5)
+ a62:	10778a23          	sb	t2,276(a5)
   timer_heap[num_timers - 1] = &timer_pool[i];
- 9dc:	00df2023          	sw	a3,0(t5)
- 9e0:	c636                	sw	a3,12(sp)
+ a66:	00df2023          	sw	a3,0(t5)
+ a6a:	c636                	sw	a3,12(sp)
   num_timers++;
- 9e2:	80e1a623          	sw	a4,-2036(gp) # 1000004c <num_timers>
+ a6c:	80e1a623          	sw	a4,-2036(gp) # 1000004c <num_timers>
   sift_up(num_timers - 1);
- 9e6:	3b55                	jal	79a <sift_up>
+ a70:	3b55                	jal	824 <sift_up>
   if (timer_heap[0] == &timer_pool[i]) {
- 9e8:	8301a783          	lw	a5,-2000(gp) # 10000070 <timer_heap>
- 9ec:	46b2                	lw	a3,12(sp)
- 9ee:	20000eb7          	lui	t4,0x20000
- 9f2:	20000e37          	lui	t3,0x20000
- 9f6:	0eb1                	addi	t4,t4,12 # 2000000c <_stack_top+0xfff000c>
- 9f8:	0e21                	addi	t3,t3,8 # 20000008 <_stack_top+0xfff0008>
- 9fa:	00d78663          	beq	a5,a3,a06 <register_isr_periodic+0xaa>
+ a72:	8301a783          	lw	a5,-2000(gp) # 10000070 <timer_heap>
+ a76:	46b2                	lw	a3,12(sp)
+ a78:	20000eb7          	lui	t4,0x20000
+ a7c:	20000e37          	lui	t3,0x20000
+ a80:	0eb1                	addi	t4,t4,12 # 2000000c <_stack_top+0xfff000c>
+ a82:	0e21                	addi	t3,t3,8 # 20000008 <_stack_top+0xfff0008>
+ a84:	00d78663          	beq	a5,a3,a90 <register_isr_periodic+0xaa>
 }
- 9fe:	40f2                	lw	ra,28(sp)
+ a88:	40f2                	lw	ra,28(sp)
   return new_handler;
- a00:	8536                	mv	a0,a3
+ a8a:	8536                	mv	a0,a3
 }
- a02:	6105                	addi	sp,sp,32
- a04:	8082                	ret
+ a8c:	6105                	addi	sp,sp,32
+ a8e:	8082                	ret
     set_compare(timer_heap[0]->expires_at);
- a06:	42d8                	lw	a4,4(a3)
- a08:	429c                	lw	a5,0(a3)
+ a90:	42d8                	lw	a4,4(a3)
+ a92:	429c                	lw	a5,0(a3)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- a0a:	567d                	li	a2,-1
- a0c:	00ce2023          	sw	a2,0(t3)
+ a94:	567d                	li	a2,-1
+ a96:	00ce2023          	sw	a2,0(t3)
 }
- a10:	40f2                	lw	ra,28(sp)
+ a9a:	40f2                	lw	ra,28(sp)
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- a12:	00eea023          	sw	a4,0(t4)
+ a9c:	00eea023          	sw	a4,0(t4)
   *TIMER_COMP_PART1 = (uint32_t)comp;
- a16:	00fe2023          	sw	a5,0(t3)
+ aa0:	00fe2023          	sw	a5,0(t3)
   return new_handler;
- a1a:	8536                	mv	a0,a3
+ aa4:	8536                	mv	a0,a3
 }
- a1c:	6105                	addi	sp,sp,32
- a1e:	8082                	ret
+ aa6:	6105                	addi	sp,sp,32
+ aa8:	8082                	ret
     return (irq_timer_handler){};
- a20:	4501                	li	a0,0
+ aaa:	4501                	li	a0,0
 }
- a22:	8082                	ret
+ aac:	8082                	ret
     if (timer_pool[i].active == false) {
- a24:	10080693          	addi	a3,a6,256
+ aae:	10080693          	addi	a3,a6,256
   int i = 0;
- a28:	4701                	li	a4,0
- a2a:	b7b5                	j	996 <register_isr_periodic+0x3a>
+ ab2:	4701                	li	a4,0
+ ab4:	b7b5                	j	a20 <register_isr_periodic+0x3a>
 
-00000a2c <register_isr_abs>:
+00000ab6 <register_isr_abs>:
   if (num_timers == MAX_TIMERS) {
- a2c:	80c1a883          	lw	a7,-2036(gp) # 1000004c <num_timers>
- a30:	04000793          	li	a5,64
- a34:	0cf88063          	beq	a7,a5,af4 <register_isr_abs+0xc8>
+ ab6:	80c1a883          	lw	a7,-2036(gp) # 1000004c <num_timers>
+ aba:	04000793          	li	a5,64
+ abe:	0cf88063          	beq	a7,a5,b7e <register_isr_abs+0xc8>
     if (timer_pool[i].active == false) {
- a38:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
- a3c:	11484783          	lbu	a5,276(a6)
+ ac2:	83018813          	addi	a6,gp,-2000 # 10000070 <timer_heap>
+ ac6:	11484783          	lbu	a5,276(a6)
 bool register_isr_abs(uint64_t offset, void *cb) {
- a40:	1101                	addi	sp,sp,-32
- a42:	ce06                	sw	ra,28(sp)
+ aca:	1101                	addi	sp,sp,-32
+ acc:	ce06                	sw	ra,28(sp)
     if (timer_pool[i].active == false) {
- a44:	cbd5                	beqz	a5,af8 <register_isr_abs+0xcc>
- a46:	12c80793          	addi	a5,a6,300
+ ace:	cbd5                	beqz	a5,b82 <register_isr_abs+0xcc>
+ ad0:	12c80793          	addi	a5,a6,300
   int i = 0;
- a4a:	4701                	li	a4,0
+ ad4:	4701                	li	a4,0
     if (timer_pool[i].active == false) {
- a4c:	0007c683          	lbu	a3,0(a5)
- a50:	07e1                	addi	a5,a5,24
+ ad6:	0007c683          	lbu	a3,0(a5)
+ ada:	07e1                	addi	a5,a5,24
       i++;
- a52:	0705                	addi	a4,a4,1
+ adc:	0705                	addi	a4,a4,1
     if (timer_pool[i].active == false) {
- a54:	fee5                	bnez	a3,a4c <register_isr_abs+0x20>
+ ade:	fee5                	bnez	a3,ad6 <register_isr_abs+0x20>
   timer_heap[num_timers - 1] = &timer_pool[i];
- a56:	00171793          	slli	a5,a4,0x1
- a5a:	00e786b3          	add	a3,a5,a4
- a5e:	068e                	slli	a3,a3,0x3
- a60:	10080313          	addi	t1,a6,256
- a64:	9336                	add	t1,t1,a3
+ ae0:	00171793          	slli	a5,a4,0x1
+ ae4:	00e786b3          	add	a3,a5,a4
+ ae8:	068e                	slli	a3,a3,0x3
+ aea:	10080313          	addi	t1,a6,256
+ aee:	9336                	add	t1,t1,a3
   uint32_t lo = *TIMER_COMP_PART1;
- a66:	20000e37          	lui	t3,0x20000
- a6a:	008e2683          	lw	a3,8(t3) # 20000008 <_stack_top+0xfff0008>
+ af0:	20000e37          	lui	t3,0x20000
+ af4:	008e2683          	lw	a3,8(t3) # 20000008 <_stack_top+0xfff0008>
   uint32_t hi = *TIMER_COMP_PART2;
- a6e:	00ce2f83          	lw	t6,12(t3)
+ af8:	00ce2f83          	lw	t6,12(t3)
   timer_pool[i].expires_at = read_time() + offset;
- a72:	97ba                	add	a5,a5,a4
- a74:	00a68733          	add	a4,a3,a0
+ afc:	97ba                	add	a5,a5,a4
+ afe:	00a68733          	add	a4,a3,a0
   timer_pool[i].active = true;
- a78:	4285                	li	t0,1
+ b02:	4285                	li	t0,1
   timer_pool[i].expires_at = read_time() + offset;
- a7a:	00bf8533          	add	a0,t6,a1
- a7e:	00d736b3          	sltu	a3,a4,a3
+ b04:	00bf8533          	add	a0,t6,a1
+ b08:	00d736b3          	sltu	a3,a4,a3
   timer_heap[num_timers - 1] = &timer_pool[i];
- a82:	00289593          	slli	a1,a7,0x2
+ b0c:	00289593          	slli	a1,a7,0x2
   timer_pool[i].expires_at = read_time() + offset;
- a86:	078e                	slli	a5,a5,0x3
- a88:	97c2                	add	a5,a5,a6
- a8a:	96aa                	add	a3,a3,a0
+ b10:	078e                	slli	a5,a5,0x3
+ b12:	97c2                	add	a5,a5,a6
+ b14:	96aa                	add	a3,a3,a0
   timer_heap[num_timers - 1] = &timer_pool[i];
- a8c:	95c2                	add	a1,a1,a6
+ b16:	95c2                	add	a1,a1,a6
   num_timers++;
- a8e:	00588fb3          	add	t6,a7,t0
+ b18:	00588fb3          	add	t6,a7,t0
   sift_up(num_timers - 1);
- a92:	8546                	mv	a0,a7
+ b1c:	8546                	mv	a0,a7
   timer_pool[i].expires_at = read_time() + offset;
- a94:	10d7a223          	sw	a3,260(a5)
- a98:	10e7a023          	sw	a4,256(a5)
+ b1e:	10d7a223          	sw	a3,260(a5)
+ b22:	10e7a023          	sw	a4,256(a5)
   timer_pool[i].period = 0;
- a9c:	1007a423          	sw	zero,264(a5)
- aa0:	1007a623          	sw	zero,268(a5)
+ b26:	1007a423          	sw	zero,264(a5)
+ b2a:	1007a623          	sw	zero,268(a5)
   timer_pool[i].callback_function = cb;
- aa4:	10c7a823          	sw	a2,272(a5)
+ b2e:	10c7a823          	sw	a2,272(a5)
   timer_pool[i].active = true;
- aa8:	10578a23          	sb	t0,276(a5)
+ b32:	10578a23          	sb	t0,276(a5)
   timer_heap[num_timers - 1] = &timer_pool[i];
- aac:	0065a023          	sw	t1,0(a1)
- ab0:	c61a                	sw	t1,12(sp)
+ b36:	0065a023          	sw	t1,0(a1)
+ b3a:	c61a                	sw	t1,12(sp)
   num_timers++;
- ab2:	81f1a623          	sw	t6,-2036(gp) # 1000004c <num_timers>
+ b3c:	81f1a623          	sw	t6,-2036(gp) # 1000004c <num_timers>
   sift_up(num_timers - 1);
- ab6:	31d5                	jal	79a <sift_up>
+ b40:	31d5                	jal	824 <sift_up>
   if (timer_heap[0] == &timer_pool[i]) {
- ab8:	8301a783          	lw	a5,-2000(gp) # 10000070 <timer_heap>
- abc:	4332                	lw	t1,12(sp)
- abe:	20000eb7          	lui	t4,0x20000
- ac2:	20000e37          	lui	t3,0x20000
- ac6:	0eb1                	addi	t4,t4,12 # 2000000c <_stack_top+0xfff000c>
- ac8:	0e21                	addi	t3,t3,8 # 20000008 <_stack_top+0xfff0008>
- aca:	00678663          	beq	a5,t1,ad6 <register_isr_abs+0xaa>
+ b42:	8301a783          	lw	a5,-2000(gp) # 10000070 <timer_heap>
+ b46:	4332                	lw	t1,12(sp)
+ b48:	20000eb7          	lui	t4,0x20000
+ b4c:	20000e37          	lui	t3,0x20000
+ b50:	0eb1                	addi	t4,t4,12 # 2000000c <_stack_top+0xfff000c>
+ b52:	0e21                	addi	t3,t3,8 # 20000008 <_stack_top+0xfff0008>
+ b54:	00678663          	beq	a5,t1,b60 <register_isr_abs+0xaa>
 }
- ace:	40f2                	lw	ra,28(sp)
+ b58:	40f2                	lw	ra,28(sp)
   return true;
- ad0:	4505                	li	a0,1
+ b5a:	4505                	li	a0,1
 }
- ad2:	6105                	addi	sp,sp,32
- ad4:	8082                	ret
+ b5c:	6105                	addi	sp,sp,32
+ b5e:	8082                	ret
     set_compare(timer_heap[0]->expires_at);
- ad6:	00432703          	lw	a4,4(t1)
- ada:	00032783          	lw	a5,0(t1)
+ b60:	00432703          	lw	a4,4(t1)
+ b64:	00032783          	lw	a5,0(t1)
   *TIMER_COMP_PART1 = 0xFFFFFFFF;
- ade:	56fd                	li	a3,-1
- ae0:	00de2023          	sw	a3,0(t3)
+ b68:	56fd                	li	a3,-1
+ b6a:	00de2023          	sw	a3,0(t3)
 }
- ae4:	40f2                	lw	ra,28(sp)
+ b6e:	40f2                	lw	ra,28(sp)
   *TIMER_COMP_PART2 = (uint32_t)(comp >> 32);
- ae6:	00eea023          	sw	a4,0(t4)
+ b70:	00eea023          	sw	a4,0(t4)
   *TIMER_COMP_PART1 = (uint32_t)comp;
- aea:	00fe2023          	sw	a5,0(t3)
+ b74:	00fe2023          	sw	a5,0(t3)
   return true;
- aee:	4505                	li	a0,1
+ b78:	4505                	li	a0,1
 }
- af0:	6105                	addi	sp,sp,32
- af2:	8082                	ret
+ b7a:	6105                	addi	sp,sp,32
+ b7c:	8082                	ret
     return false;
- af4:	4501                	li	a0,0
+ b7e:	4501                	li	a0,0
 }
- af6:	8082                	ret
+ b80:	8082                	ret
     if (timer_pool[i].active == false) {
- af8:	10080313          	addi	t1,a6,256
+ b82:	10080313          	addi	t1,a6,256
   int i = 0;
- afc:	4701                	li	a4,0
- afe:	b7a5                	j	a66 <register_isr_abs+0x3a>
+ b86:	4701                	li	a4,0
+ b88:	b7a5                	j	af0 <register_isr_abs+0x3a>
 
-00000b00 <deactivate_timer>:
+00000b8a <deactivate_timer>:
   if (timer == NULL || !timer->active) {
- b00:	c509                	beqz	a0,b0a <deactivate_timer+0xa>
- b02:	01454783          	lbu	a5,20(a0)
- b06:	c391                	beqz	a5,b0a <deactivate_timer+0xa>
+ b8a:	c509                	beqz	a0,b94 <deactivate_timer+0xa>
+ b8c:	01454783          	lbu	a5,20(a0)
+ b90:	c391                	beqz	a5,b94 <deactivate_timer+0xa>
   timer->active = false;
- b08:	b9cd                	j	7fa <_deactivate_timer.part.0>
+ b92:	b9cd                	j	884 <_deactivate_timer.part.0>
 }
- b0a:	4501                	li	a0,0
- b0c:	8082                	ret
+ b94:	4501                	li	a0,0
+ b96:	8082                	ret
 
-00000b0e <_deactivate_timer>:
+00000b98 <_deactivate_timer>:
   if (timer == NULL || !timer->active) {
- b0e:	c509                	beqz	a0,b18 <_deactivate_timer+0xa>
- b10:	01454783          	lbu	a5,20(a0)
- b14:	c391                	beqz	a5,b18 <_deactivate_timer+0xa>
+ b98:	c509                	beqz	a0,ba2 <_deactivate_timer+0xa>
+ b9a:	01454783          	lbu	a5,20(a0)
+ b9e:	c391                	beqz	a5,ba2 <_deactivate_timer+0xa>
   timer->active = false;
- b16:	b1d5                	j	7fa <_deactivate_timer.part.0>
+ ba0:	b1d5                	j	884 <_deactivate_timer.part.0>
 }
- b18:	4501                	li	a0,0
- b1a:	8082                	ret
+ ba2:	4501                	li	a0,0
+ ba4:	8082                	ret
 
-00000b1c <uart_isr>:
+00000ba6 <uart_isr>:
 ring_buffer_t rx_buffer;
 ring_buffer_t tx_buffer;
 
 // Define the Interrupt Service Routine
 void uart_isr(void) {
   uint32_t irq_status = *UART_IRQ_STATUS;
- b1c:	200027b7          	lui	a5,0x20002
- b20:	07d1                	addi	a5,a5,20 # 20002014 <_stack_top+0xfff2014>
- b22:	439c                	lw	a5,0(a5)
+ ba6:	200027b7          	lui	a5,0x20002
+ baa:	07d1                	addi	a5,a5,20 # 20002014 <_stack_top+0xfff2014>
+ bac:	439c                	lw	a5,0(a5)
 void uart_isr(void) {
- b24:	7179                	addi	sp,sp,-48
- b26:	d606                	sw	ra,44(sp)
+ bae:	7179                	addi	sp,sp,-48
+ bb0:	d606                	sw	ra,44(sp)
 
   // Handle Incoming Data
   if (irq_status & IRQ_RX_AVAIL) {
- b28:	0017f713          	andi	a4,a5,1
- b2c:	e705                	bnez	a4,b54 <uart_isr+0x38>
+ bb2:	0017f713          	andi	a4,a5,1
+ bb6:	e705                	bnez	a4,bde <uart_isr+0x38>
     char c = (char)(*UART_RX_FIFO);
     insert_rb(&rx_buffer, c); // Push to RX buffer
   }
 
   // Handle Outgoing Data
   if ((irq_status & IRQ_TX_EMPTY) && (*UART_IRQ_EN & IRQ_TX_EMPTY)) {
- b2e:	0027f713          	andi	a4,a5,2
- b32:	c711                	beqz	a4,b3e <uart_isr+0x22>
- b34:	20002737          	lui	a4,0x20002
- b38:	4b14                	lw	a3,16(a4)
- b3a:	8a89                	andi	a3,a3,2
- b3c:	e69d                	bnez	a3,b6a <uart_isr+0x4e>
+ bb8:	0027f713          	andi	a4,a5,2
+ bbc:	c711                	beqz	a4,bc8 <uart_isr+0x22>
+ bbe:	20002737          	lui	a4,0x20002
+ bc2:	4b14                	lw	a3,16(a4)
+ bc4:	8a89                	andi	a3,a3,2
+ bc6:	e69d                	bnez	a3,bf4 <uart_isr+0x4e>
       *UART_IRQ_EN &= ~IRQ_TX_EMPTY;
     }
   }
 
   // Handle Hardware Errors
   if (irq_status & (IRQ_RX_OVERRUN | IRQ_FRAME_ERROR)) {
- b3e:	8bb1                	andi	a5,a5,12
- b40:	c799                	beqz	a5,b4e <uart_isr+0x32>
+ bc8:	8bb1                	andi	a5,a5,12
+ bca:	c799                	beqz	a5,bd8 <uart_isr+0x32>
     *UART_CTRL |= CTRL_CLR_ERRORS; // Clear the hardware error states
- b42:	200027b7          	lui	a5,0x20002
- b46:	47d8                	lw	a4,12(a5)
- b48:	00476713          	ori	a4,a4,4
- b4c:	c7d8                	sw	a4,12(a5)
+ bcc:	200027b7          	lui	a5,0x20002
+ bd0:	47d8                	lw	a4,12(a5)
+ bd2:	00476713          	ori	a4,a4,4
+ bd6:	c7d8                	sw	a4,12(a5)
   }
 }
- b4e:	50b2                	lw	ra,44(sp)
- b50:	6145                	addi	sp,sp,48
- b52:	8082                	ret
+ bd8:	50b2                	lw	ra,44(sp)
+ bda:	6145                	addi	sp,sp,48
+ bdc:	8082                	ret
     char c = (char)(*UART_RX_FIFO);
- b54:	200026b7          	lui	a3,0x20002
- b58:	428c                	lw	a1,0(a3)
+ bde:	200026b7          	lui	a3,0x20002
+ be2:	428c                	lw	a1,0(a3)
     insert_rb(&rx_buffer, c); // Push to RX buffer
- b5a:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
- b5e:	0ff5f593          	zext.b	a1,a1
- b62:	c63e                	sw	a5,12(sp)
- b64:	34c1                	jal	624 <insert_rb>
- b66:	47b2                	lw	a5,12(sp)
- b68:	b7d9                	j	b2e <uart_isr+0x12>
+ be4:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
+ be8:	0ff5f593          	zext.b	a1,a1
+ bec:	c63e                	sw	a5,12(sp)
+ bee:	34c1                	jal	6ae <insert_rb>
+ bf0:	47b2                	lw	a5,12(sp)
+ bf2:	b7d9                	j	bb8 <uart_isr+0x12>
     if (pop_rb(&tx_buffer, &c)) {
- b6a:	03418513          	addi	a0,gp,52 # 10000874 <tx_buffer>
- b6e:	01f10593          	addi	a1,sp,31
- b72:	c63e                	sw	a5,12(sp)
- b74:	3cd9                	jal	64a <pop_rb>
- b76:	20002737          	lui	a4,0x20002
- b7a:	47b2                	lw	a5,12(sp)
- b7c:	0741                	addi	a4,a4,16 # 20002010 <_stack_top+0xfff2010>
- b7e:	c519                	beqz	a0,b8c <uart_isr+0x70>
+ bf4:	03418513          	addi	a0,gp,52 # 10000874 <tx_buffer>
+ bf8:	01f10593          	addi	a1,sp,31
+ bfc:	c63e                	sw	a5,12(sp)
+ bfe:	3cd9                	jal	6d4 <pop_rb>
+ c00:	20002737          	lui	a4,0x20002
+ c04:	47b2                	lw	a5,12(sp)
+ c06:	0741                	addi	a4,a4,16 # 20002010 <_stack_top+0xfff2010>
+ c08:	c519                	beqz	a0,c16 <uart_isr+0x70>
       *UART_TX_FIFO = (uint32_t)c;
- b80:	01f14683          	lbu	a3,31(sp)
- b84:	20002737          	lui	a4,0x20002
- b88:	c354                	sw	a3,4(a4)
- b8a:	bf55                	j	b3e <uart_isr+0x22>
+ c0a:	01f14683          	lbu	a3,31(sp)
+ c0e:	20002737          	lui	a4,0x20002
+ c12:	c354                	sw	a3,4(a4)
+ c14:	bf55                	j	bc8 <uart_isr+0x22>
       *UART_IRQ_EN &= ~IRQ_TX_EMPTY;
- b8c:	4314                	lw	a3,0(a4)
- b8e:	9af5                	andi	a3,a3,-3
- b90:	c314                	sw	a3,0(a4)
- b92:	b775                	j	b3e <uart_isr+0x22>
+ c16:	4314                	lw	a3,0(a4)
+ c18:	9af5                	andi	a3,a3,-3
+ c1a:	c314                	sw	a3,0(a4)
+ c1c:	b775                	j	bc8 <uart_isr+0x22>
 
-00000b94 <uart_init>:
+00000c1e <uart_init>:
 
 // Initialization function (Call this in main!)
 void uart_init(void) {
- b94:	1141                	addi	sp,sp,-16
+ c1e:	1141                	addi	sp,sp,-16
   init_ring_buffer(&rx_buffer);
- b96:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
+ c20:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
 void uart_init(void) {
- b9a:	c606                	sw	ra,12(sp)
+ c24:	c606                	sw	ra,12(sp)
   init_ring_buffer(&rx_buffer);
- b9c:	3c95                	jal	610 <init_ring_buffer>
+ c26:	3c95                	jal	69a <init_ring_buffer>
   init_ring_buffer(&tx_buffer);
- b9e:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
- ba2:	10450513          	addi	a0,a0,260
- ba6:	34ad                	jal	610 <init_ring_buffer>
+ c28:	f3018513          	addi	a0,gp,-208 # 10000770 <rx_buffer>
+ c2c:	10450513          	addi	a0,a0,260
+ c30:	34ad                	jal	69a <init_ring_buffer>
 
   // Register ISR with the MINA PLIC at priority 1
   reg_UART_irq(uart_isr, 1);
- ba8:	4605                	li	a2,1
- baa:	6505                	lui	a0,0x1
- bac:	85b2                	mv	a1,a2
- bae:	b1c50513          	addi	a0,a0,-1252 # b1c <uart_isr>
- bb2:	4681                	li	a3,0
- bb4:	342d                	jal	5de <reg_irq_handler>
+ c32:	4605                	li	a2,1
+ c34:	6505                	lui	a0,0x1
+ c36:	85b2                	mv	a1,a2
+ c38:	ba650513          	addi	a0,a0,-1114 # ba6 <uart_isr>
+ c3c:	4681                	li	a3,0
+ c3e:	342d                	jal	668 <reg_irq_handler>
 
   // Enable the RX interrupt permanently so we never miss incoming data
   *UART_IRQ_EN |= IRQ_RX_AVAIL;
- bb6:	200027b7          	lui	a5,0x20002
- bba:	4b98                	lw	a4,16(a5)
+ c40:	200027b7          	lui	a5,0x20002
+ c44:	4b98                	lw	a4,16(a5)
 }
- bbc:	40b2                	lw	ra,12(sp)
+ c46:	40b2                	lw	ra,12(sp)
   *UART_IRQ_EN |= IRQ_RX_AVAIL;
- bbe:	00176713          	ori	a4,a4,1
- bc2:	cb98                	sw	a4,16(a5)
+ c48:	00176713          	ori	a4,a4,1
+ c4c:	cb98                	sw	a4,16(a5)
 }
- bc4:	0141                	addi	sp,sp,16
- bc6:	8082                	ret
+ c4e:	0141                	addi	sp,sp,16
+ c50:	8082                	ret
 
-00000bc8 <uart_putc>:
+00000c52 <uart_putc>:
 
 void uart_putc(char c) {
   // 1. Temporarily disable TX interrupts to avoid race conditions
   *UART_IRQ_EN &= ~IRQ_TX_EMPTY;
- bc8:	200027b7          	lui	a5,0x20002
- bcc:	4b94                	lw	a3,16(a5)
+ c52:	200027b7          	lui	a5,0x20002
+ c56:	4b94                	lw	a3,16(a5)
 
   // 2. If the software buffer is empty AND the hardware TX FIFO is empty,
   // bypass the software buffer to kickstart the hardware transmission.
   if (tx_buffer.head == tx_buffer.tail && (*UART_STATUS & STATUS_TX_EMPTY)) {
- bce:	f3018713          	addi	a4,gp,-208 # 10000770 <rx_buffer>
- bd2:	20474583          	lbu	a1,516(a4) # 20002204 <_stack_top+0xfff2204>
- bd6:	20574603          	lbu	a2,517(a4)
+ c58:	f3018713          	addi	a4,gp,-208 # 10000770 <rx_buffer>
+ c5c:	20474583          	lbu	a1,516(a4) # 20002204 <_stack_top+0xfff2204>
+ c60:	20574603          	lbu	a2,517(a4)
   *UART_IRQ_EN &= ~IRQ_TX_EMPTY;
- bda:	ffd6f713          	andi	a4,a3,-3
- bde:	cb98                	sw	a4,16(a5)
+ c64:	ffd6f713          	andi	a4,a3,-3
+ c68:	cb98                	sw	a4,16(a5)
   if (tx_buffer.head == tx_buffer.tail && (*UART_STATUS & STATUS_TX_EMPTY)) {
- be0:	02c58863          	beq	a1,a2,c10 <uart_putc+0x48>
+ c6a:	02c58863          	beq	a1,a2,c9a <uart_putc+0x48>
 void uart_putc(char c) {
- be4:	1141                	addi	sp,sp,-16
- be6:	c226                	sw	s1,4(sp)
- be8:	c422                	sw	s0,8(sp)
- bea:	c606                	sw	ra,12(sp)
- bec:	842a                	mv	s0,a0
- bee:	03418493          	addi	s1,gp,52 # 10000874 <tx_buffer>
+ c6e:	1141                	addi	sp,sp,-16
+ c70:	c226                	sw	s1,4(sp)
+ c72:	c422                	sw	s0,8(sp)
+ c74:	c606                	sw	ra,12(sp)
+ c76:	842a                	mv	s0,a0
+ c78:	03418493          	addi	s1,gp,52 # 10000874 <tx_buffer>
     *UART_TX_FIFO = (uint32_t)c;
   } else {
     // Otherwise, hardware is busy. Queue it in the software buffer.
     while (!insert_rb(&tx_buffer, c)) {
- bf2:	85a2                	mv	a1,s0
- bf4:	8526                	mv	a0,s1
- bf6:	343d                	jal	624 <insert_rb>
- bf8:	dd6d                	beqz	a0,bf2 <uart_putc+0x2a>
+ c7c:	85a2                	mv	a1,s0
+ c7e:	8526                	mv	a0,s1
+ c80:	343d                	jal	6ae <insert_rb>
+ c82:	dd6d                	beqz	a0,c7c <uart_putc+0x2a>
       // Busy wait only if the 256-byte buffer is completely full
     }
   }
 
   // 3. Re-enable TX interrupts so the ISR handles the rest
   *UART_IRQ_EN |= IRQ_TX_EMPTY;
- bfa:	200027b7          	lui	a5,0x20002
- bfe:	4b98                	lw	a4,16(a5)
+ c84:	200027b7          	lui	a5,0x20002
+ c88:	4b98                	lw	a4,16(a5)
 }
- c00:	40b2                	lw	ra,12(sp)
- c02:	4422                	lw	s0,8(sp)
+ c8a:	40b2                	lw	ra,12(sp)
+ c8c:	4422                	lw	s0,8(sp)
   *UART_IRQ_EN |= IRQ_TX_EMPTY;
- c04:	00276713          	ori	a4,a4,2
- c08:	cb98                	sw	a4,16(a5)
+ c8e:	00276713          	ori	a4,a4,2
+ c92:	cb98                	sw	a4,16(a5)
 }
- c0a:	4492                	lw	s1,4(sp)
- c0c:	0141                	addi	sp,sp,16
- c0e:	8082                	ret
+ c94:	4492                	lw	s1,4(sp)
+ c96:	0141                	addi	sp,sp,16
+ c98:	8082                	ret
   if (tx_buffer.head == tx_buffer.tail && (*UART_STATUS & STATUS_TX_EMPTY)) {
- c10:	200027b7          	lui	a5,0x20002
- c14:	07a1                	addi	a5,a5,8 # 20002008 <_stack_top+0xfff2008>
- c16:	439c                	lw	a5,0(a5)
- c18:	8b91                	andi	a5,a5,4
- c1a:	d7e9                	beqz	a5,be4 <uart_putc+0x1c>
+ c9a:	200027b7          	lui	a5,0x20002
+ c9e:	07a1                	addi	a5,a5,8 # 20002008 <_stack_top+0xfff2008>
+ ca0:	439c                	lw	a5,0(a5)
+ ca2:	8b91                	andi	a5,a5,4
+ ca4:	d7e9                	beqz	a5,c6e <uart_putc+0x1c>
     *UART_TX_FIFO = (uint32_t)c;
- c1c:	200027b7          	lui	a5,0x20002
- c20:	c3c8                	sw	a0,4(a5)
+ ca6:	200027b7          	lui	a5,0x20002
+ caa:	c3c8                	sw	a0,4(a5)
   *UART_IRQ_EN |= IRQ_TX_EMPTY;
- c22:	200027b7          	lui	a5,0x20002
- c26:	4b98                	lw	a4,16(a5)
- c28:	00276713          	ori	a4,a4,2
- c2c:	cb98                	sw	a4,16(a5)
- c2e:	8082                	ret
+ cac:	200027b7          	lui	a5,0x20002
+ cb0:	4b98                	lw	a4,16(a5)
+ cb2:	00276713          	ori	a4,a4,2
+ cb6:	cb98                	sw	a4,16(a5)
+ cb8:	8082                	ret
 
-00000c30 <uart_getc>:
+00000cba <uart_getc>:
 
 char uart_getc(void) {
- c30:	1101                	addi	sp,sp,-32
- c32:	cc22                	sw	s0,24(sp)
- c34:	ce06                	sw	ra,28(sp)
- c36:	f3018413          	addi	s0,gp,-208 # 10000770 <rx_buffer>
+ cba:	1101                	addi	sp,sp,-32
+ cbc:	cc22                	sw	s0,24(sp)
+ cbe:	ce06                	sw	ra,28(sp)
+ cc0:	f3018413          	addi	s0,gp,-208 # 10000770 <rx_buffer>
   char c;
   // Block only when the software buffer is completely empty
   while (!pop_rb(&rx_buffer, &c)) {
- c3a:	00f10593          	addi	a1,sp,15
- c3e:	8522                	mv	a0,s0
- c40:	3429                	jal	64a <pop_rb>
- c42:	dd65                	beqz	a0,c3a <uart_getc+0xa>
+ cc4:	00f10593          	addi	a1,sp,15
+ cc8:	8522                	mv	a0,s0
+ cca:	3429                	jal	6d4 <pop_rb>
+ ccc:	dd65                	beqz	a0,cc4 <uart_getc+0xa>
     // Busy wait until the ISR receives new data
   }
   return c;
 }
- c44:	40f2                	lw	ra,28(sp)
- c46:	4462                	lw	s0,24(sp)
- c48:	00f14503          	lbu	a0,15(sp)
- c4c:	6105                	addi	sp,sp,32
- c4e:	8082                	ret
+ cce:	40f2                	lw	ra,28(sp)
+ cd0:	4462                	lw	s0,24(sp)
+ cd2:	00f14503          	lbu	a0,15(sp)
+ cd6:	6105                	addi	sp,sp,32
+ cd8:	8082                	ret
 
-00000c50 <uart_puts>:
+00000cda <uart_puts>:
 
 void uart_puts(const char *str) {
- c50:	1141                	addi	sp,sp,-16
- c52:	c422                	sw	s0,8(sp)
- c54:	c606                	sw	ra,12(sp)
- c56:	842a                	mv	s0,a0
+ cda:	1141                	addi	sp,sp,-16
+ cdc:	c422                	sw	s0,8(sp)
+ cde:	c606                	sw	ra,12(sp)
+ ce0:	842a                	mv	s0,a0
   while (*str != '\0') {
- c58:	00054503          	lbu	a0,0(a0)
- c5c:	c511                	beqz	a0,c68 <uart_puts+0x18>
+ ce2:	00054503          	lbu	a0,0(a0)
+ ce6:	c511                	beqz	a0,cf2 <uart_puts+0x18>
     uart_putc(*str);
- c5e:	37ad                	jal	bc8 <uart_putc>
+ ce8:	37ad                	jal	c52 <uart_putc>
   while (*str != '\0') {
- c60:	00144503          	lbu	a0,1(s0)
+ cea:	00144503          	lbu	a0,1(s0)
     str++;
- c64:	0405                	addi	s0,s0,1
+ cee:	0405                	addi	s0,s0,1
   while (*str != '\0') {
- c66:	fd65                	bnez	a0,c5e <uart_puts+0xe>
+ cf0:	fd65                	bnez	a0,ce8 <uart_puts+0xe>
   }
 }
- c68:	40b2                	lw	ra,12(sp)
- c6a:	4422                	lw	s0,8(sp)
- c6c:	0141                	addi	sp,sp,16
- c6e:	8082                	ret
+ cf2:	40b2                	lw	ra,12(sp)
+ cf4:	4422                	lw	s0,8(sp)
+ cf6:	0141                	addi	sp,sp,16
+ cf8:	8082                	ret
+
+00000cfa <uart_polled_putc>:
+
+void uart_polled_putc(char c) {
+  // Wait directly on the hardware status register until TX FIFO is not
+  // full/empty
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ cfa:	20002737          	lui	a4,0x20002
+ cfe:	0721                	addi	a4,a4,8 # 20002008 <_stack_top+0xfff2008>
+ d00:	431c                	lw	a5,0(a4)
+ d02:	8b91                	andi	a5,a5,4
+ d04:	dff5                	beqz	a5,d00 <uart_polled_putc+0x6>
+    ;
+  *UART_TX_FIFO = (uint32_t)c;
+ d06:	200027b7          	lui	a5,0x20002
+ d0a:	c3c8                	sw	a0,4(a5)
+}
+ d0c:	8082                	ret
+
+00000d0e <uart_polled_puts>:
+
+void uart_polled_puts(const char *str) {
+  while (*str != '\0') {
+ d0e:	00054683          	lbu	a3,0(a0)
+ d12:	ce99                	beqz	a3,d30 <uart_polled_puts+0x22>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d14:	20002737          	lui	a4,0x20002
+  *UART_TX_FIFO = (uint32_t)c;
+ d18:	20002637          	lui	a2,0x20002
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d1c:	0721                	addi	a4,a4,8 # 20002008 <_stack_top+0xfff2008>
+  *UART_TX_FIFO = (uint32_t)c;
+ d1e:	0611                	addi	a2,a2,4 # 20002004 <_stack_top+0xfff2004>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d20:	431c                	lw	a5,0(a4)
+ d22:	8b91                	andi	a5,a5,4
+ d24:	dff5                	beqz	a5,d20 <uart_polled_puts+0x12>
+  *UART_TX_FIFO = (uint32_t)c;
+ d26:	c214                	sw	a3,0(a2)
+  while (*str != '\0') {
+ d28:	00154683          	lbu	a3,1(a0)
+    uart_polled_putc(*str);
+    str++;
+ d2c:	0505                	addi	a0,a0,1
+  while (*str != '\0') {
+ d2e:	faed                	bnez	a3,d20 <uart_polled_puts+0x12>
+  }
+}
+ d30:	8082                	ret
+
+00000d32 <uart_print_hex>:
+  while (*str != '\0') {
+ d32:	00054683          	lbu	a3,0(a0)
+
+void uart_print_hex(const char *prefix, uint32_t val) {
+ d36:	1141                	addi	sp,sp,-16
+  while (*str != '\0') {
+ d38:	ce99                	beqz	a3,d56 <uart_print_hex+0x24>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d3a:	20002737          	lui	a4,0x20002
+  *UART_TX_FIFO = (uint32_t)c;
+ d3e:	20002637          	lui	a2,0x20002
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d42:	0721                	addi	a4,a4,8 # 20002008 <_stack_top+0xfff2008>
+  *UART_TX_FIFO = (uint32_t)c;
+ d44:	0611                	addi	a2,a2,4 # 20002004 <_stack_top+0xfff2004>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d46:	431c                	lw	a5,0(a4)
+ d48:	8b91                	andi	a5,a5,4
+ d4a:	dff5                	beqz	a5,d46 <uart_print_hex+0x14>
+  *UART_TX_FIFO = (uint32_t)c;
+ d4c:	c214                	sw	a3,0(a2)
+  while (*str != '\0') {
+ d4e:	00154683          	lbu	a3,1(a0)
+    str++;
+ d52:	0505                	addi	a0,a0,1
+  while (*str != '\0') {
+ d54:	faed                	bnez	a3,d46 <uart_print_hex+0x14>
+  uart_polled_puts(prefix);
+  char buf[9];
+  buf[8] = '\0';
+ d56:	00010623          	sb	zero,12(sp)
+  for (int i = 7; i >= 0; i--) {
+ d5a:	005c                	addi	a5,sp,4
+ d5c:	ffc10513          	addi	a0,sp,-4
+    uint32_t nibble = val & 0xF;
+    buf[i] = (nibble < 10) ? ('0' + nibble) : ('a' + nibble - 10);
+ d60:	4625                	li	a2,9
+    uint32_t nibble = val & 0xF;
+ d62:	00f5f713          	andi	a4,a1,15
+    buf[i] = (nibble < 10) ? ('0' + nibble) : ('a' + nibble - 10);
+ d66:	05770693          	addi	a3,a4,87
+ d6a:	00e66463          	bltu	a2,a4,d72 <uart_print_hex+0x40>
+ d6e:	03070693          	addi	a3,a4,48
+ d72:	00d783a3          	sb	a3,7(a5) # 20002007 <_stack_top+0xfff2007>
+  for (int i = 7; i >= 0; i--) {
+ d76:	17fd                	addi	a5,a5,-1
+    val >>= 4;
+ d78:	8191                	srli	a1,a1,0x4
+  for (int i = 7; i >= 0; i--) {
+ d7a:	fef514e3          	bne	a0,a5,d62 <uart_print_hex+0x30>
+  while (*str != '\0') {
+ d7e:	00414683          	lbu	a3,4(sp)
+ d82:	c285                	beqz	a3,da2 <uart_print_hex+0x70>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d84:	20002737          	lui	a4,0x20002
+  *UART_TX_FIFO = (uint32_t)c;
+ d88:	200025b7          	lui	a1,0x20002
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d8c:	0721                	addi	a4,a4,8 # 20002008 <_stack_top+0xfff2008>
+  *UART_TX_FIFO = (uint32_t)c;
+ d8e:	0591                	addi	a1,a1,4 # 20002004 <_stack_top+0xfff2004>
+  while (*str != '\0') {
+ d90:	0050                	addi	a2,sp,4
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ d92:	431c                	lw	a5,0(a4)
+ d94:	8b91                	andi	a5,a5,4
+ d96:	dff5                	beqz	a5,d92 <uart_print_hex+0x60>
+  *UART_TX_FIFO = (uint32_t)c;
+ d98:	c194                	sw	a3,0(a1)
+  while (*str != '\0') {
+ d9a:	00164683          	lbu	a3,1(a2)
+    str++;
+ d9e:	0605                	addi	a2,a2,1
+  while (*str != '\0') {
+ da0:	faed                	bnez	a3,d92 <uart_print_hex+0x60>
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ da2:	20002737          	lui	a4,0x20002
+ da6:	0721                	addi	a4,a4,8 # 20002008 <_stack_top+0xfff2008>
+ da8:	431c                	lw	a5,0(a4)
+ daa:	8b91                	andi	a5,a5,4
+ dac:	dff5                	beqz	a5,da8 <uart_print_hex+0x76>
+  *UART_TX_FIFO = (uint32_t)c;
+ dae:	200027b7          	lui	a5,0x20002
+ db2:	46b5                	li	a3,13
+ db4:	c3d4                	sw	a3,4(a5)
+  while (!(*UART_STATUS & STATUS_TX_EMPTY))
+ db6:	00878713          	addi	a4,a5,8 # 20002008 <_stack_top+0xfff2008>
+ dba:	431c                	lw	a5,0(a4)
+ dbc:	8b91                	andi	a5,a5,4
+ dbe:	dff5                	beqz	a5,dba <uart_print_hex+0x88>
+  *UART_TX_FIFO = (uint32_t)c;
+ dc0:	200027b7          	lui	a5,0x20002
+ dc4:	4729                	li	a4,10
+ dc6:	c3d8                	sw	a4,4(a5)
+  }
+  uart_polled_puts(buf);
+  uart_polled_puts("\r\n");
+}
+ dc8:	0141                	addi	sp,sp,16
+ dca:	8082                	ret

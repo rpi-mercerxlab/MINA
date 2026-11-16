@@ -1,3 +1,4 @@
+#include "uart.h"
 #include <stdint.h>
 #include <stdio.h>
 
