@@ -71,6 +71,8 @@ void reg_irq_handler(void (*_plic_irq_handler)(void), int priority,
   reg_irq_handler(irq_handler, priority, PLIC_GPIO_MASK, 2)
 #define reg_SPI_irq(irq_handler, priority)                                     \
   reg_irq_handler(irq_handler, priority, PLIC_SPI_MASK, 3)
+#define reg_NPU_irq(irq_handler, priority)                                     \
+  reg_irq_handler(irq_handler, priority, PLIC_NPU_MASK, 4)
 
 #define CS(a, b)                                                               \
   do {                                                                         \

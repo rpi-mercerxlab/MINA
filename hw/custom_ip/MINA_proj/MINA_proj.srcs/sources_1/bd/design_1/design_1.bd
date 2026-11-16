@@ -1,13 +1,14 @@
 {
   "design": {
     "design_info": {
-      "boundary_crc": "0x9D0647E34B4A3ED4",
+      "boundary_crc": "0x9D0647E30F6889CC",
       "device": "xc7s50csga324-1",
       "gen_directory": "../../../../MINA_proj.gen/sources_1/bd/design_1",
       "name": "design_1",
       "rev_ctrl_bd_flag": "RevCtrlBdOff",
       "synth_flow_mode": "Hierarchical",
-      "tool_version": "2025.2"
+      "tool_version": "2025.2",
+      "validated": "true"
     },
     "design_tree": {
       "VexRiscvMcuAxi_0": "",
@@ -159,8 +160,24 @@
         "type": "clk",
         "direction": "I",
         "parameters": {
+          "CLK_DOMAIN": {
+            "value": "design_1_in_clk",
+            "value_src": "default"
+          },
           "FREQ_HZ": {
             "value": "100000000"
+          },
+          "FREQ_TOLERANCE_HZ": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "INSERT_VIP": {
+            "value": "0",
+            "value_src": "default"
+          },
+          "PHASE": {
+            "value": "0.0",
+            "value_src": "default"
           }
         }
       },
@@ -1445,6 +1462,32 @@
             "mode": "Master",
             "vlnv_bus_definition": "xilinx.com:interface:aximm:1.0",
             "vlnv": "xilinx.com:interface:aximm_rtl:1.0",
+            "parameters": {
+              "MAX_BURST_LENGTH": {
+                "value": "1"
+              },
+              "NUM_READ_OUTSTANDING": {
+                "value": "2"
+              },
+              "NUM_READ_THREADS": {
+                "value": "1"
+              },
+              "NUM_WRITE_OUTSTANDING": {
+                "value": "2"
+              },
+              "NUM_WRITE_THREADS": {
+                "value": "1"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0"
+              },
+              "SUPPORTS_NARROW_BURST": {
+                "value": "0"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0"
+              }
+            },
             "bd_attributes": {
               "TYPE": {
                 "value": "interior",
@@ -2487,7 +2530,7 @@
                     "value_src": "ip_prop"
                   },
                   "SENSITIVITY": {
-                    "value": "NULL:NULL:NULL:NULL:EDGE_RISING:LEVEL_HIGH:LEVEL_HIGH:LEVEL_HIGH",
+                    "value": "NULL:NULL:NULL:LEVEL_HIGH:EDGE_RISING:LEVEL_HIGH:LEVEL_HIGH:LEVEL_HIGH",
                     "value_src": "ip_prop"
                   },
                   "PortType": {
@@ -3241,6 +3284,10 @@
                     "value": "AXI4LITE",
                     "value_src": "constant"
                   },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "ip_prop"
+                  },
                   "ID_WIDTH": {
                     "value": "0",
                     "value_src": "constant"
@@ -3324,6 +3371,30 @@
                   "MAX_BURST_LENGTH": {
                     "value": "1",
                     "value_src": "auto"
+                  },
+                  "PHASE": {
+                    "value": "0.0",
+                    "value_src": "ip_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "/clk_wiz_0_clk_out1",
+                    "value_src": "ip_prop"
+                  },
+                  "NUM_READ_THREADS": {
+                    "value": "1",
+                    "value_src": "user_prop"
+                  },
+                  "NUM_WRITE_THREADS": {
+                    "value": "1",
+                    "value_src": "user_prop"
+                  },
+                  "RUSER_BITS_PER_BYTE": {
+                    "value": "0",
+                    "value_src": "user_prop"
+                  },
+                  "WUSER_BITS_PER_BYTE": {
+                    "value": "0",
+                    "value_src": "user_prop"
                   }
                 },
                 "memory_map_ref": "s_axi",
@@ -3425,6 +3496,18 @@
                   "ASSOCIATED_RESET": {
                     "value": "s_axi_aresetn",
                     "value_src": "constant"
+                  },
+                  "FREQ_HZ": {
+                    "value": "100000000",
+                    "value_src": "ip_prop"
+                  },
+                  "PHASE": {
+                    "value": "0.0",
+                    "value_src": "ip_prop"
+                  },
+                  "CLK_DOMAIN": {
+                    "value": "/clk_wiz_0_clk_out1",
+                    "value_src": "ip_prop"
                   }
                 }
               },
@@ -3454,6 +3537,10 @@
                   "SENSITIVITY": {
                     "value": "LEVEL_HIGH",
                     "value_src": "constant"
+                  },
+                  "PortWidth": {
+                    "value": "1",
+                    "value_src": "default_prop"
                   }
                 }
               },
@@ -3646,9 +3733,9 @@
               "smartconnect_1/aclk",
               "axi_quad_spi_0/s_axi_aclk",
               "axi_quad_spi_0/ext_spi_clk",
-              "axil_timer_64_0/S_AXI_ACLK",
               "plic_axil_wrapper_0/S_AXI_ACLK",
-              "axi_uart_bootloader_1/s_axi_aclk"
+              "axi_uart_bootloader_1/s_axi_aclk",
+              "axil_timer_64_0/S_AXI_ACLK"
             ]
           },
           "axi_gpio_0_ip2intc_irpt": {
@@ -3670,9 +3757,9 @@
               "axi_gpio_0/s_axi_aresetn",
               "smartconnect_1/aresetn",
               "axi_quad_spi_0/s_axi_aresetn",
-              "axil_timer_64_0/S_AXI_ARESETN",
               "plic_axil_wrapper_0/S_AXI_ARESETN",
-              "axi_uart_bootloader_1/s_axi_aresetn"
+              "axi_uart_bootloader_1/s_axi_aresetn",
+              "axil_timer_64_0/S_AXI_ARESETN"
             ]
           },
           "axi_uart_bootloader_1_bram_addr": {
@@ -4148,6 +4235,10 @@
                 "value": "AXI4LITE",
                 "value_src": "constant"
               },
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "ip_prop"
+              },
               "ID_WIDTH": {
                 "value": "0",
                 "value_src": "constant"
@@ -4231,6 +4322,30 @@
               "MAX_BURST_LENGTH": {
                 "value": "1",
                 "value_src": "auto"
+              },
+              "PHASE": {
+                "value": "0.0",
+                "value_src": "ip_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "/clk_wiz_0_clk_out1",
+                "value_src": "ip_prop"
+              },
+              "NUM_READ_THREADS": {
+                "value": "1",
+                "value_src": "user_prop"
+              },
+              "NUM_WRITE_THREADS": {
+                "value": "1",
+                "value_src": "user_prop"
+              },
+              "RUSER_BITS_PER_BYTE": {
+                "value": "0",
+                "value_src": "user_prop"
+              },
+              "WUSER_BITS_PER_BYTE": {
+                "value": "0",
+                "value_src": "user_prop"
               }
             },
             "memory_map_ref": "s_axi",
@@ -4344,6 +4459,18 @@
               "ASSOCIATED_RESET": {
                 "value": "aresetn",
                 "value_src": "constant"
+              },
+              "FREQ_HZ": {
+                "value": "100000000",
+                "value_src": "ip_prop"
+              },
+              "PHASE": {
+                "value": "0.0",
+                "value_src": "ip_prop"
+              },
+              "CLK_DOMAIN": {
+                "value": "/clk_wiz_0_clk_out1",
+                "value_src": "ip_prop"
               }
             }
           },
@@ -4424,6 +4551,10 @@
               "SENSITIVITY": {
                 "value": "LEVEL_HIGH",
                 "value_src": "constant"
+              },
+              "PortWidth": {
+                "value": "1",
+                "value_src": "default_prop"
               }
             }
           }
@@ -4803,6 +4934,11 @@
                 "address_block": "/peripherals/i2c_master_axil_0/s_axil/reg0",
                 "offset": "0x20004000",
                 "range": "4K"
+              },
+              "SEG_npu_axil_wrapper_0_reg0": {
+                "address_block": "/npu_axil_wrapper_0/s_axi/reg0",
+                "offset": "0x40000000",
+                "range": "16M"
               },
               "SEG_plic_axil_wrapper_0_reg0": {
                 "address_block": "/peripherals/plic_axil_wrapper_0/S_AXI/reg0",

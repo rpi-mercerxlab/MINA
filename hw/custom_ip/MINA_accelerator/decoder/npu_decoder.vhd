@@ -134,7 +134,7 @@ begin
                     beq_rt <= instr(27 downto 24);
                     beq_rs <= instr(23 downto 20);
                     beq_en <= '1';
-                    beq_addr <= instr(20 downto 11);
+                    beq_addr <= instr(19 downto 10);
                 when x"08" =>
                     instr_done <= beq_reg_done;
                     beq_reg_rt <= instr(27 downto 24);

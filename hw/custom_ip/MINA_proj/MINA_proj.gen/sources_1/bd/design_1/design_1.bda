@@ -535,6 +535,24 @@
                 "SV": "xilinx.com:ip:axi_cdma:4.1",
                 "TM": "both",
                 "TU": "register"
+            },
+            "V22": {
+                "VT": "AC",
+                "BA": "0x40000000",
+                "HA": "0x40FFFFFF",
+                "BP": "C_BASEADDR",
+                "HP": "C_HIGHADDR",
+                "MA": "Data",
+                "MX": "/axi_cdma_0",
+                "MI": "M_AXI",
+                "MS": "SEG_npu_axil_wrapper_0_reg0",
+                "MV": "xilinx.com:ip:axi_cdma:4.1",
+                "SX": "/npu_axil_wrapper_0",
+                "SI": "s_axi",
+                "SS": "reg0",
+                "SV": "xilinx.com:module_ref:npu_axil_wrapper:1.0",
+                "TM": "both",
+                "TU": "register"
             }
         },
         "edges": [
@@ -638,6 +656,11 @@
             },
             {
                 "src": "V21",
+                "trg": "V2",
+                "EH": "2"
+            },
+            {
+                "src": "V22",
                 "trg": "V2",
                 "EH": "2"
             }

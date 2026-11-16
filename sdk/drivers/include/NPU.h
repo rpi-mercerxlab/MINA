@@ -5,7 +5,7 @@
 #ifndef NPU_H
 #define NPU_H
 
-#define NPU_BASE 0x
+#define NPU_BASE 0x40000000
 
 // Register Memory Map
 #define NPU_CSR ((volatile uint32_t *)(NPU_BASE + 0x00))

@@ -1,0 +1,290 @@
+
+Merging object attributes
+
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+SHARED_RAM       0x00000000         0x00004000         xr
+CPU_RAM          0x10000000         0x00010000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+LOAD /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+LOAD /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+LOAD /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+LOAD /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+LOAD /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+LOAD /tmp/mina_build_ozkNlV/.//crt0.o
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
+START GROUP
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-elf/lib/libc.a
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-elf/lib/libgloss.a
+END GROUP
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
+
+.text           0x00000000      0xc70
+ *(.text.init)
+ .text.init     0x00000000       0x62 /tmp/mina_build_ozkNlV/.//crt0.o
+                0x00000000                _start
+ *(.text .text.*)
+ .text          0x00000062      0x1ca /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x000000f4                npu_irq_handler
+ .text.startup  0x0000022c       0xa0 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x0000022c                main
+ .text          0x000002cc       0x28 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+                0x000002cc                set_input
+                0x000002de                set_output
+ *fill*         0x000002f4        0x0 
+ .text          0x000002f4      0x31c /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                0x000002f4                init_interrupts
+                0x0000030c                plic_irq_handler
+                0x0000038c                trap_handler
+                0x000003fe                resort_by_prior
+                0x000005de                reg_irq_handler
+                0x00000606                reg_timer_irq
+ .text          0x00000610       0x64 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+                0x00000610                init_ring_buffer
+                0x0000061a                reset_ring_buffer
+                0x00000624                insert_rb
+                0x0000064a                pop_rb
+ .text          0x00000674      0x4a8 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+                0x00000674                init_timers
+                0x00000698                read_time
+                0x000006a6                set_compare
+                0x000006b4                swap_in_heap
+                0x000006ca                min_heapify
+                0x0000079a                sift_up
+                0x000008b0                master_timer_isr
+                0x0000095c                register_isr_periodic
+                0x00000a2c                register_isr_abs
+                0x00000b00                deactivate_timer
+                0x00000b0e                _deactivate_timer
+ .text          0x00000b1c      0x154 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+                0x00000b1c                uart_isr
+                0x00000b94                uart_init
+                0x00000bc8                uart_putc
+                0x00000c30                uart_getc
+                0x00000c50                uart_puts
+ .text          0x00000c70        0x0 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.rodata         0x00000c70       0x40
+ *(.rodata .rodata.*)
+ .rodata.str1.4
+                0x00000c70       0x3f /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000cb0                        . = ALIGN (0x8)
+ *fill*         0x00000caf        0x1 
+
+.rela.dyn       0x00000cb0        0x0
+ .rela.text.init
+                0x00000cb0        0x0 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+
+.data           0x10000000       0x40 load address 0x00000cb0
+                0x10000000                        . = ALIGN (0x8)
+                0x10000000                        _sdata = .
+ *(.data .data.*)
+ .data          0x10000000        0x0 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .data          0x10000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .data          0x10000000       0x40 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                0x10000000                plic_idx_sort
+                0x10000020                plic_irq_priorities
+ .data          0x10000040        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .data          0x10000040        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .data          0x10000040        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .data          0x10000040        0x0 /tmp/mina_build_ozkNlV/.//crt0.o
+                0x10000840                        PROVIDE (__global_pointer$ = (. + 0x800))
+ *(.sdata .sdata.*)
+                0x10000040                        . = ALIGN (0x8)
+                0x10000040                        _edata = .
+                0x00000cb0                        _data_load_start = LOADADDR (.data)
+
+.bss            0x10000040      0x938 load address 0x00000cf0
+                0x10000040                        . = ALIGN (0x8)
+                0x10000040                        _sbss = .
+ *(.sbss .sbss.*)
+ .sbss          0x10000040        0x5 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x10000040                npu_done_flag
+                0x10000044                simple_counter
+ *fill*         0x10000045        0x3 
+ .sbss          0x10000048        0x4 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                0x10000048                timer_irq_handler
+ .sbss          0x1000004c        0x4 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ *(.bss .bss.*)
+ .bss           0x10000050        0x0 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .bss           0x10000050        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .bss           0x10000050       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                0x10000050                plic_irq_handlers
+ .bss           0x10000070        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .bss           0x10000070      0x700 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .bss           0x10000770      0x206 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+                0x10000770                rx_buffer
+                0x10000874                tx_buffer
+ .bss           0x10000976        0x0 /tmp/mina_build_ozkNlV/.//crt0.o
+                0x10000978                        . = ALIGN (0x8)
+ *fill*         0x10000976        0x2 
+                0x10000978                        _ebss = .
+                0x10010000                        PROVIDE (_stack_top = (ORIGIN (CPU_RAM) + LENGTH (CPU_RAM)))
+OUTPUT(/tmp/mina_build_ozkNlV/firmware.elf elf32-littleriscv)
+
+.debug_info     0x00000000     0x1951
+ .debug_info    0x00000000      0x610 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_info    0x00000610       0xdc /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .debug_info    0x000006ec      0x5a8 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_info    0x00000c94      0x1b4 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_info    0x00000e48      0x7ad /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_info    0x000015f5      0x338 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .debug_info    0x0000192d       0x24 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.debug_abbrev   0x00000000      0xafd
+ .debug_abbrev  0x00000000      0x282 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_abbrev  0x00000282       0x85 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .debug_abbrev  0x00000307      0x1c9 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_abbrev  0x000004d0      0x138 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_abbrev  0x00000608      0x31e /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_abbrev  0x00000926      0x1c3 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .debug_abbrev  0x00000ae9       0x14 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.debug_loclists
+                0x00000000      0xa66
+ .debug_loclists
+                0x00000000      0x2c9 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_loclists
+                0x000002c9      0x23e /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_loclists
+                0x00000507       0x60 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_loclists
+                0x00000567      0x49c /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_loclists
+                0x00000a03       0x63 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+
+.debug_aranges  0x00000000       0xe8
+ .debug_aranges
+                0x00000000       0x28 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_aranges
+                0x00000028       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .debug_aranges
+                0x00000048       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_aranges
+                0x00000068       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_aranges
+                0x00000088       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_aranges
+                0x000000a8       0x20 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .debug_aranges
+                0x000000c8       0x20 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.debug_rnglists
+                0x00000000      0x22e
+ .debug_rnglists
+                0x00000000      0x141 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_rnglists
+                0x00000141       0x4f /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_rnglists
+                0x00000190       0x9e /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+
+.debug_line     0x00000000     0x20ae
+ .debug_line    0x00000000      0x796 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_line    0x00000796       0x9a /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .debug_line    0x00000830      0x7eb /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_line    0x0000101b      0x14b /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_line    0x00001166      0xbc2 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_line    0x00001d28      0x2d0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .debug_line    0x00001ff8       0xb6 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.debug_str      0x00000000      0x4ac
+ .debug_str     0x00000000      0x4ac /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                                0x27f (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+                                0x13a (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                                0x22d (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+                                0x171 (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+                                0x2b1 (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+                                0x1d5 (size before relaxing)
+ .debug_str     0x000004ac        0x0 /tmp/mina_build_ozkNlV/.//crt0.o
+                                 0x21 (size before relaxing)
+
+.debug_line_str
+                0x00000000      0x1dd
+ .debug_line_str
+                0x00000000      0x1dd /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                                0x135 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+                                 0xa9 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                                 0xc4 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+                                 0xd6 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+                                 0xe9 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+                                 0xd2 (size before relaxing)
+ .debug_line_str
+                0x000001dd        0x0 /tmp/mina_build_ozkNlV/.//crt0.o
+                                 0x15 (size before relaxing)
+
+.comment        0x00000000       0x19
+ .comment       0x00000000       0x19 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+                                 0x1a (size before relaxing)
+
+.note.GNU-stack
+                0x00000000        0x0
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+
+.riscv.attributes
+                0x00000000       0x5b
+ .riscv.attributes
+                0x00000000       0x57 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .riscv.attributes
+                0x00000057       0x57 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .riscv.attributes
+                0x000000ae       0x5b /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .riscv.attributes
+                0x00000109       0x57 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .riscv.attributes
+                0x00000160       0x5b /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .riscv.attributes
+                0x000001bb       0x57 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
+ .riscv.attributes
+                0x00000212       0x59 /tmp/mina_build_ozkNlV/.//crt0.o
+
+.debug_frame    0x00000000      0x430
+ .debug_frame   0x00000000       0x88 /tmp/mina_build_ozkNlV//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_frame   0x00000088       0x30 /tmp/mina_build_ozkNlV/.//drivers/src/gpio.o
+ .debug_frame   0x000000b8      0x10c /tmp/mina_build_ozkNlV/.//drivers/src/irq.o
+ .debug_frame   0x000001c4       0x50 /tmp/mina_build_ozkNlV/.//drivers/src/ring_buff.o
+ .debug_frame   0x00000214      0x16c /tmp/mina_build_ozkNlV/.//drivers/src/timer.o
+ .debug_frame   0x00000380       0xb0 /tmp/mina_build_ozkNlV/.//drivers/src/uart.o
