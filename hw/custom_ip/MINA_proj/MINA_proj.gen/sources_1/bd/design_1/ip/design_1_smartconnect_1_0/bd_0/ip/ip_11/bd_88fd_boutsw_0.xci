@@ -2,7 +2,7 @@
   "schema": "xilinx.com:schema:json_instance:1.0",
   "ip_inst": {
     "xci_name": "bd_88fd_boutsw_0",
-    "cell_name": "switchboards/b_la_out_swbd",
+    "cell_name": "b_la_out_swbd",
     "component_reference": "xilinx.com:ip:sc_switchboard:1.0",
     "ip_revision": "9",
     "gen_directory": ".",
@@ -458,5 +458,5 @@
       }
     }
   },
-  "checksum": "b4aefe84"
+  "checksum": "66a13d79"
 }

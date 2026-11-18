@@ -34,8 +34,8 @@ CC      = $(CROSS_COMPILE)gcc
 OBJDUMP = $(CROSS_COMPILE)objdump
 OBJCOPY = $(CROSS_COMPILE)objcopy
 
-MARCH = rv32imac_zicsr
-MABI  = ilp32
+MARCH = rv32imfc_zicsr
+MABI  = ilp32f
 
 # ==========================================
 # 4. Source Files & Automatic Discovery

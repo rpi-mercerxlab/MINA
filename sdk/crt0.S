@@ -19,6 +19,11 @@ _start:
     la a1, _sdata           /* Destination address */
     la a2, _edata           /* End of destination */
     bgeu a1, a2, end_copy_data /* Skip if no data */
+
+    /* Enable FPU by setting mstatus.FS (bits 14:13) to 01 (Initial) or 11 (Dirty) */
+    li t0, (3 << 13)
+    csrs mstatus, t0
+    csrwi fcsr, 0       /* Clear floating-point rounding mode and exception flags */
 copy_data_loop:
     lw t0, 0(a0)            /* Load word from SHARED_RAM */
     sw t0, 0(a1)            /* Store word to CPU_RAM */
