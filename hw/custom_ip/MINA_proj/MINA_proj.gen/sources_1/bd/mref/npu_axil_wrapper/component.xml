@@ -258,12 +258,12 @@
         <spirit:name>xilinx_anylanguagesynthesis</spirit:name>
         <spirit:displayName>Synthesis</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:synthesis</spirit:envIdentifier>
-        <spirit:language>VHDL</spirit:language>
+        <spirit:language>VHDL-2019</spirit:language>
         <spirit:modelName>npu_axil_wrapper</spirit:modelName>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8fbff3e8</spirit:value>
+            <spirit:value>288bb806</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -271,12 +271,12 @@
         <spirit:name>xilinx_anylanguagebehavioralsimulation</spirit:name>
         <spirit:displayName>Simulation</spirit:displayName>
         <spirit:envIdentifier>:vivado.xilinx.com:simulation</spirit:envIdentifier>
-        <spirit:language>VHDL</spirit:language>
+        <spirit:language>VHDL-2019</spirit:language>
         <spirit:modelName>npu_axil_wrapper</spirit:modelName>
         <spirit:parameters>
           <spirit:parameter>
             <spirit:name>viewChecksum</spirit:name>
-            <spirit:value>8fbff3e8</spirit:value>
+            <spirit:value>288bb806</spirit:value>
           </spirit:parameter>
         </spirit:parameters>
       </spirit:view>
@@ -898,7 +898,7 @@
       <spirit:modelParameter xsi:type="spirit:nameValueTypeType" spirit:dataType="integer">
         <spirit:name>QUIESCE_CYCLES</spirit:name>
         <spirit:displayName>Quiesce Cycles</spirit:displayName>
-        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.QUIESCE_CYCLES" spirit:minimum="0">7</spirit:value>
+        <spirit:value spirit:format="long" spirit:resolve="generated" spirit:id="MODELPARAM_VALUE.QUIESCE_CYCLES" spirit:minimum="0">8</spirit:value>
       </spirit:modelParameter>
     </spirit:modelParameters>
   </spirit:model>
@@ -932,7 +932,7 @@
     <spirit:parameter>
       <spirit:name>QUIESCE_CYCLES</spirit:name>
       <spirit:displayName>Quiesce Cycles</spirit:displayName>
-      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.QUIESCE_CYCLES" spirit:minimum="0" spirit:rangeType="long">7</spirit:value>
+      <spirit:value spirit:format="long" spirit:resolve="user" spirit:id="PARAM_VALUE.QUIESCE_CYCLES" spirit:minimum="0" spirit:rangeType="long">8</spirit:value>
     </spirit:parameter>
     <spirit:parameter>
       <spirit:name>Component_Name</spirit:name>
@@ -954,7 +954,7 @@
         <xilinx:designToolContext>IPI</xilinx:designToolContext>
       </xilinx:designToolContexts>
       <xilinx:coreRevision>1</xilinx:coreRevision>
-      <xilinx:coreCreationDateTime>2026-11-15T21:05:33Z</xilinx:coreCreationDateTime>
+      <xilinx:coreCreationDateTime>2026-11-17T23:46:58Z</xilinx:coreCreationDateTime>
     </xilinx:coreExtensions>
     <xilinx:packagingInfo>
       <xilinx:xilinxVersion>2025.2</xilinx:xilinxVersion>

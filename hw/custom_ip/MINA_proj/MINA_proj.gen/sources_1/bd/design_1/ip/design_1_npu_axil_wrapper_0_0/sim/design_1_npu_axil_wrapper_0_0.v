@@ -162,7 +162,7 @@ output wire [31 : 0] raw_scratchpad_dout;
 output wire interrupt;
 
   npu_axil_wrapper #(
-    .QUIESCE_CYCLES(7)
+    .QUIESCE_CYCLES(8)
   ) inst (
     .clk(clk),
     .aresetn(aresetn),

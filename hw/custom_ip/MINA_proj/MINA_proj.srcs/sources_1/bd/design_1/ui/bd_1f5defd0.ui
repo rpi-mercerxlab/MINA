@@ -8,8 +8,8 @@
    "Color Coded_Layers":"/cdma_irq_1:true|/peripherals/axil_timer_64_0_IRQ:true|/peripherals/axi_gpio_0_ip2intc_irpt:true|/peripherals/plic_axil_wrapper_0_ext_intr:true|/peripherals/axi_uart_bootloader_0_uart_irq:true|",
    "Color Coded_ScaleFactor":"0.556413",
    "Color Coded_TopLeft":"-397,4",
-   "Default View_ScaleFactor":"0.394376",
-   "Default View_TopLeft":"-487,5",
+   "Default View_ScaleFactor":"0.418381",
+   "Default View_TopLeft":"-413,0",
    "Display-IntfAXI4Lite":"true",
    "Display-IntfTypeAXIMM":"true",
    "Display-PortTypeClock":"true",
@@ -48,30 +48,30 @@ preplace netloc cdma_irq_1 1 4 2 950J 760 1360
 preplace netloc clk_wiz_0_clk_out1 1 2 4 390 1070 610 780 970 770 1330
 preplace netloc cpu_reset_controller_c 1 3 1 620 930n
 preplace netloc cpu_rst_1 1 0 5 NJ 1260 NJ 1260 410 1260 NJ 1260 NJ
+preplace netloc in_clk_1 1 0 2 20 1230 190J
 preplace netloc negation_1_b 1 1 5 200 750 NJ 750 NJ 750 NJ 750 1290
 preplace netloc negation_2_b 1 5 1 1310 750n
+preplace netloc npu_axil_wrapper_0_interrupt 1 5 2 1380 10 1920
+preplace netloc npu_axil_wrapper_0_raw_mem_ready 1 5 2 1470 370 1930
 preplace netloc peripherals_IRQ 1 3 4 650 1160 NJ 1160 NJ 1160 2010
 preplace netloc peripherals_bram_addr 1 5 2 1430 460 1930
 preplace netloc peripherals_bram_d 1 5 2 1450 470 2000
 preplace netloc peripherals_bram_en 1 5 2 1460 480 1920
 preplace netloc peripherals_bram_we 1 5 2 1480 490 1970
 preplace netloc peripherals_ext_intr 1 3 4 630 1170 NJ 1170 NJ 1170 2050
+preplace netloc peripherals_npu_boot_active 1 5 2 1480 380 1990
+preplace netloc peripherals_npu_instr_addr 1 5 2 1460 390 1960
+preplace netloc peripherals_npu_instr_din 1 5 2 1450 400 1980
+preplace netloc peripherals_npu_instr_we 1 5 2 1430 410 1940
+preplace netloc peripherals_npu_scratchpad_addr 1 5 2 1370 1150 1970
+preplace netloc peripherals_npu_scratchpad_din 1 5 2 1440 1140 1920
+preplace netloc peripherals_npu_scratchpad_we 1 5 2 1420 420 2040
+preplace netloc peripherals_npu_weight_addr 1 5 2 1410 430 1950
+preplace netloc peripherals_npu_weight_din 1 5 2 1400 440 2030
+preplace netloc peripherals_npu_weight_we 1 5 2 1390 450 2020
 preplace netloc peripherals_uart_tx_0 1 6 1 NJ 630
 preplace netloc sys_rst_n_1 1 0 6 30 1090 NJ 1090 400 1090 610 1150 980 1180 1350
 preplace netloc uart_rx_0_1 1 0 6 20J 770 NJ 770 NJ 770 NJ 770 960J 780 1340J
-preplace netloc in_clk_1 1 0 2 20 1230 190J
-preplace netloc npu_axil_wrapper_0_interrupt 1 5 2 1380 10 1920
-preplace netloc npu_axil_wrapper_0_raw_mem_ready 1 5 2 1470 370 1930
-preplace netloc peripherals_npu_boot_active 1 5 2 1480 380 1990
-preplace netloc peripherals_npu_instr_we 1 5 2 1430 410 1940
-preplace netloc peripherals_npu_instr_addr 1 5 2 1460 390 1960
-preplace netloc peripherals_npu_instr_din 1 5 2 1450 400 1980
-preplace netloc peripherals_npu_weight_we 1 5 2 1390 450 2020
-preplace netloc peripherals_npu_weight_addr 1 5 2 1410 430 1950
-preplace netloc peripherals_npu_weight_din 1 5 2 1400 440 2030
-preplace netloc peripherals_npu_scratchpad_we 1 5 2 1420 420 2040
-preplace netloc peripherals_npu_scratchpad_addr 1 5 2 1370 1150 1970
-preplace netloc peripherals_npu_scratchpad_din 1 5 2 1440 1140 1920
 preplace netloc S_AXI_DATA_1 1 5 1 1280 1020n
 preplace netloc S_AXI_INST_1 1 4 2 NJ 900 1300
 preplace netloc VexRiscvMcuAxi_0_dBusAxi 1 4 1 960 880n
@@ -83,7 +83,7 @@ preplace netloc smartconnect_0_M02_AXI 1 5 1 1270 670n
 preplace netloc smartconnect_0_M03_AXI 1 3 3 640 790 NJ 790 1260
 preplace netloc smartconnect_0_M04_AXI 1 5 1 1320 70n
 levelinfo -pg 1 0 110 290 510 800 1120 1700 2080
-pagesize -pg 1 -db -bbox -sgen -110 0 2240 1460
+pagesize -pg 1 -db -bbox -sgen -120 0 2240 1460
 "
 }
 0

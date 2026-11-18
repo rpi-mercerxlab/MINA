@@ -2,7 +2,7 @@
 // Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 // --------------------------------------------------------------------------------
 // Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
-// Date        : Mon Nov 16 09:45:57 2026
+// Date        : Tue Nov 17 19:11:07 2026
 // Host        : ryan-21k8s14n00 running 64-bit EndeavourOS Linux
 // Command     : write_verilog -force -mode synth_stub
 //               /home/ryanb/Documents/MINA/hw/custom_ip/MINA_proj/MINA_proj.gen/sources_1/bd/design_1/ip/design_1_npu_axil_wrapper_0_0/design_1_npu_axil_wrapper_0_0_stub.v
@@ -14,7 +14,7 @@
 // This empty module with port declaration file causes synthesis tools to infer a black box for IP.
 // The synthesis directives are for Synopsys Synplify support to prevent IO buffer insertion.
 // Please paste the declaration into a Verilog source file or add the file as an additional source.
-(* CHECK_LICENSE_TYPE = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{}" *) (* CORE_GENERATION_INFO = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=7}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) 
+(* CHECK_LICENSE_TYPE = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{}" *) (* CORE_GENERATION_INFO = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=8}" *) (* DowngradeIPIdentifiedWarnings = "yes" *) 
 (* IP_DEFINITION_SOURCE = "module_ref" *) (* X_CORE_INFO = "npu_axil_wrapper,Vivado 2025.2" *) 
 module design_1_npu_axil_wrapper_0_0(clk, aresetn, boot_mode, raw_mem_ready, 
   s_axi_awaddr, s_axi_awprot, s_axi_awvalid, s_axi_awready, s_axi_wdata, s_axi_wstrb, 

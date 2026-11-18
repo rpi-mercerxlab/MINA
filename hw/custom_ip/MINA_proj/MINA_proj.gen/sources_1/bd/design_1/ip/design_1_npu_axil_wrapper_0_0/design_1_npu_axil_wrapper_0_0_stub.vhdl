@@ -2,7 +2,7 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
--- Date        : Mon Nov 16 09:45:57 2026
+-- Date        : Tue Nov 17 19:11:07 2026
 -- Host        : ryan-21k8s14n00 running 64-bit EndeavourOS Linux
 -- Command     : write_vhdl -force -mode synth_stub
 --               /home/ryanb/Documents/MINA/hw/custom_ip/MINA_proj/MINA_proj.gen/sources_1/bd/design_1/ip/design_1_npu_axil_wrapper_0_0/design_1_npu_axil_wrapper_0_0_stub.vhdl
@@ -56,7 +56,7 @@ entity design_1_npu_axil_wrapper_0_0 is
   attribute CHECK_LICENSE_TYPE : string;
   attribute CHECK_LICENSE_TYPE of design_1_npu_axil_wrapper_0_0 : entity is "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{}";
   attribute CORE_GENERATION_INFO : string;
-  attribute CORE_GENERATION_INFO of design_1_npu_axil_wrapper_0_0 : entity is "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=7}";
+  attribute CORE_GENERATION_INFO of design_1_npu_axil_wrapper_0_0 : entity is "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=8}";
   attribute DowngradeIPIdentifiedWarnings : string;
   attribute DowngradeIPIdentifiedWarnings of design_1_npu_axil_wrapper_0_0 : entity is "yes";
   attribute IP_DEFINITION_SOURCE : string;

@@ -20,3 +20,4 @@
 ../interrupt_controller.vhd
 ../decoder/npu_decoder.vhd
 ../NPU.vhd
+../npu_axil_wrapper.vhd

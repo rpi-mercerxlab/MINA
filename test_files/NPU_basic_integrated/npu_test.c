@@ -125,7 +125,7 @@ int main(void) {
     if (counter == 100000000) {
       uart_puts("Program counter, NPU: ");
 
-      uart_print_u32((int)NPU_PC_IDX);
+      uart_print_u32(NPU_READ_PC());
 
       uart_putc('\n');
       counter = 0;

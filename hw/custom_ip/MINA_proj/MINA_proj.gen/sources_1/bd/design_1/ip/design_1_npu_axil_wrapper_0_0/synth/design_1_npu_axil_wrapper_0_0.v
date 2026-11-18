@@ -52,7 +52,7 @@
 
 (* X_CORE_INFO = "npu_axil_wrapper,Vivado 2025.2" *)
 (* CHECK_LICENSE_TYPE = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{}" *)
-(* CORE_GENERATION_INFO = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=7}" *)
+(* CORE_GENERATION_INFO = "design_1_npu_axil_wrapper_0_0,npu_axil_wrapper,{x_ipProduct=Vivado 2025.2,x_ipVendor=xilinx.com,x_ipLibrary=module_ref,x_ipName=npu_axil_wrapper,x_ipVersion=1.0,x_ipCoreRevision=1,x_ipLanguage=VERILOG,x_ipSimLanguage=MIXED,QUIESCE_CYCLES=8}" *)
 (* IP_DEFINITION_SOURCE = "module_ref" *)
 (* DowngradeIPIdentifiedWarnings = "yes" *)
 module design_1_npu_axil_wrapper_0_0 (
@@ -163,7 +163,7 @@ output wire [31 : 0] raw_scratchpad_dout;
 output wire interrupt;
 
   npu_axil_wrapper #(
-    .QUIESCE_CYCLES(7)
+    .QUIESCE_CYCLES(8)
   ) inst (
     .clk(clk),
     .aresetn(aresetn),

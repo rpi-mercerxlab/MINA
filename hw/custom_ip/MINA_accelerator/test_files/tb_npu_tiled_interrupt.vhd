@@ -60,7 +60,7 @@ architecture sim of tb_npu_tiled_interrupt is
         res(35 downto 28) := x"07";
         res(27 downto 24) := std_logic_vector(to_unsigned(rt, 4));
         res(23 downto 20) := std_logic_vector(to_unsigned(rs, 4));
-        res(20 downto 11) := std_logic_vector(to_unsigned(target_pc, 10));
+        res(19 downto 10) := std_logic_vector(to_unsigned(target_pc, 10));
         return res;
     end function;
 

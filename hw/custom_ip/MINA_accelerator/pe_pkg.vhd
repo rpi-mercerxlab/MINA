@@ -36,7 +36,7 @@ package pe_pkg is
         RAM_ADDR_WIDTH + BANK_SEL_WIDTH;
 
     -- Existing post-processing/write-enable alignment
-    constant WRITEBACK_LATENCY : positive := 5;
+    constant WRITEBACK_LATENCY : positive := 6;
 
     type weight_row_t is array (0 to NUM_COLS-1)
         of std_logic_vector(WEIGHT_WIDTH-1 downto 0);

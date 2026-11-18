@@ -8,11 +8,11 @@
     "gen_directory": "../../../../../../MINA_proj.gen/sources_1/bd/design_1/ip/design_1_npu_axil_wrapper_0_0",
     "parameters": {
       "component_parameters": {
-        "QUIESCE_CYCLES": [ { "value": "7", "resolve_type": "user", "format": "long", "usage": "all" } ],
+        "QUIESCE_CYCLES": [ { "value": "8", "resolve_type": "user", "format": "long", "usage": "all" } ],
         "Component_Name": [ { "value": "design_1_npu_axil_wrapper_0_0", "resolve_type": "user", "usage": "all" } ]
       },
       "model_parameters": {
-        "QUIESCE_CYCLES": [ { "value": "7", "resolve_type": "generated", "format": "long", "usage": "all" } ]
+        "QUIESCE_CYCLES": [ { "value": "8", "resolve_type": "generated", "format": "long", "usage": "all" } ]
       },
       "project_parameters": {
         "ARCHITECTURE": [ { "value": "spartan7", "resolve_type": "generated", "usage": "all" } ],
@@ -196,5 +196,5 @@
       }
     }
   },
-  "checksum": "1fdd3378"
+  "checksum": "ee2cae1e"
 }

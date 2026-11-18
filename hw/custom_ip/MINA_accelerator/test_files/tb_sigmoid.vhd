@@ -14,10 +14,10 @@ use ieee.numeric_std.all;
 use std.env.all;
 use std.textio.all;
 
-entity tb_npu_sigmoid is
+entity tb_sigmoid is
 end entity;
 
-architecture sim of tb_npu_sigmoid is
+architecture sim of tb_sigmoid is
     constant PERIOD : time := 10 ns;
     constant OUTPUT_BASE : natural := 16; -- 64-bit word address
     constant SENTINEL : std_logic_vector(31 downto 0) := x"5A5A5A5A";

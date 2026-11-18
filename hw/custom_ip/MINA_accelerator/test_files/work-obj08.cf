@@ -1,67 +1,73 @@
 v 4
-file . "tb_npu_tiled_interrupt.vhd" "3fb4f4d380782b4b8389e9ffcc7799b820b748e0" "20261114033907.708":
-  entity tb_npu_tiled_interrupt at 1( 0) + 0 on 924;
-  architecture sim of tb_npu_tiled_interrupt at 10( 177) + 0 on 925;
-file . "tb_npu_loop.vhd" "687f24dae7c7f44e1fef863c4be01ce9e4c2d3c8" "20261114002843.079":
-  entity tb_npu_loop at 17( 1073) + 0 on 708;
-  architecture sim of tb_npu_loop at 26( 1215) + 0 on 709;
-file . "../r_file_and_exec.vhd" "25e7835392599cd9bd72cf546c9d50530dee4d7a" "20261114040229.916":
-  entity r_file_n_exec at 1( 0) + 0 on 952;
-  architecture rtl of r_file_n_exec at 47( 1663) + 0 on 953;
-file . "tb_npu.vhd" "dc48c4ebee468bcda834ea6f1fa4a75eaad0e671" "20261114040230.117":
-  entity tb_npu at 1( 0) + 0 on 960;
-  architecture sim of tb_npu at 9( 117) + 0 on 961;
-file . "../decoder/npu_decoder.vhd" "c086c34bf4fc560807dbf8688d10a708f6af50b9" "20261114040229.982":
-  entity npu_decoder at 1( 0) + 0 on 956;
-  architecture rtl of npu_decoder at 54( 2201) + 0 on 957;
-file . "../output_pe.vhd" "8e9a0d2fce300bc71f17f8ee64026a316d0b5460" "20261114040229.855":
-  entity output_pe at 1( 0) + 0 on 948;
-  architecture behavioral of output_pe at 24( 640) + 0 on 949;
-file . "../PE_arr_driver.vhd" "1882a54ee92817f88deb70cf3c1094e295c73681" "20261114040229.695":
-  entity pe_arr_driver at 1( 0) + 0 on 944;
-  architecture rtl of pe_arr_driver at 41( 1461) + 0 on 945;
-file . "../PE_weight_ram.vhd" "3de3e85817c1bb78673fba7d4358e33a6d16c0ec" "20261114040229.623":
-  entity pe_weight_ram at 1( 0) + 0 on 940;
-  architecture rtl of pe_weight_ram at 21( 692) + 0 on 941;
-file . "../PE_arr.vhd" "cf7a5a6ed5373bbbebad13b1b1d90bc41514e271" "20261114040229.549":
-  entity pearray at 1( 0) + 0 on 936;
-  architecture structural of pearray at 26( 578) + 0 on 937;
-file . "../instr_fetcher.vhd" "5659d4e7b18bdd4fadc946e1a9969c717dcafef4" "20261114040229.488":
-  entity instr_fetcher at 1( 0) + 0 on 932;
-  architecture rtl of instr_fetcher at 24( 722) + 0 on 933;
-file . "../basic_bram.vhd" "c54e7a87df2f4fe41fdc4d314aa5a7f6138a494c" "20261114040229.442":
-  entity basic_dual_port at 1( 0) + 0 on 928;
-  architecture rtl of basic_dual_port at 27( 794) + 0 on 929;
-file . "../instr_bram.vhd" "63687bd24dc26cdadef4810320166c3adceadf3b" "20261114040229.465":
-  entity instr_bram at 1( 0) + 0 on 930;
-  architecture rtl of instr_bram at 27( 784) + 0 on 931;
-file . "../PE.vhd" "1f5fba04fd27318aae4cf9ac28f4fa28aa3d242a" "20261114040229.511":
-  entity pengine at 1( 0) + 0 on 934;
-  architecture behavioral of pengine at 34( 926) + 0 on 935;
-file . "../PE_scratchpad_ram.vhd" "6d6f5665a79c0b3105154a380635119cc71c8eee" "20261114040229.585":
-  entity pe_scratchpad_ram at 1( 0) + 0 on 938;
-  architecture rtl of pe_scratchpad_ram at 23( 794) + 0 on 939;
-file . "../PE_skew_buffer.vhd" "2f3ef010d650729f5b580af748e7ed0b7317882f" "20261114040229.660":
-  entity skewbuffer at 1( 0) + 0 on 942;
-  architecture rtl of skewbuffer at 21( 527) + 0 on 943;
-file . "../sigmoidLUT.vhd" "ee040b2e01aebb098dd88eee3cf1f3c7c3c53334" "20261114040229.752":
-  entity sigmoidlut at 1( 0) + 0 on 946;
-  architecture behavioral of sigmoidlut at 13( 260) + 0 on 947;
-file . "../PPU.vhd" "586da4a523eb1771b61d8be5227f0485d257054b" "20261114040229.890":
-  entity processing_row at 1( 0) + 0 on 950;
-  architecture rtl of processing_row at 23( 759) + 0 on 951;
-file . "../NPU.vhd" "2d33a632337d39faa53c1bb2af3aea0d677d4b52" "20261114040230.035":
-  entity npu at 1( 0) + 0 on 958;
-  architecture structural of npu at 35( 1204) + 0 on 959;
-file . "tb_sigmoid.vhd" "a843316eec0a5592fcbcf2c9344f09bdde9fa1d8" "20261113235513.681":
-  entity tb_npu_sigmoid at 11( 683) + 0 on 604;
-  architecture sim of tb_npu_sigmoid at 20( 828) + 0 on 605;
-file . "../pe_pkg.vhd" "8c7b4cc0dc1a0bc810f1018f92cb6bdf91cdcab4" "20261114040229.422":
-  package pe_pkg at 1( 0) + 0 on 926 body;
-  package body pe_pkg at 51( 1574) + 0 on 927;
+file . "axil_tb.vhd" "ab3d8b70c9aba08cf21ab037cd8b7dddea43c124" "20261117193619.356":
+  entity axil_tb at 1( 0) + 0 on 1036;
+  architecture sim of axil_tb at 9( 130) + 0 on 1037;
+file . "../interrupt_controller.vhd" "fef7ffd712594d50c52440cba801f8050a2cafee" "20261118001003.199":
+  entity interrupt_controller at 1( 0) + 0 on 1366;
+  architecture behavioral of interrupt_controller at 22( 516) + 0 on 1367;
 file . "tb_npu_16x16.vhd" "07783033fdf7da1f34be0fbcd294a6f33ea526a3" "20261113202739.137":
   entity tb_npu_16x16 at 1( 0) + 0 on 536;
   architecture sim of tb_npu_16x16 at 11( 177) + 0 on 537;
-file . "../interrupt_controller.vhd" "fef7ffd712594d50c52440cba801f8050a2cafee" "20261114040229.963":
-  entity interrupt_controller at 1( 0) + 0 on 954;
-  architecture behavioral of interrupt_controller at 22( 516) + 0 on 955;
+file . "../pe_pkg.vhd" "bf3d0f6a25857b783ce1bb6bc8f418547e4b18ca" "20261118001002.624":
+  package pe_pkg at 1( 0) + 0 on 1338 body;
+  package body pe_pkg at 51( 1574) + 0 on 1339;
+file . "tb_sigmoid.vhd" "69fa89b0b1c783da5fb4df2d2957f1837bf2d1d0" "20261118000550.044":
+  entity tb_sigmoid at 11( 683) + 0 on 1336;
+  architecture sim of tb_sigmoid at 20( 824) + 0 on 1337;
+file . "../NPU.vhd" "87ccc8e975cc9240912023e1672aa0787a9db608" "20261118001003.278":
+  entity npu at 1( 0) + 0 on 1370;
+  architecture structural of npu at 38( 1332) + 0 on 1371;
+file . "../PPU.vhd" "586da4a523eb1771b61d8be5227f0485d257054b" "20261118001003.123":
+  entity processing_row at 1( 0) + 0 on 1362;
+  architecture rtl of processing_row at 23( 759) + 0 on 1363;
+file . "../sigmoidLUT.vhd" "ee040b2e01aebb098dd88eee3cf1f3c7c3c53334" "20261118001002.975":
+  entity sigmoidlut at 1( 0) + 0 on 1358;
+  architecture behavioral of sigmoidlut at 13( 260) + 0 on 1359;
+file . "../PE_skew_buffer.vhd" "2f3ef010d650729f5b580af748e7ed0b7317882f" "20261118001002.878":
+  entity skewbuffer at 1( 0) + 0 on 1354;
+  architecture rtl of skewbuffer at 21( 527) + 0 on 1355;
+file . "../PE_scratchpad_ram.vhd" "6d6f5665a79c0b3105154a380635119cc71c8eee" "20261118001002.802":
+  entity pe_scratchpad_ram at 1( 0) + 0 on 1350;
+  architecture rtl of pe_scratchpad_ram at 23( 794) + 0 on 1351;
+file . "../PE.vhd" "1f5fba04fd27318aae4cf9ac28f4fa28aa3d242a" "20261118001002.723":
+  entity pengine at 1( 0) + 0 on 1346;
+  architecture behavioral of pengine at 34( 926) + 0 on 1347;
+file . "../instr_bram.vhd" "63687bd24dc26cdadef4810320166c3adceadf3b" "20261118001002.669":
+  entity instr_bram at 1( 0) + 0 on 1342;
+  architecture rtl of instr_bram at 27( 784) + 0 on 1343;
+file . "../basic_bram.vhd" "c54e7a87df2f4fe41fdc4d314aa5a7f6138a494c" "20261118001002.644":
+  entity basic_dual_port at 1( 0) + 0 on 1340;
+  architecture rtl of basic_dual_port at 27( 794) + 0 on 1341;
+file . "../instr_fetcher.vhd" "98a42eb15a0a4f1e8c0cc14cffd5794b91f7547f" "20261118001002.694":
+  entity instr_fetcher at 1( 0) + 0 on 1344;
+  architecture rtl of instr_fetcher at 27( 870) + 0 on 1345;
+file . "../PE_arr.vhd" "cf7a5a6ed5373bbbebad13b1b1d90bc41514e271" "20261118001002.763":
+  entity pearray at 1( 0) + 0 on 1348;
+  architecture structural of pearray at 26( 578) + 0 on 1349;
+file . "../PE_weight_ram.vhd" "3de3e85817c1bb78673fba7d4358e33a6d16c0ec" "20261118001002.840":
+  entity pe_weight_ram at 1( 0) + 0 on 1352;
+  architecture rtl of pe_weight_ram at 21( 692) + 0 on 1353;
+file . "../PE_arr_driver.vhd" "1882a54ee92817f88deb70cf3c1094e295c73681" "20261118001002.913":
+  entity pe_arr_driver at 1( 0) + 0 on 1356;
+  architecture rtl of pe_arr_driver at 41( 1461) + 0 on 1357;
+file . "../output_pe.vhd" "3e21fe63524d5a84dcde15ae6dfba5250d8a769f" "20261118001003.083":
+  entity output_pe at 1( 0) + 0 on 1360;
+  architecture behavioral of output_pe at 24( 638) + 0 on 1361;
+file . "../decoder/npu_decoder.vhd" "028f98d1b1bf69e05aaaee78792d7f506af5dd58" "20261118001003.221":
+  entity npu_decoder at 1( 0) + 0 on 1368;
+  architecture rtl of npu_decoder at 54( 2201) + 0 on 1369;
+file . "tb_npu.vhd" "dc48c4ebee468bcda834ea6f1fa4a75eaad0e671" "20261117234350.790":
+  entity tb_npu at 1( 0) + 0 on 1148;
+  architecture sim of tb_npu at 9( 117) + 0 on 1149;
+file . "../r_file_and_exec.vhd" "25e7835392599cd9bd72cf546c9d50530dee4d7a" "20261118001003.150":
+  entity r_file_n_exec at 1( 0) + 0 on 1364;
+  architecture rtl of r_file_n_exec at 47( 1663) + 0 on 1365;
+file . "tb_npu_loop.vhd" "687f24dae7c7f44e1fef863c4be01ce9e4c2d3c8" "20261114002843.079":
+  entity tb_npu_loop at 17( 1073) + 0 on 708;
+  architecture sim of tb_npu_loop at 26( 1215) + 0 on 709;
+file . "tb_npu_tiled_interrupt.vhd" "ab81cfda0062df9eb9c1ca55e7df0ebb169b0572" "20261118001003.459":
+  entity tb_npu_tiled_interrupt at 1( 0) + 0 on 1374;
+  architecture sim of tb_npu_tiled_interrupt at 10( 177) + 0 on 1375;
+file . "../npu_axil_wrapper.vhd" "a0b73ab7518ef805d2af82b859246890164b69c8" "20261118001003.366":
+  entity npu_axil_wrapper at 33( 1777) + 0 on 1372;
+  architecture rtl of npu_axil_wrapper at 79( 3846) + 0 on 1373;

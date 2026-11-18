@@ -4872,6 +4872,11 @@
                 "offset": "0x20004000",
                 "range": "4K"
               },
+              "SEG_npu_axil_wrapper_0_reg0": {
+                "address_block": "/npu_axil_wrapper_0/s_axi/reg0",
+                "offset": "0x40000000",
+                "range": "16M"
+              },
               "SEG_plic_axil_wrapper_0_reg0": {
                 "address_block": "/peripherals/plic_axil_wrapper_0/S_AXI/reg0",
                 "offset": "0x20000000",

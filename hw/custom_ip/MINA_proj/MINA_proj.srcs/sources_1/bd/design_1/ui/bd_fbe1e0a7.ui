@@ -59,6 +59,16 @@ preplace netloc axi_uart_bootloader_1_bram_addr 1 2 1 820J 650n
 preplace netloc axi_uart_bootloader_1_bram_din 1 2 1 830J 680n
 preplace netloc axi_uart_bootloader_1_bram_en 1 2 1 790J 590n
 preplace netloc axi_uart_bootloader_1_bram_we 1 2 1 800J 620n
+preplace netloc axi_uart_bootloader_1_npu_boot_active 1 2 1 840J 710n
+preplace netloc axi_uart_bootloader_1_npu_instr_addr 1 2 1 NJ 770
+preplace netloc axi_uart_bootloader_1_npu_instr_din 1 2 1 840J 790n
+preplace netloc axi_uart_bootloader_1_npu_instr_we 1 2 1 840J 740n
+preplace netloc axi_uart_bootloader_1_npu_scratchpad_addr 1 2 1 800J 890n
+preplace netloc axi_uart_bootloader_1_npu_scratchpad_din 1 2 1 790J 910n
+preplace netloc axi_uart_bootloader_1_npu_scratchpad_we 1 2 1 810J 870n
+preplace netloc axi_uart_bootloader_1_npu_weight_addr 1 2 1 830J 830n
+preplace netloc axi_uart_bootloader_1_npu_weight_din 1 2 1 820J 850n
+preplace netloc axi_uart_bootloader_1_npu_weight_we 1 2 1 840J 810n
 preplace netloc axi_uart_bootloader_1_uart_irq 1 0 3 50 970 NJ 970 780
 preplace netloc axi_uart_bootloader_1_uart_tx 1 2 1 780J 560n
 preplace netloc axil_timer_64_0_IRQ 1 2 1 NJ 490
@@ -68,24 +78,14 @@ preplace netloc i2c_master_axil_0_i2c_scl_t 1 0 3 20 230 NJ 230 790
 preplace netloc i2c_master_axil_0_i2c_sda_o 1 0 3 20 10 NJ 10 780
 preplace netloc i2c_master_axil_0_i2c_sda_t 1 0 3 50 90 360J 210 780
 preplace netloc negation_1_b 1 1 1 340 110n
+preplace netloc npu_int_1 1 0 1 NJ 1110
+preplace netloc npu_ready_1 1 0 2 NJ 820 420J
 preplace netloc plic_axil_wrapper_0_ext_intr 1 2 1 NJ 1240
 preplace netloc timer_clk_in_1 1 0 1 N 20
 preplace netloc uart_rx_0_1 1 0 2 NJ 790 NJ
 preplace netloc util_ds_buf_0_IOBUF_IO_O 1 1 1 N 150
 preplace netloc util_ds_buf_1_IOBUF_IO_O 1 1 1 330 130n
 preplace netloc xlconcat_0_dout 1 1 1 340 1100n
-preplace netloc npu_ready_1 1 0 2 NJ 820 420J
-preplace netloc axi_uart_bootloader_1_npu_boot_active 1 2 1 840J 710n
-preplace netloc axi_uart_bootloader_1_npu_instr_we 1 2 1 840J 740n
-preplace netloc axi_uart_bootloader_1_npu_instr_addr 1 2 1 NJ 770
-preplace netloc axi_uart_bootloader_1_npu_instr_din 1 2 1 840J 790n
-preplace netloc axi_uart_bootloader_1_npu_weight_we 1 2 1 840J 810n
-preplace netloc axi_uart_bootloader_1_npu_weight_addr 1 2 1 830J 830n
-preplace netloc axi_uart_bootloader_1_npu_weight_din 1 2 1 820J 850n
-preplace netloc axi_uart_bootloader_1_npu_scratchpad_we 1 2 1 810J 870n
-preplace netloc axi_uart_bootloader_1_npu_scratchpad_addr 1 2 1 800J 890n
-preplace netloc axi_uart_bootloader_1_npu_scratchpad_din 1 2 1 790J 910n
-preplace netloc npu_int_1 1 0 1 NJ 1110
 preplace netloc Conn1 1 2 1 NJ 320
 preplace netloc Conn2 1 2 1 NJ 1050
 preplace netloc Conn3 1 0 1 NJ 640
@@ -96,7 +96,7 @@ preplace netloc smartconnect_1_M03_AXI 1 1 1 380 310n
 preplace netloc smartconnect_1_M04_AXI 1 1 1 350 70n
 preplace netloc smartconnect_1_M05_AXI 1 1 1 330 710n
 levelinfo -pg 1 0 190 600 860
-pagesize -pg 1 -db -bbox -sgen -130 0 1100 1330
+pagesize -pg 1 -db -bbox -sgen -140 0 1100 1330
 "
 }
 0
