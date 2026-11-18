@@ -46,22 +46,22 @@ void uart_init(void) {
 }
 
 void uart_putc(char c) {
-  // 1. Temporarily disable TX interrupts to avoid race conditions
+  // 1. Temporarily disable TX interrupts to check state safely
   *UART_IRQ_EN &= ~IRQ_TX_EMPTY;
 
   // 2. If the software buffer is empty AND the hardware TX FIFO is empty,
   // bypass the software buffer to kickstart the hardware transmission.
   if (tx_buffer.head == tx_buffer.tail && (*UART_STATUS & STATUS_TX_EMPTY)) {
     *UART_TX_FIFO = (uint32_t)c;
+    *UART_IRQ_EN |= IRQ_TX_EMPTY;
   } else {
-    // Otherwise, hardware is busy. Queue it in the software buffer.
+    // Try to insert while TX IRQ is masked; if the 256-byte buffer is full,
+    // re-enable IRQ_TX_EMPTY while waiting so uart_isr() can drain it!
     while (!insert_rb(&tx_buffer, c)) {
-      // Busy wait only if the 256-byte buffer is completely full
+      *UART_IRQ_EN |= IRQ_TX_EMPTY;
     }
+    *UART_IRQ_EN |= IRQ_TX_EMPTY;
   }
-
-  // 3. Re-enable TX interrupts so the ISR handles the rest
-  *UART_IRQ_EN |= IRQ_TX_EMPTY;
 }
 
 char uart_getc(void) {
@@ -81,8 +81,7 @@ void uart_puts(const char *str) {
 }
 
 void uart_polled_putc(char c) {
-  // Wait directly on the hardware status register until TX FIFO is not
-  // full/empty
+  // Wait directly on the hardware status register until TX FIFO is empty
   while (!(*UART_STATUS & STATUS_TX_EMPTY))
     ;
   *UART_TX_FIFO = (uint32_t)c;

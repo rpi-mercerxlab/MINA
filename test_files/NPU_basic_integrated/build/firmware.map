@@ -13,13 +13,13 @@ CPU_RAM          0x10000000         0x00010000         xrw
 
 Linker script and memory map
 
-LOAD /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
-LOAD /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
-LOAD /tmp/mina_build_YEbGss/.//drivers/src/irq.o
-LOAD /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
-LOAD /tmp/mina_build_YEbGss/.//drivers/src/timer.o
-LOAD /tmp/mina_build_YEbGss/.//drivers/src/uart.o
-LOAD /tmp/mina_build_YEbGss/.//crt0.o
+LOAD /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+LOAD /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+LOAD /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+LOAD /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+LOAD /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+LOAD /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+LOAD /tmp/mina_build_1r8iGH/.//crt0.o
 LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
 START GROUP
 LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-elf/lib/libc.a
@@ -27,274 +27,273 @@ LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-e
 END GROUP
 LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
 
-.text           0x00000000      0xdf8
+.text           0x00000000      0xe90
  *(.text.init)
- .text.init     0x00000000       0x62 /tmp/mina_build_YEbGss/.//crt0.o
+ .text.init     0x00000000       0x6c /tmp/mina_build_1r8iGH/.//crt0.o
                 0x00000000                _start
  *(.text .text.*)
- .text          0x00000062      0x1ca /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
-                0x000000f4                npu_irq_handler
- .text.startup  0x0000022c       0xca /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
-                0x0000022c                main
- .text          0x000002f6       0x28 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
-                0x000002f6                set_input
-                0x00000308                set_output
- *fill*         0x0000031e        0x2 
- .text          0x00000320      0x3a6 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
-                0x00000320                init_interrupts
-                0x00000338                plic_irq_handler
-                0x000003b8                trap_handler
-                0x000004b4                resort_by_prior
-                0x00000694                reg_irq_handler
-                0x000006bc                reg_timer_irq
- .text          0x000006c6       0x64 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
-                0x000006c6                init_ring_buffer
-                0x000006d0                reset_ring_buffer
-                0x000006da                insert_rb
-                0x00000700                pop_rb
- .text          0x0000072a      0x4a8 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
-                0x0000072a                init_timers
-                0x0000074e                read_time
-                0x0000075c                set_compare
-                0x0000076a                swap_in_heap
-                0x00000780                min_heapify
-                0x00000850                sift_up
-                0x00000966                master_timer_isr
-                0x00000a12                register_isr_periodic
-                0x00000ae2                register_isr_abs
-                0x00000bb6                deactivate_timer
-                0x00000bc4                _deactivate_timer
- .text          0x00000bd2      0x226 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
-                0x00000bd2                uart_isr
-                0x00000c4a                uart_init
-                0x00000c7e                uart_putc
-                0x00000ce6                uart_getc
-                0x00000d06                uart_puts
-                0x00000d26                uart_polled_putc
-                0x00000d3a                uart_polled_puts
-                0x00000d5e                uart_print_hex
- .text          0x00000df8        0x0 /tmp/mina_build_YEbGss/.//crt0.o
+ .text          0x0000006c       0xb0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x000000fe                npu_irq_handler
+ .text.startup  0x0000011c      0x204 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x0000011c                main
+ .text          0x00000320       0x28 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+                0x00000320                set_input
+                0x00000332                set_output
+ .text          0x00000348      0x406 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+                0x00000348                init_interrupts
+                0x00000360                plic_irq_handler
+                0x000003e0                trap_handler
+                0x0000053a                resort_by_prior
+                0x0000071a                reg_irq_handler
+                0x00000742                reg_timer_irq
+ .text          0x0000074e       0x64 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+                0x0000074e                init_ring_buffer
+                0x00000758                reset_ring_buffer
+                0x00000762                insert_rb
+                0x00000788                pop_rb
+ .text          0x000007b2      0x4a8 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+                0x000007b2                init_timers
+                0x000007d6                read_time
+                0x000007e4                set_compare
+                0x000007f2                swap_in_heap
+                0x00000808                min_heapify
+                0x000008d8                sift_up
+                0x000009ee                master_timer_isr
+                0x00000a9a                register_isr_periodic
+                0x00000b6a                register_isr_abs
+                0x00000c3e                deactivate_timer
+                0x00000c4c                _deactivate_timer
+ .text          0x00000c5a      0x236 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+                0x00000c5a                uart_isr
+                0x00000cd2                uart_init
+                0x00000d06                uart_putc
+                0x00000d7e                uart_getc
+                0x00000d9e                uart_puts
+                0x00000dbe                uart_polled_putc
+                0x00000dd2                uart_polled_puts
+                0x00000df6                uart_print_hex
+ .text          0x00000e90        0x0 /tmp/mina_build_1r8iGH/.//crt0.o
 
-.rodata         0x00000df8       0xe8
+.rodata         0x00000e90      0x110
  *(.rodata .rodata.*)
  .rodata.str1.4
-                0x00000df8       0xe5 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
-                                 0x3f (size before relaxing)
+                0x00000e90      0x10d /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                                 0x67 (size before relaxing)
  .rodata.str1.4
-                0x00000edd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x00000f9d        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                                  0xa5 (size before relaxing)
-                0x00000ee0                        . = ALIGN (0x8)
- *fill*         0x00000edd        0x3 
+                0x00000fa0                        . = ALIGN (0x8)
+ *fill*         0x00000f9d        0x3 
 
-.rela.dyn       0x00000ee0        0x0
- .rela.text     0x00000ee0        0x0 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+.rela.dyn       0x00000fa0        0x0
+ .rela.text     0x00000fa0        0x0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .rela.text.init
-                0x00000ee0        0x0 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000fa0        0x0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
 
-.data           0x10000000       0x40 load address 0x00000ee0
+.data           0x10000000       0x40 load address 0x00000fa0
                 0x10000000                        . = ALIGN (0x8)
                 0x10000000                        _sdata = .
  *(.data .data.*)
- .data          0x10000000        0x0 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .data          0x10000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .data          0x10000000       0x40 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+ .data          0x10000000        0x0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .data          0x10000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .data          0x10000000       0x40 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                 0x10000000                plic_idx_sort
                 0x10000020                plic_irq_priorities
- .data          0x10000040        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .data          0x10000040        0x0 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .data          0x10000040        0x0 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
- .data          0x10000040        0x0 /tmp/mina_build_YEbGss/.//crt0.o
+ .data          0x10000040        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .data          0x10000040        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .data          0x10000040        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+ .data          0x10000040        0x0 /tmp/mina_build_1r8iGH/.//crt0.o
                 0x10000840                        PROVIDE (__global_pointer$ = (. + 0x800))
  *(.sdata .sdata.*)
                 0x10000040                        . = ALIGN (0x8)
                 0x10000040                        _edata = .
-                0x00000ee0                        _data_load_start = LOADADDR (.data)
+                0x00000fa0                        _data_load_start = LOADADDR (.data)
 
-.bss            0x10000040      0x938 load address 0x00000f20
+.bss            0x10000040      0x938 load address 0x00000fe0
                 0x10000040                        . = ALIGN (0x8)
                 0x10000040                        _sbss = .
  *(.sbss .sbss.*)
- .sbss          0x10000040        0x5 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .sbss          0x10000040        0x5 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
                 0x10000040                npu_done_flag
                 0x10000044                simple_counter
  *fill*         0x10000045        0x3 
- .sbss          0x10000048        0x4 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+ .sbss          0x10000048        0x4 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                 0x10000048                timer_irq_handler
- .sbss          0x1000004c        0x4 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+ .sbss          0x1000004c        0x4 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  *(.bss .bss.*)
- .bss           0x10000050        0x0 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .bss           0x10000050        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .bss           0x10000050       0x20 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+ .bss           0x10000050        0x0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .bss           0x10000050        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .bss           0x10000050       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                 0x10000050                plic_irq_handlers
- .bss           0x10000070        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .bss           0x10000070      0x700 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .bss           0x10000770      0x206 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+ .bss           0x10000070        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .bss           0x10000070      0x700 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .bss           0x10000770      0x206 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
                 0x10000770                rx_buffer
                 0x10000874                tx_buffer
- .bss           0x10000976        0x0 /tmp/mina_build_YEbGss/.//crt0.o
+ .bss           0x10000976        0x0 /tmp/mina_build_1r8iGH/.//crt0.o
                 0x10000978                        . = ALIGN (0x8)
  *fill*         0x10000976        0x2 
                 0x10000978                        _ebss = .
                 0x10010000                        PROVIDE (_stack_top = (ORIGIN (CPU_RAM) + LENGTH (CPU_RAM)))
-OUTPUT(/tmp/mina_build_YEbGss/firmware.elf elf32-littleriscv)
+OUTPUT(/tmp/mina_build_1r8iGH/firmware.elf elf32-littleriscv)
 
-.debug_info     0x00000000     0x1c43
- .debug_info    0x00000000      0x647 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .debug_info    0x00000647       0xdc /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .debug_info    0x00000723      0x6b8 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
- .debug_info    0x00000ddb      0x1b4 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .debug_info    0x00000f8f      0x7ad /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .debug_info    0x0000173c      0x4e3 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
- .debug_info    0x00001c1f       0x24 /tmp/mina_build_YEbGss/.//crt0.o
+.debug_info     0x00000000     0x1c83
+ .debug_info    0x00000000      0x665 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_info    0x00000665       0xdc /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .debug_info    0x00000741      0x6b8 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+ .debug_info    0x00000df9      0x1b4 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .debug_info    0x00000fad      0x7ad /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .debug_info    0x0000175a      0x505 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+ .debug_info    0x00001c5f       0x24 /tmp/mina_build_1r8iGH/.//crt0.o
 
-.debug_abbrev   0x00000000      0xbb0
- .debug_abbrev  0x00000000      0x282 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .debug_abbrev  0x00000282       0x85 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .debug_abbrev  0x00000307      0x1d0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
- .debug_abbrev  0x000004d7      0x138 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .debug_abbrev  0x0000060f      0x31e /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .debug_abbrev  0x0000092d      0x26f /tmp/mina_build_YEbGss/.//drivers/src/uart.o
- .debug_abbrev  0x00000b9c       0x14 /tmp/mina_build_YEbGss/.//crt0.o
+.debug_abbrev   0x00000000      0xbd3
+ .debug_abbrev  0x00000000      0x2a6 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_abbrev  0x000002a6       0x85 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .debug_abbrev  0x0000032b      0x1d0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+ .debug_abbrev  0x000004fb      0x138 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .debug_abbrev  0x00000633      0x31e /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .debug_abbrev  0x00000951      0x26e /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+ .debug_abbrev  0x00000bbf       0x14 /tmp/mina_build_1r8iGH/.//crt0.o
 
 .debug_loclists
-                0x00000000      0xb78
+                0x00000000      0xb83
  .debug_loclists
-                0x00000000      0x2b2 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000      0x2bd /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .debug_loclists
-                0x000002b2      0x2c2 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x000002bd      0x2c2 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
  .debug_loclists
-                0x00000574       0x60 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+                0x0000057f       0x60 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
  .debug_loclists
-                0x000005d4      0x49c /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x000005df      0x49c /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  .debug_loclists
-                0x00000a70      0x108 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x00000a7b      0x108 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
 
 .debug_aranges  0x00000000       0xe8
  .debug_aranges
-                0x00000000       0x28 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000       0x28 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .debug_aranges
-                0x00000028       0x20 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
+                0x00000028       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
  .debug_aranges
-                0x00000048       0x20 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x00000048       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
  .debug_aranges
-                0x00000068       0x20 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+                0x00000068       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
  .debug_aranges
-                0x00000088       0x20 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x00000088       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  .debug_aranges
-                0x000000a8       0x20 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x000000a8       0x20 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
  .debug_aranges
-                0x000000c8       0x20 /tmp/mina_build_YEbGss/.//crt0.o
+                0x000000c8       0x20 /tmp/mina_build_1r8iGH/.//crt0.o
 
 .debug_rnglists
-                0x00000000      0x279
+                0x00000000      0x28d
  .debug_rnglists
-                0x00000000      0x144 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000      0x148 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .debug_rnglists
-                0x00000144       0x5f /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x00000148       0x5f /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
  .debug_rnglists
-                0x000001a3       0x9e /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x000001a7       0x9e /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  .debug_rnglists
-                0x00000241       0x38 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x00000245       0x48 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
 
-.debug_line     0x00000000     0x2595
- .debug_line    0x00000000      0x815 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .debug_line    0x00000815       0x9a /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .debug_line    0x000008af      0x902 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
- .debug_line    0x000011b1      0x14b /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .debug_line    0x000012fc      0xbc2 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .debug_line    0x00001ebe      0x621 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
- .debug_line    0x000024df       0xb6 /tmp/mina_build_YEbGss/.//crt0.o
+.debug_line     0x00000000     0x258d
+ .debug_line    0x00000000      0x7da /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_line    0x000007da       0x9a /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .debug_line    0x00000874      0x902 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+ .debug_line    0x00001176      0x14b /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .debug_line    0x000012c1      0xbc2 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .debug_line    0x00001e83      0x642 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+ .debug_line    0x000024c5       0xc8 /tmp/mina_build_1r8iGH/.//crt0.o
 
-.debug_str      0x00000000      0x50e
- .debug_str     0x00000000      0x50e /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
-                                0x27f (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
-                                0x13a (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
-                                0x270 (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
-                                0x171 (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
-                                0x2b1 (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
-                                0x214 (size before relaxing)
- .debug_str     0x0000050e        0x0 /tmp/mina_build_YEbGss/.//crt0.o
+.debug_str      0x00000000      0x506
+ .debug_str     0x00000000      0x506 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                                0x277 (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+                                0x132 (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+                                0x268 (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+                                0x169 (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+                                0x2a9 (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
+                                0x20c (size before relaxing)
+ .debug_str     0x00000506        0x0 /tmp/mina_build_1r8iGH/.//crt0.o
                                  0x21 (size before relaxing)
 
 .debug_line_str
                 0x00000000      0x1dd
  .debug_line_str
-                0x00000000      0x1dd /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000      0x1dd /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
                                 0x135 (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
                                  0xa9 (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                                  0xcb (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
                                  0xd6 (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
                                  0xe9 (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
                                  0xd2 (size before relaxing)
  .debug_line_str
-                0x000001dd        0x0 /tmp/mina_build_YEbGss/.//crt0.o
+                0x000001dd        0x0 /tmp/mina_build_1r8iGH/.//crt0.o
                                  0x15 (size before relaxing)
 
 .comment        0x00000000       0x19
- .comment       0x00000000       0x19 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .comment       0x00000000       0x19 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
                                  0x1a (size before relaxing)
- .comment       0x00000019        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
+ .comment       0x00000019        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
                                  0x1a (size before relaxing)
- .comment       0x00000019        0x0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+ .comment       0x00000019        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
                                  0x1a (size before relaxing)
- .comment       0x00000019        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+ .comment       0x00000019        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
                                  0x1a (size before relaxing)
- .comment       0x00000019        0x0 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+ .comment       0x00000019        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
                                  0x1a (size before relaxing)
- .comment       0x00000019        0x0 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+ .comment       0x00000019        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
                                  0x1a (size before relaxing)
 
 .note.GNU-stack
                 0x00000000        0x0
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  .note.GNU-stack
-                0x00000000        0x0 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x00000000        0x0 /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
 
 .riscv.attributes
-                0x00000000       0x5b
+                0x00000000       0x4f
  .riscv.attributes
-                0x00000000       0x57 /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+                0x00000000       0x4b /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
  .riscv.attributes
-                0x00000057       0x57 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
+                0x0000004b       0x4b /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
  .riscv.attributes
-                0x000000ae       0x5b /tmp/mina_build_YEbGss/.//drivers/src/irq.o
+                0x00000096       0x4f /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
  .riscv.attributes
-                0x00000109       0x57 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
+                0x000000e5       0x4b /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
  .riscv.attributes
-                0x00000160       0x5b /tmp/mina_build_YEbGss/.//drivers/src/timer.o
+                0x00000130       0x4f /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
  .riscv.attributes
-                0x000001bb       0x57 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+                0x0000017f       0x4b /tmp/mina_build_1r8iGH/.//drivers/src/uart.o
  .riscv.attributes
-                0x00000212       0x59 /tmp/mina_build_YEbGss/.//crt0.o
+                0x000001ca       0x4d /tmp/mina_build_1r8iGH/.//crt0.o
 
-.debug_frame    0x00000000      0x47c
- .debug_frame   0x00000000       0x8c /tmp/mina_build_YEbGss//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
- .debug_frame   0x0000008c       0x30 /tmp/mina_build_YEbGss/.//drivers/src/gpio.o
- .debug_frame   0x000000bc      0x11c /tmp/mina_build_YEbGss/.//drivers/src/irq.o
- .debug_frame   0x000001d8       0x50 /tmp/mina_build_YEbGss/.//drivers/src/ring_buff.o
- .debug_frame   0x00000228      0x16c /tmp/mina_build_YEbGss/.//drivers/src/timer.o
- .debug_frame   0x00000394       0xe8 /tmp/mina_build_YEbGss/.//drivers/src/uart.o
+.debug_frame    0x00000000      0x4ac
+ .debug_frame   0x00000000       0x60 /tmp/mina_build_1r8iGH//home/ryanb/Documents/MINA/test_files/NPU_basic_integrated/npu_test.o
+ .debug_frame   0x00000060       0x30 /tmp/mina_build_1r8iGH/.//drivers/src/gpio.o
+ .debug_frame   0x00000090      0x174 /tmp/mina_build_1r8iGH/.//drivers/src/irq.o
+ .debug_frame   0x00000204       0x50 /tmp/mina_build_1r8iGH/.//drivers/src/ring_buff.o
+ .debug_frame   0x00000254      0x16c /tmp/mina_build_1r8iGH/.//drivers/src/timer.o
+ .debug_frame   0x000003c0       0xec /tmp/mina_build_1r8iGH/.//drivers/src/uart.o

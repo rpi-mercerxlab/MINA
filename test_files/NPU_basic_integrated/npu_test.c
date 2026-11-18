@@ -11,7 +11,7 @@ volatile int npu_done_flag = 0;
 static void npu_wait_halted(void) {
   NPU_HALT();
   while (!NPU_IS_HALTED()) {
-    // Wait for fetch_halted + QUIESCE_CYCLES (7 cycles)
+    // Busy-wait for fetch_halted without flooding the UART buffer
   }
 }
 
@@ -64,26 +64,6 @@ static void print_matrix(void) {
   uart_putc('\n');
 }
 
-void npu_irq_handler(void) {
-  // 1. Halt NPU and wait for safe_halted so AXI-Lite owns Scratchpad RAM
-  npu_wait_halted();
-
-  // 2. Clear NPU interrupt line
-  NPU_CLEAR_IRQ();
-
-  // 3. Read result matrix C from 0x400 and print over UART
-  print_matrix();
-
-  // 4. Write next counter matrix A into 0x200
-  fill_matrix();
-
-  // 5. Reset NPU PC to 0 and restart execution
-  NPU_RESET();
-  while (!NPU_IS_HALTED()) {
-  }
-  NPU_START();
-}
-
 static void uart_print_u32(uint32_t val) {
   char buf[10];
   int i = 0;
@@ -100,34 +80,66 @@ static void uart_print_u32(uint32_t val) {
   }
 }
 
+void npu_irq_handler(void) {
+  // 1. Stop the NPU and clear the interrupt pulse immediately
+  NPU_HALT();
+  NPU_CLEAR_IRQ();
+
+  // 2. Signal main() to read the scratchpad and print over UART
+  npu_done_flag = 1;
+}
+
 int main(void) {
+  // 1. Put NPU in a known halted/reset state and clear any stale IRQ
+  //    BEFORE enabling interrupts in the CPU or PLIC
+  NPU_HALT();
+  NPU_RESET();
+  NPU_CLEAR_IRQ();
+  npu_wait_halted();
+
+  // 2. Initialize CPU interrupts and UART driver
   init_interrupts();
   uart_init();
+
+  uart_puts("About to register NPU interrupt\r\n");
+
   reg_NPU_irq(npu_irq_handler, 1);
 
-  uart_puts("Starting program, loaded interrupts\n");
+  uart_puts("Starting program, loaded interrupts\r\n");
 
-  // Ensure NPU is halted and reset before touching Scratchpad RAM
-  NPU_RESET();
-  while (!NPU_IS_HALTED()) {
-  }
-
-  // Load initial Matrix A into Scratchpad at offset 0x200
+  // 3. Load initial Matrix A into Scratchpad at offset 0x200
   fill_matrix();
 
-  // Start NPU execution from PC = 0
+  // 4. Start NPU execution from PC = 0
   NPU_START();
 
   uint32_t counter = 0;
 
   while (1) {
+    if (npu_done_flag) {
+      npu_done_flag = 0;
+
+      // Ensure NPU fetch is halted before accessing Scratchpad RAM over
+      // AXI-Lite
+      npu_wait_halted();
+
+      // Read result matrix C from 0x400 and print over UART (274 bytes)
+      print_matrix();
+
+      // Write next counter matrix A into 0x200
+      fill_matrix();
+
+      // Reset NPU PC to 0 and restart execution
+      NPU_RESET();
+      npu_wait_halted();
+      NPU_START();
+    }
+
     counter++;
     if (counter == 100000000) {
       uart_puts("Program counter, NPU: ");
-
       uart_print_u32(NPU_READ_PC());
-
-      uart_putc('\n');
+      uart_puts("\r\n");
       counter = 0;
     }
   }
