@@ -4655,8 +4655,8 @@
           "instr_ram/ram_clk",
           "axi_ram_0/clk",
           "negation_2/clk",
-          "npu_axil_wrapper_0/clk",
-          "VexRiscvMcuAxi_0/clk"
+          "VexRiscvMcuAxi_0/clk",
+          "npu_axil_wrapper_0/clk"
         ]
       },
       "cpu_reset_controller_c": {

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
-<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Wed Nov 18 00:26:08 2026" VIVADOVERSION="2025.2">
+<EDKSYSTEM EDWVERSION="1.2" TIMESTAMP="Thu Nov 19 01:16:12 2026" VIVADOVERSION="2025.2">
 
   <SYSTEMINFO ARCH="spartan7" BOARD="digilentinc.com:arty-s7-50:part0:1.1" DEVICE="7s50" NAME="design_1" PACKAGE="csga324" SPEEDGRADE="-1"/>
 
@@ -2775,8 +2775,8 @@
             <CONNECTION INSTANCE="instr_ram_muxed_dual_port_ram_0" PORT="clk"/>
             <CONNECTION INSTANCE="axi_ram_0" PORT="clk"/>
             <CONNECTION INSTANCE="negation_2" PORT="clk"/>
-            <CONNECTION INSTANCE="npu_axil_wrapper_0" PORT="clk"/>
             <CONNECTION INSTANCE="VexRiscvMcuAxi_0" PORT="clk"/>
+            <CONNECTION INSTANCE="npu_axil_wrapper_0" PORT="clk"/>
           </CONNECTIONS>
         </PORT>
         <PORT DIR="O" NAME="locked" SIGIS="undef"/>

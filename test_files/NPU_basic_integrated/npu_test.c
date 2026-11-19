@@ -15,24 +15,20 @@ static void npu_wait_halted(void) {
   }
 }
 
-/*
- * Scratchpad vectors [0x40 .. 0x47] hold COLUMNS of Matrix A.
- * Vector k (word 2*k and 2*k+1) holds A[0..7][k].
- */
 static void fill_matrix(void) {
   volatile uint32_t *dst =
       NPU_SCRATCHPAD_BASE + (NPU_SOURCE_OFFSET / sizeof(uint32_t));
 
   uint8_t base = simple_counter;
-  for (uint32_t col = 0; col < MATRIX_DIM; ++col) {
+  for (uint32_t row = 0; row < MATRIX_DIM; ++row) {
     for (uint32_t half = 0; half < 2u; ++half) {
       uint32_t packed = 0;
       for (uint32_t lane = 0; lane < 4u; ++lane) {
-        uint32_t row = half * 4u + lane;
+        uint32_t col = half * 4u + lane;
         uint8_t val = (uint8_t)((base + row * MATRIX_DIM + col) & 0x7Fu);
         packed |= ((uint32_t)val << (8u * lane));
       }
-      dst[col * 2u + half] = packed;
+      dst[row * 2u + half] = packed;
     }
   }
   simple_counter = (uint8_t)((simple_counter + 64u) & 0x7Fu);

@@ -2,7 +2,7 @@
 -- Copyright 2022-2025 Advanced Micro Devices, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2025.2 (lin64) Build 6299465 Fri Nov 14 12:34:56 MST 2025
--- Date        : Tue Nov 17 19:11:07 2026
+-- Date        : Thu Nov 19 01:16:59 2026
 -- Host        : ryan-21k8s14n00 running 64-bit EndeavourOS Linux
 -- Command     : write_vhdl -force -mode synth_stub
 --               /home/ryanb/Documents/MINA/hw/custom_ip/MINA_proj/MINA_proj.gen/sources_1/bd/design_1/ip/design_1_npu_axil_wrapper_0_0/design_1_npu_axil_wrapper_0_0_stub.vhdl
