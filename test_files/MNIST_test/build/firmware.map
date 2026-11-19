@@ -1,0 +1,295 @@
+
+Merging object attributes
+
+
+There are no discarded input sections
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+SHARED_RAM       0x00000000         0x00004000         xr
+CPU_RAM          0x10000000         0x00010000         xrw
+*default*        0x00000000         0xffffffff
+
+Linker script and memory map
+
+LOAD /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+LOAD /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+LOAD /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+LOAD /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+LOAD /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+LOAD /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+LOAD /tmp/mina_build_hU95tl/.//crt0.o
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
+START GROUP
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-elf/lib/libc.a
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/../../../../riscv64-unknown-elf/lib/libgloss.a
+END GROUP
+LOAD /opt/riscv/lib/gcc/riscv64-unknown-elf/16.1.0/libgcc.a
+
+.text           0x00000000      0xda4
+ *(.text.init)
+ .text.init     0x00000000       0x6c /tmp/mina_build_hU95tl/.//crt0.o
+                0x00000000                _start
+ *(.text .text.*)
+ .text          0x0000006c       0x1e /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                0x0000006c                npu_irq_handler
+ .text.startup  0x0000008a      0x19a /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                0x0000008a                main
+ .text          0x00000224       0x28 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+                0x00000224                set_input
+                0x00000236                set_output
+ *fill*         0x0000024c        0x0 
+ .text          0x0000024c      0x406 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                0x0000024c                init_interrupts
+                0x00000264                plic_irq_handler
+                0x000002e4                trap_handler
+                0x0000043e                resort_by_prior
+                0x0000061e                reg_irq_handler
+                0x00000646                reg_timer_irq
+ .text          0x00000652       0x64 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+                0x00000652                init_ring_buffer
+                0x0000065c                reset_ring_buffer
+                0x00000666                insert_rb
+                0x0000068c                pop_rb
+ .text          0x000006b6      0x4b8 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+                0x000006b6                init_timers
+                0x000006da                read_time
+                0x000006e8                set_compare
+                0x000006f6                swap_in_heap
+                0x0000070c                min_heapify
+                0x000007dc                sift_up
+                0x000008f6                master_timer_isr
+                0x000009a6                register_isr_periodic
+                0x00000a7a                register_isr_abs
+                0x00000b52                deactivate_timer
+                0x00000b60                _deactivate_timer
+ .text          0x00000b6e      0x236 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+                0x00000b6e                uart_isr
+                0x00000be6                uart_init
+                0x00000c1a                uart_putc
+                0x00000c92                uart_getc
+                0x00000cb2                uart_puts
+                0x00000cd2                uart_polled_putc
+                0x00000ce6                uart_polled_puts
+                0x00000d0a                uart_print_hex
+ .text          0x00000da4        0x0 /tmp/mina_build_hU95tl/.//crt0.o
+
+.rodata         0x00000da4       0xac
+ *(.rodata .rodata.*)
+ .rodata.str1.4
+                0x00000da4       0xa5 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                0x00000e50                        . = ALIGN (0x8)
+ *fill*         0x00000e49        0x7 
+
+.rela.dyn       0x00000e50        0x0
+ .rela.text     0x00000e50        0x0 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .rela.text.init
+                0x00000e50        0x0 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+
+.data           0x10000000       0x40 load address 0x00000e50
+                0x10000000                        . = ALIGN (0x8)
+                0x10000000                        _sdata = .
+ *(.data .data.*)
+ .data          0x10000000        0x0 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .data          0x10000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .data          0x10000000       0x40 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                0x10000000                plic_idx_sort
+                0x10000020                plic_irq_priorities
+ .data          0x10000040        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .data          0x10000040        0x0 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .data          0x10000040        0x0 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .data          0x10000040        0x0 /tmp/mina_build_hU95tl/.//crt0.o
+                0x10000840                        PROVIDE (__global_pointer$ = (. + 0x800))
+ *(.sdata .sdata.*)
+                0x10000040                        . = ALIGN (0x8)
+                0x10000040                        _edata = .
+                0x00000e50                        _data_load_start = LOADADDR (.data)
+
+.bss            0x10000040      0xc48 load address 0x00000e90
+                0x10000040                        . = ALIGN (0x8)
+                0x10000040                        _sbss = .
+ *(.sbss .sbss.*)
+ .sbss          0x10000040        0x4 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                0x10000040                npu_done_flag
+ .sbss          0x10000044        0x4 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                0x10000044                timer_irq_handler
+ .sbss          0x10000048        0x4 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ *(.bss .bss.*)
+ .bss           0x1000004c      0x310 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .bss           0x1000035c        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .bss           0x1000035c       0x20 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                0x1000035c                plic_irq_handlers
+ .bss           0x1000037c        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ *fill*         0x1000037c        0x4 
+ .bss           0x10000380      0x700 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .bss           0x10000a80      0x206 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+                0x10000a80                rx_buffer
+                0x10000b84                tx_buffer
+ .bss           0x10000c86        0x0 /tmp/mina_build_hU95tl/.//crt0.o
+                0x10000c88                        . = ALIGN (0x8)
+ *fill*         0x10000c86        0x2 
+                0x10000c88                        _ebss = .
+                0x10010000                        PROVIDE (_stack_top = (ORIGIN (CPU_RAM) + LENGTH (CPU_RAM)))
+OUTPUT(/tmp/mina_build_hU95tl/firmware.elf elf32-littleriscv)
+
+.debug_info     0x00000000     0x1cdc
+ .debug_info    0x00000000      0x6be /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_info    0x000006be       0xdc /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .debug_info    0x0000079a      0x6b8 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_info    0x00000e52      0x1b4 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_info    0x00001006      0x7ad /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_info    0x000017b3      0x505 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .debug_info    0x00001cb8       0x24 /tmp/mina_build_hU95tl/.//crt0.o
+
+.debug_abbrev   0x00000000      0xbe9
+ .debug_abbrev  0x00000000      0x2bc /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_abbrev  0x000002bc       0x85 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .debug_abbrev  0x00000341      0x1d0 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_abbrev  0x00000511      0x138 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_abbrev  0x00000649      0x31e /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_abbrev  0x00000967      0x26e /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .debug_abbrev  0x00000bd5       0x14 /tmp/mina_build_hU95tl/.//crt0.o
+
+.debug_loclists
+                0x00000000      0xae4
+ .debug_loclists
+                0x00000000      0x21e /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_loclists
+                0x0000021e      0x2c2 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_loclists
+                0x000004e0       0x60 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_loclists
+                0x00000540      0x49c /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_loclists
+                0x000009dc      0x108 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+
+.debug_aranges  0x00000000       0xe8
+ .debug_aranges
+                0x00000000       0x28 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_aranges
+                0x00000028       0x20 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .debug_aranges
+                0x00000048       0x20 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_aranges
+                0x00000068       0x20 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_aranges
+                0x00000088       0x20 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_aranges
+                0x000000a8       0x20 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .debug_aranges
+                0x000000c8       0x20 /tmp/mina_build_hU95tl/.//crt0.o
+
+.debug_rnglists
+                0x00000000      0x210
+ .debug_rnglists
+                0x00000000       0xcb /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_rnglists
+                0x000000cb       0x5f /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_rnglists
+                0x0000012a       0x9e /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_rnglists
+                0x000001c8       0x48 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+
+.debug_line     0x00000000     0x23ac
+ .debug_line    0x00000000      0x5f9 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_line    0x000005f9       0x9a /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .debug_line    0x00000693      0x902 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_line    0x00000f95      0x14b /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_line    0x000010e0      0xbc2 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_line    0x00001ca2      0x642 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .debug_line    0x000022e4       0xc8 /tmp/mina_build_hU95tl/.//crt0.o
+
+.debug_str      0x00000000      0x55a
+ .debug_str     0x00000000      0x55a /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                                0x2d4 (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+                                0x132 (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                                0x268 (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+                                0x169 (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+                                0x2a9 (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+                                0x20c (size before relaxing)
+ .debug_str     0x0000055a        0x0 /tmp/mina_build_hU95tl/.//crt0.o
+                                 0x21 (size before relaxing)
+
+.debug_line_str
+                0x00000000      0x1c9
+ .debug_line_str
+                0x00000000      0x1c9 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                                0x121 (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+                                 0xa9 (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                                 0xcb (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+                                 0xd6 (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+                                 0xe9 (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+                                 0xd2 (size before relaxing)
+ .debug_line_str
+                0x000001c9        0x0 /tmp/mina_build_hU95tl/.//crt0.o
+                                 0x15 (size before relaxing)
+
+.comment        0x00000000       0x19
+ .comment       0x00000000       0x19 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+                                 0x1a (size before relaxing)
+ .comment       0x00000019        0x0 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+                                 0x1a (size before relaxing)
+
+.note.GNU-stack
+                0x00000000        0x0
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .note.GNU-stack
+                0x00000000        0x0 /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+
+.riscv.attributes
+                0x00000000       0x4f
+ .riscv.attributes
+                0x00000000       0x4b /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .riscv.attributes
+                0x0000004b       0x4b /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .riscv.attributes
+                0x00000096       0x4f /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .riscv.attributes
+                0x000000e5       0x4b /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .riscv.attributes
+                0x00000130       0x4f /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .riscv.attributes
+                0x0000017f       0x4b /tmp/mina_build_hU95tl/.//drivers/src/uart.o
+ .riscv.attributes
+                0x000001ca       0x4d /tmp/mina_build_hU95tl/.//crt0.o
+
+.debug_frame    0x00000000      0x49c
+ .debug_frame   0x00000000       0x50 /tmp/mina_build_hU95tl//home/ryanb/Documents/MINA/test_files/MNIST_test/npu_test.o
+ .debug_frame   0x00000050       0x30 /tmp/mina_build_hU95tl/.//drivers/src/gpio.o
+ .debug_frame   0x00000080      0x174 /tmp/mina_build_hU95tl/.//drivers/src/irq.o
+ .debug_frame   0x000001f4       0x50 /tmp/mina_build_hU95tl/.//drivers/src/ring_buff.o
+ .debug_frame   0x00000244      0x16c /tmp/mina_build_hU95tl/.//drivers/src/timer.o
+ .debug_frame   0x000003b0       0xec /tmp/mina_build_hU95tl/.//drivers/src/uart.o

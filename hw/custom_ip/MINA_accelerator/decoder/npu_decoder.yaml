@@ -16,7 +16,7 @@ fields:
   REGISTER_RS: "23 downto 20"
   ADD_I_IMM: "19 downto 4"
   BEQ_J_ADDR: "19 downto 10"
-  REGISTER_RD: "20 downto 17"
+  REGISTER_RD: "19 downto 16"
   DRV_DATA_RS: "25 downto 22"
   DRV_WEIGHT_RS: "21 downto 18"
   DRN_ADDR_RS: "27 downto 24"
@@ -72,6 +72,7 @@ decode_tree:
   field: OPCODE
   cases:
     "0x00": # drive pe, param1: pe source field, param2: data start addr, param3: weight start addr
+      asm: "DRV"
       set:
         pe_run: "'1'"
         pe_data_source: "@PE_SOURCE_FIELD"
@@ -80,10 +81,12 @@ decode_tree:
       wait_for: pe_drive_done
 
     "0x01": # reset
+      asm: "RST"
       set:
         pe_reset: "'1'"
 
     "0x02": # drain pe, to target addr
+      asm: "DRN"
       set:
         pe_drain: "'1'"
         pe_drain_addr: "@PE_DRAIN_START_ADDR"
@@ -93,20 +96,24 @@ decode_tree:
       wait_for: pe_drain_done
 
     "0x03": # top level interrupt, triggers the top level interrupt
+      asm: "TRG_INT"
       set:
         trigger_interrupt: "'1'"
 
     "0x04": # top_level_output_addr (immediate)
+      asm: "INT_ADDR"
       set:
         vo_int_addr: "'1'"
         int_targ_addr: "@INT_TARG_ADDR"
 
     "0x05": # jump instruction
+      asm: "J"
       set:
         jump_addr_vo: "'1'"
         jump_addr: "@JUMP_ADDR"
 
     "0x06": # addi
+      asm: "ADDI"
       set:
         add_i_rt: "@REGISTER_RT"
         add_i_rs: "@REGISTER_RS"
@@ -115,6 +122,7 @@ decode_tree:
       wait_for: add_i_done
 
     "0x07": # beq
+      asm: "BEQ"
       set:
         beq_rt: "@REGISTER_RT"
         beq_rs: "@REGISTER_RS"
@@ -123,6 +131,7 @@ decode_tree:
       wait_for: beq_done
 
     "0x08": # beq, register source
+      asm: "BEQ_R"
       set:
         beq_reg_rt: "@REGISTER_RT"
         beq_reg_rs: "@REGISTER_RS"
@@ -131,12 +140,14 @@ decode_tree:
       wait_for: beq_reg_done
 
     "0x09": # j, register source
+      asm: "J_R"
       set:
         jr_rs: "@REGISTER_RS"
         jr_en: "'1'"
       wait_for: jr_done
 
     "0x0A": # drive, register source
+      asm: "DRV_R"
       set:
         pe_run: "'1'"
         pe_data_source: "@PE_SOURCE_FIELD"
@@ -146,6 +157,7 @@ decode_tree:
       wait_for: pe_drive_done
 
     "0x0B": # drain, register source
+      asm: "DRN_R"
       set:
         pe_drain: "'1'"
         activation_function: "@PE_ACT_SEL"
@@ -156,6 +168,7 @@ decode_tree:
       wait_for: pe_drain_done
 
     "0x0C": # top level output addr, register source
+      asm: "INT_ADDR_R"
       set:
         vo_int_addr: "'1'"
         int_use_reg: "'1'"

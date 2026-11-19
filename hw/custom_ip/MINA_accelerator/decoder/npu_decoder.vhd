@@ -139,7 +139,7 @@ begin
                     instr_done <= beq_reg_done;
                     beq_reg_rt <= instr(27 downto 24);
                     beq_reg_rs <= instr(23 downto 20);
-                    beq_reg_addr <= instr(20 downto 17);
+                    beq_reg_addr <= instr(19 downto 16);
                     beq_reg_en <= '1';
                 when x"09" =>
                     instr_done <= jr_done;

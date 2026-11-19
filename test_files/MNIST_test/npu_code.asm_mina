@@ -1,0 +1,78 @@
+; ============================================================
+; Register Map
+;   r0 = 0 (constant zero)
+;   r1 = a_addr (input tile pointer)
+;   r2 = b_addr (weight tile pointer)
+;   r3 = c_addr (output/drain tile pointer)
+;   r4 = a_end  (inner k-loop limit)
+;   r5 = c_end  (outer n-loop limit)
+; ============================================================
+
+; ------------------------------------------------------------
+; LAYER 1: (8 x 784) * (784 x 32) -> (8 x 32), ReLU ON
+;   X  in scratchpad [0..783]    (98 tiles * 8 addrs)
+;   W1 in weight_ram [0..3135]   (98 * 4 = 392 tiles * 8 addrs)
+;   H1 in scratchpad [784..815]  (4 tiles * 8 addrs)
+; ------------------------------------------------------------
+L1_INIT:
+    ADDI      r2, r0, 0         ; [0x06] b_addr = W1_BASE (0)
+    ADDI      r3, r0, 784       ; [0x06] c_addr = H1_BASE (784)
+    ADDI      r4, r0, 784       ; [0x06] a_end  = 0 + 98 * 8
+    ADDI      r5, r0, 816       ; [0x06] c_end  = 784 + 4 * 8
+
+L1_OUTER:
+    BEQ       r3, r5, L2_INIT   ; [0x07] if c_addr == 816, Layer 1 done
+    RST                         ; [0x01] clear 8x8 PE accumulators
+    ADDI      r1, r0, 0         ; [0x06] rewind a_addr = X_BASE (0)
+
+L1_INNER:
+    BEQ       r1, r4, L1_DRAIN  ; [0x07] if a_addr == 784, flush & drain
+    DRV_R     0b00, r1, r2      ; [0x0A] src=scratchpad, data=r1, weight=r2
+    ADDI      r1, r1, 8         ; [0x06] next A tile (+8 addrs)
+    ADDI      r2, r2, 8         ; [0x06] next W1 tile (+8 addrs)
+    J         L1_INNER          ; [0x05]
+
+L1_DRAIN:
+    ; DRN_R operand order from YAML: act_sel, quant_mult, shift_amt, addr_rs
+    DRN_R     0b01, 490, 8, r3    ; [0x0B] ACT_RELU=0b01, FC1_MULT=1, FC1_SHIFT=0, dst=r3
+    ADDI      r3, r3, 8         ; [0x06] next H1 output tile (+8 addrs)
+    J         L1_OUTER          ; [0x05]
+
+; ------------------------------------------------------------
+; LAYER 2: (8 x 32) * (32 x 16) -> (8 x 16) [10 valid + 6 pad], ReLU OFF
+;   H1  in scratchpad [784..815]  (4 tiles * 8 addrs)
+;   W2  in weight_ram [3136..3199](4 * 2 = 8 tiles * 8 = 64 addrs)
+;   OUT in scratchpad [816..831]  (2 tiles * 8 = 16 addrs)
+; ------------------------------------------------------------
+L2_INIT:
+    ADDI      r2, r0, 3136      ; [0x06] b_addr = W2_BASE (3136)
+    ADDI      r3, r0, 816       ; [0x06] c_addr = OUT_BASE (816)
+    ADDI      r4, r0, 816       ; [0x06] a_end  = 784 + 4 * 8
+    ADDI      r5, r0, 832       ; [0x06] c_end  = 816 + 2 * 8
+
+L2_OUTER:
+    BEQ       r3, r5, DONE      ; [0x07] if c_addr == 832, Layer 2 done
+    RST                         ; [0x01] clear 8x8 PE accumulators
+    ADDI      r1, r0, 784       ; [0x06] rewind a_addr = H1_BASE (784)
+
+L2_INNER:
+    BEQ       r1, r4, L2_DRAIN  ; [0x07] if a_addr == 816, flush & drain
+    DRV_R     0b00, r1, r2      ; [0x0A] src=scratchpad, data=r1, weight=r2
+    ADDI      r1, r1, 8         ; [0x06] next H1 tile (+8 addrs)
+    ADDI      r2, r2, 8         ; [0x06] next W2 tile (+8 addrs)
+    J         L2_INNER          ; [0x05]
+
+L2_DRAIN:
+    ; DRN_R operand order from YAML: act_sel, quant_mult, shift_amt, addr_rs
+    DRN_R     0b00, 401, 4, r3    ; [0x0B] ACT_NONE=0b00, FC2_MULT=1, FC2_SHIFT=0, dst=r3
+    ADDI      r3, r3, 8         ; [0x06] next OUT tile (+8 addrs)
+    J         L2_OUTER          ; [0x05]
+
+; ------------------------------------------------------------
+; FINISH: Report output address and interrupt host RISC-V
+; ------------------------------------------------------------
+DONE:
+    TRG_INT                     ; [0x03] trigger_interrupt = '1'
+
+HANG:
+    J         HANG
